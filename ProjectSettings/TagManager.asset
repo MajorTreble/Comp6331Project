@@ -9,6 +9,7 @@ TagManager:
   - Faction2
   - SoloShip
   - PirateShip
+  - PlayerComponent
   layers:
   - Default
   - TransparentFX
