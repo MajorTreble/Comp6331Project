@@ -39,7 +39,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4593522961254468644}
-  m_Mesh: {fileID: -2616510325869001571, guid: 51835553b1a18564e8271d747cc8fff0, type: 3}
+  m_Mesh: {fileID: -2616510325869001571, guid: 35e310c311f1cdb4ea8a3a89a2779e80, type: 3}
 --- !u!23 &5389648832900096786
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7552430624409019540, guid: 51835553b1a18564e8271d747cc8fff0, type: 3}
+  - {fileID: 7552430624409019540, guid: 35e310c311f1cdb4ea8a3a89a2779e80, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,9 +90,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5582492682756437676}
-  - component: {fileID: 5459056185343893354}
-  - component: {fileID: 1295978843821899311}
-  - component: {fileID: 1615818268841825124}
+  - component: {fileID: 7046400197282057591}
+  - component: {fileID: 6211337598623402310}
+  - component: {fileID: 2657153559112627499}
   m_Layer: 0
   m_Name: BreakableAsteroid1
   m_TagString: Asteroid
@@ -108,14 +108,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5058438655821638678}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.49, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6486254934553278262}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &5459056185343893354
+--- !u!136 &7046400197282057591
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,11 +125,11 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1.2824869
-  m_Height: 3.1627278
+  m_Radius: 1.2702308
+  m_Height: 3.59444
   m_Direction: 1
-  m_Center: {x: -0.30252254, y: -0.3411603, z: -0.47996426}
---- !u!54 &1295978843821899311
+  m_Center: {x: 0.18165278, y: -0.23191738, z: 0.40718544}
+--- !u!54 &6211337598623402310
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,7 +145,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1615818268841825124
+--- !u!114 &2657153559112627499
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

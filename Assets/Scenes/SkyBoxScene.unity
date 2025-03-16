@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.018993491, g: 0.010203984, b: 0.042980295, a: 1}
+  m_IndirectSpecularColor: {r: 0.14861214, g: 0.10221464, b: 0.2311607, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2447,7 +2447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5582492682756437676, guid: 3e635a86c7d47de44b8149a1dfe0220c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.71
+      value: 5.42
       objectReference: {fileID: 0}
     - target: {fileID: 5582492682756437676, guid: 3e635a86c7d47de44b8149a1dfe0220c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4796,6 +4796,54 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1454341871}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1460709453
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1460709455}
+  - component: {fileID: 1460709454}
+  m_Layer: 0
+  m_Name: PPV
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1460709454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460709453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: b51beac87cacef74ca1ca03032813a52, type: 2}
+  isGlobal: 1
+  blendDistance: 0
+  weight: 1
+  priority: 0
+--- !u!4 &1460709455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460709453}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1474047412
 GameObject:
   m_ObjectHideFlags: 0
@@ -5773,7 +5821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: 465680d5b96078448b564c91fb83a5ac, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 54b9209ba71545f41a46f2ab75ebdb3a, type: 2}
   isGlobal: 1
   blendDistance: 0
   weight: 1
@@ -7689,6 +7737,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 296753282457995100, guid: e0eba002f06f32c46ba490ddd44511ca, type: 3}
+      propertyPath: postProcessVolume
+      value: 
+      objectReference: {fileID: 1633938224}
     - target: {fileID: 7152616548933556000, guid: e0eba002f06f32c46ba490ddd44511ca, type: 3}
       propertyPath: m_Name
       value: IceAsteroid
