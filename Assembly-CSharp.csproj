@@ -61,13 +61,13 @@
     <Compile Include="Assets\Scripts\EnemyAI\SoloEnemyAI.cs" />
     <Compile Include="Assets\Scripts\EnemyAI\Faction1AI.cs" />
     <Compile Include="Assets\Scripts\EnemyAI\PirateAI.cs" />
+    <Compile Include="Assets\Scripts\EnemyAI\EnemyWeapons\EnemyLaser.cs" />
     <Compile Include="Assets\Scripts\ShipMovement.cs" />
     <Compile Include="Assets\Scripts\EnemyAI\CreatureAI.cs" />
     <Compile Include="Assets\Scripts\EnemyAI\EnemyShip1_AI.cs" />
     <Compile Include="Assets\Scripts\EnemyAI\Faction2AI.cs" />
     <Compile Include="Assets\PlayerController.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
-    <Compile Include="Assets\Scripts\EnemyAI\EnemyWeapons\EnemyLaser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Credits.txt" />

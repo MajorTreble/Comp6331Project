@@ -6,9 +6,10 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 	public float speed = 5f;
 	public float energy = 100f;
 	public float energyRechargeRate = 1f;
-	public float detectionRadius = 20f;
+	protected float detectionRadius = 20f;
 	public float roamRadius = 150f;
 	public float roamSpeed = 3f;
+	public float avoidanceForce = 5f; // Force to steer away from obstacles and ships
 
 	protected Rigidbody rb;
 	protected Transform player;
@@ -54,7 +55,7 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 		RechargeEnergy();
 	}
 
-	void RechargeEnergy()
+	public virtual void RechargeEnergy()
 	{
 		if (energy < 100f)
 		{
@@ -90,7 +91,7 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 		roamTarget.y = 0; // Keep the target on the same horizontal plane (optional)
 	}
 
-	protected void Roam()
+	protected virtual void Roam()
 	{
 		if (rb == null || roamTarget == null)
 		{
@@ -100,7 +101,11 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 
 		// Move toward the roam target
 		Vector3 direction = (roamTarget - transform.position).normalized;
+		AvoidCollisions(ref direction); // Avoid collisions with obstacles and ships
 		rb.velocity = direction * roamSpeed;
+
+		// Rotate toward roam target (optional)
+		RotateTowardTarget(direction);
 
 		// If close to the target, set a new target
 		if (Vector3.Distance(transform.position, roamTarget) < 5f)
@@ -109,32 +114,50 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 		}
 	}
 
-	protected void AvoidObstacles(ref Vector3 direction)
+	protected void RotateTowardTarget(Vector3 direction, float rotationSpeed = 5f)
 	{
-		RaycastHit hit;
-
-		// Check for obstacles in front of the enemy
-		if (Physics.Raycast(transform.position, transform.forward, out hit, detectionRadius))
+		if (direction != Vector3.zero) // Ensure we don't get NaN errors
 		{
-			if (hit.collider.CompareTag("Asteroid")) // Ensure obstacles have the "Obstacle" tag
-			{
-				// Steer away from the obstacle
-				Vector3 avoidanceDirection = Vector3.Reflect(transform.forward, hit.normal).normalized;
-				direction = (direction + avoidanceDirection).normalized;
-			}
+			Quaternion targetRotation = Quaternion.LookRotation(direction);
+			transform.rotation = Quaternion.Slerp(
+				transform.rotation,
+				targetRotation,
+				Time.deltaTime * rotationSpeed // Use the provided rotation speed
+			);
 		}
 	}
 
-	//protected void Evade()
-	//{
-		// Check if the player is shooting (you can use a flag or detect projectiles)
-	//	if (PlayerIsShooting()) // Implement this method based on your game
-	//	{
-	//		// Move sideways or backward to evade
-		//	Vector3 evadeDirection = Vector3.Cross(transform.forward, Vector3.up).normalized;
-	//		rb.velocity += evadeDirection * speed * 0.5f; // Adjust strength as needed
-	//	}
-	//}
+	protected virtual void AvoidCollisions(ref Vector3 direction)
+	{
+		// Detect all nearby objects within a certain radius
+		Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, detectionRadius);
+
+		Vector3 avoidanceDirection = Vector3.zero;
+		int avoidCount = 0;
+
+		foreach (Collider collider in nearbyObjects)
+		{
+			if (collider.gameObject != gameObject && // Skip self
+				(collider.CompareTag("Asteroid") ||
+				 collider.CompareTag("PirateShip") ||
+				 collider.CompareTag("SoloShip") ||
+				 collider.CompareTag("Faction1") ||
+				 collider.CompareTag("Faction2")))
+			{
+				// Calculate direction away from the nearby object
+				Vector3 awayFromObject = (transform.position - collider.transform.position).normalized;
+				avoidanceDirection += awayFromObject;
+				avoidCount++;
+			}
+		}
+
+		// If there are objects to avoid, adjust the movement direction
+		if (avoidCount > 0)
+		{
+			avoidanceDirection /= avoidCount; // Average the avoidance direction
+			direction = (direction + avoidanceDirection * avoidanceForce).normalized;
+		}
+	}
 
 	void OnDrawGizmosSelected()
 	{

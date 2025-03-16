@@ -32,7 +32,7 @@ public class CreatureAI : BaseScriptForEnemyAI
 
 		// Calculate direction to the player
 		Vector3 direction = (player.position - transform.position).normalized;
-		AvoidObstacles(ref direction); // Avoid obstacles
+		AvoidCollisions(ref direction); // Avoid obstacles
 
 		float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 

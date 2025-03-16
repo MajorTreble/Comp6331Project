@@ -35,7 +35,7 @@ public class SoloEnemyAI : BaseScriptForEnemyAI
 		{
 			// Player is in range, chase or flee
 			Vector3 direction = (player.position - transform.position).normalized;
-			AvoidObstacles(ref direction); // Avoid obstacles
+			AvoidCollisions(ref direction); // Avoid obstacles
 
 			float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 

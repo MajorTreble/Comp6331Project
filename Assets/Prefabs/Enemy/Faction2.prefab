@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -6183261627015023295}
   m_Layer: 0
   m_Name: Faction2
-  m_TagString: Untagged
+  m_TagString: Faction2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -125,5 +125,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfa869064c100d2488d8f3697a0530ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  formationOffset: 5
+  health: 100
   speed: 5
+  energy: 100
+  energyRechargeRate: 1
+  roamRadius: 150
+  roamSpeed: 3
+  formationOffset: 5

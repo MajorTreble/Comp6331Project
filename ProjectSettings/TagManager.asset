@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Asteroid
+  - Faction1
+  - Faction2
+  - SoloShip
+  - PirateShip
   layers:
   - Default
   - TransparentFX
