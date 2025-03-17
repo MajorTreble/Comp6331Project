@@ -129,8 +129,8 @@ public class JobView : MonoBehaviour
         if(jc.jobStatus == JobController.JobStatus.Failed) jobText += "[COLOR RED]";
         if(jc.jobStatus == JobController.JobStatus.Concluded) jobText += "[COLOR GREEN]";
 
-
-        jobFeedback.text = jobText;
+        if (jobFeedback)
+            jobFeedback.text = jobText;
         
         //print(jobText);
     }
