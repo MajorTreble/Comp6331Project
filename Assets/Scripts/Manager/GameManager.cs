@@ -12,6 +12,7 @@ namespace Manager
         public static GameManager Instance { get; private set; }
 
         public GameObject playerPrefab;
+        public GameObject playerShip;
 
         void Awake()
         {
@@ -24,6 +25,10 @@ namespace Manager
             DontDestroyOnLoad(gameObject);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+		private void Start()
+		{
         }
 
         public void NewGame()
@@ -47,7 +52,7 @@ namespace Manager
 
         public void SpawnPlayer(Vector3 spawnPosition, Quaternion spawnQuaternion)
         {
-            GameObject.Instantiate(playerPrefab, spawnPosition, spawnQuaternion);
+            playerShip = GameObject.Instantiate(playerPrefab, spawnPosition, spawnQuaternion);
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -63,10 +68,7 @@ namespace Manager
                 JobController.Inst.AcceptJob(1);
             }
 
-            JobModel job = JobController.Inst.currJob;
-
-            GameObject ui = GameObject.Find("Canvas");
-            ui.transform.Find("Job Name").GetComponent<Text>().text = job.jobName;
+            SpawnPlayer(Vector3.zero, Quaternion.identity);
         }
     }
 
