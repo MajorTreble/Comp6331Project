@@ -9,7 +9,9 @@ namespace Manager
 
     public class GameManager : MonoBehaviour
     {
-        public static GameManager Instance;
+        public static GameManager Instance { get; private set; }
+
+        public GameObject playerPrefab;
 
         void Awake()
         {
@@ -26,7 +28,26 @@ namespace Manager
 
         public void NewGame()
 		{
+            PersistenceManager.Instance.NewGame();
+
             SceneManager.LoadScene(2);
+        }
+
+        public void LoadGame()
+        {
+            PersistenceManager.Instance.LoadGame();
+
+            SceneManager.LoadScene(2);
+        }
+
+        public void SaveGame()
+        {
+            PersistenceManager.Instance.SaveGame();
+        }
+
+        public void SpawnPlayer(Vector3 spawnPosition, Quaternion spawnQuaternion)
+        {
+            GameObject.Instantiate(playerPrefab, spawnPosition, spawnQuaternion);
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
