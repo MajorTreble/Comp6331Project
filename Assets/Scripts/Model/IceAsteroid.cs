@@ -1,24 +1,51 @@
 using UnityEngine;
 
-public class IceAsteroid : MonoBehaviour
-{
-    public IceBlurEffect blurEffect;
-
-    private void OnTriggerEnter(Collider other)
+namespace Model {
+    public class IceAsteroid : MonoBehaviour
     {
-        if (other.CompareTag("Player") || other.CompareTag("PlayerComponent"))
+        private IceBlurEffect blurEffect;
+
+        void Start()
         {
-            Debug.Log("Player entered the ice asteroid! Applying blur effect...");
-            blurEffect.ApplyBlur(4f); // Apply blur for 4 seconds
+            // Automatically find the IceBlurEffect script attached to the "BlurEffect" GameObject
+            GameObject blurObject = GameObject.Find("BlurEffect");
+
+            if (blurObject != null)
+            {
+                blurEffect = blurObject.GetComponent<IceBlurEffect>();
+
+                if (blurEffect == null)
+                    Debug.LogError("IceBlurEffect script not found on 'BlurEffect' GameObject!");
+            }
+            else
+            {
+                Debug.LogError("BlurEffect GameObject not found in the scene!");
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Player") || other.CompareTag("PlayerComponent"))
+            {
+                Debug.Log("Player entered the ice asteroid! Applying blur effect...");
+                if (blurEffect != null)
+                {
+                    blurEffect.ApplyBlur(4f); // Apply blur for 4 seconds
+                }
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Player") || other.CompareTag("PlayerComponent"))
+            {
+                Debug.Log("Player exited the ice asteroid! Removing blur effect...");
+                if (blurEffect != null)
+                {
+                    blurEffect.RemoveBlur();
+                }
+            }
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player") || other.CompareTag("PlayerComponent"))
-        {
-            Debug.Log("Player exited the ice asteroid! Removing blur effect...");
-            blurEffect.RemoveBlur();
-        }
-    }
 }

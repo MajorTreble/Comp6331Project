@@ -1,97 +1,101 @@
 using System.Collections;
 using UnityEngine;
 
-public class BreakableAsteroid : MonoBehaviour
-{
-    public bool canBreak = true; 
-    public float minSize = 0.2f;
-    public int numFragments = 7;
-    public float explosionForce = 3f;
-    public float speedMultiplier = 1;
-    private Rigidbody rb;
-
-    private bool canBreakAgain = false;
-    private float breakCooldown = 0.5f; 
-
-    
-    void Start()
+namespace Model {
+    public class BreakableAsteroid : MonoBehaviour
     {
-        rb = GetComponent<Rigidbody>();
-        rb.useGravity = false; 
-        rb.velocity = Random.onUnitSphere * Random.Range(0.5f, 2f) * speedMultiplier; 
-        rb.angularVelocity = Random.insideUnitSphere * Random.Range(0.2f, 1f);
+        public bool canBreak = true;
+        public float minSize = 0.2f;
+        public int numFragments = 7;
+        public float explosionForce = 3f;
+        public float speedMultiplier = 1;
+        private Rigidbody rb;
 
-        StartCoroutine(EnableBreakingAfterDelay()); 
-    }
+        private bool canBreakAgain = false;
+        private float breakCooldown = 0.5f;
 
-    IEnumerator EnableBreakingAfterDelay()
-    {
-        yield return new WaitForSeconds(breakCooldown);
-        canBreakAgain = true;
-    }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        Debug.Log("Asteroid is touching: " + collision.gameObject.name);
-        if (collision.gameObject.tag != "Asteroid" && canBreak && transform.localScale.x > minSize)
+        void Start()
         {
-            Debug.Log("Asteroid is breaking..");
-            BreakAsteroid();
-        }
-    }
+            rb = GetComponent<Rigidbody>();
+            rb.useGravity = false;
+            rb.velocity = Random.onUnitSphere * Random.Range(0.5f, 2f) * speedMultiplier;
+            rb.angularVelocity = Random.insideUnitSphere * Random.Range(0.2f, 1f);
 
-
-    private void BreakAsteroid()
-    {
-        if (!canBreak || transform.localScale.x <= minSize)
-        {
-            Destroy(gameObject);
-            return;
+            StartCoroutine(EnableBreakingAfterDelay());
         }
 
-        if (canBreak && canBreakAgain)
+        IEnumerator EnableBreakingAfterDelay()
         {
-            for (int i = 0; i < numFragments; i++)
+            yield return new WaitForSeconds(breakCooldown);
+            canBreakAgain = true;
+        }
+
+        private void OnCollisionStay(Collision collision)
+        {
+            Debug.Log("Asteroid is touching: " + collision.gameObject.name);
+            if (collision.gameObject.tag != "Asteroid" && canBreak && transform.localScale.x > minSize)
             {
-                Vector3 randomOffset = Random.insideUnitSphere * 0.3f;
-                GameObject fragment = Instantiate(gameObject, transform.position + randomOffset, Random.rotation);
+                Debug.Log("Asteroid is breaking..");
+                BreakAsteroid();
+            }
+        }
 
-                float newSize = transform.localScale.x * 0.5f;
-                fragment.transform.localScale = new Vector3(newSize, newSize, newSize);
 
-                Rigidbody fragRb = fragment.GetComponent<Rigidbody>();
-                if (fragRb != null)
-                {
-                    fragRb.velocity = rb.velocity + Random.insideUnitSphere * 1.5f;
-                    fragRb.angularVelocity = Random.insideUnitSphere * 2f; 
-                    fragRb.AddExplosionForce(explosionForce, transform.position, 2f);
-                }
-
-                BreakableAsteroid fragmentScript = fragment.GetComponent<BreakableAsteroid>();
-                if (fragmentScript != null)
-                {
-                    fragmentScript.SetSize(newSize);
-                }
+        private void BreakAsteroid()
+        {
+            if (!canBreak || transform.localScale.x <= minSize)
+            {
+                Destroy(gameObject);
+                return;
             }
 
-            SpawnBreakEffect();
+            if (canBreak && canBreakAgain)
+            {
+                for (int i = 0; i < numFragments; i++)
+                {
+                    Vector3 randomOffset = Random.insideUnitSphere * 0.3f;
+                    GameObject fragment = Instantiate(gameObject, transform.position + randomOffset, Random.rotation);
 
-            Destroy(gameObject);
+                    float newSize = transform.localScale.x * 0.5f;
+                    fragment.transform.localScale = new Vector3(newSize, newSize, newSize);
+
+                    Rigidbody fragRb = fragment.GetComponent<Rigidbody>();
+                    if (fragRb != null)
+                    {
+                        fragRb.velocity = rb.velocity + Random.insideUnitSphere * 1.5f;
+                        fragRb.angularVelocity = Random.insideUnitSphere * 2f;
+                        fragRb.AddExplosionForce(explosionForce, transform.position, 2f);
+                    }
+
+                    BreakableAsteroid fragmentScript = fragment.GetComponent<BreakableAsteroid>();
+                    if (fragmentScript != null)
+                    {
+                        fragmentScript.SetSize(newSize);
+                    }
+                }
+
+                SpawnBreakEffect();
+
+                Destroy(gameObject);
+            }
         }
-    }
 
 
-    private void SpawnBreakEffect() {
-        Debug.Log("Spawn Break Effect [Animation and Sound]");
-    }
-
-    public void SetSize(float newSize)
-    {
-        transform.localScale = new Vector3(newSize, newSize, newSize);
-        if (newSize <= minSize)
+        private void SpawnBreakEffect()
         {
-            canBreak = false; // Stops further breaking when too small
+            Debug.Log("Spawn Break Effect [Animation and Sound]");
+        }
+
+        public void SetSize(float newSize)
+        {
+            transform.localScale = new Vector3(newSize, newSize, newSize);
+            if (newSize <= minSize)
+            {
+                canBreak = false; // Stops further breaking when too small
+            }
         }
     }
-}
 
+
+}
