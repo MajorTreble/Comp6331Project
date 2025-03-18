@@ -169,6 +169,50 @@ MonoBehaviour:
   playerPrefab: {fileID: 4526271667573031266, guid: b8025a8b98ba20a42acdfbd076d496a1, type: 3}
   playerShip: {fileID: 0}
   isNewGame: 1
+--- !u!1 &53220071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 53220073}
+  - component: {fileID: 53220072}
+  m_Layer: 0
+  m_Name: BlurEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &53220072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53220071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dcadf14db2fd6445bd70ae37c659ba6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  postProcessVolume: {fileID: 1633938224}
+--- !u!4 &53220073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53220071}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &77809778
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,7 +575,7 @@ MonoBehaviour:
   spaceObjectPrefabs:
   - {fileID: 5058438655821638678, guid: dcdadc335c3fb8c42a449cc222cf0cfa, type: 3}
   - {fileID: 5058438655821638678, guid: 3e635a86c7d47de44b8149a1dfe0220c, type: 3}
-  - {fileID: 0}
+  - {fileID: 7152616548933556000, guid: e0eba002f06f32c46ba490ddd44511ca, type: 3}
   player: {fileID: 0}
   spawnRadius: 100
   maxObjects: 30
@@ -1332,7 +1376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: 465680d5b96078448b564c91fb83a5ac, type: 2}
+  sharedProfile: {fileID: 11400000, guid: bf12801861f040f41986b3753d762457, type: 2}
   isGlobal: 1
   blendDistance: 0
   weight: 1
