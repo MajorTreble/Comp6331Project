@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Manager;
+
 public class JobView : MonoBehaviour
 {
 
@@ -107,6 +109,8 @@ public class JobView : MonoBehaviour
     public void Departure()
     {
         print("Departure");
+
+        GameManager.Instance.StartScenario();
     }
 
 

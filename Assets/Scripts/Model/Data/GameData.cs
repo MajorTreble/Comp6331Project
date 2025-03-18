@@ -10,7 +10,7 @@ namespace Model.Data
 	[System.Serializable]
     public class GameData
     {
-        bool isWorking = true;
+        public bool isNewGame = true;
     }
 
 }

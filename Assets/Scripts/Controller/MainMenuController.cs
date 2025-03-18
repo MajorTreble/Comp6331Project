@@ -18,24 +18,19 @@ namespace Controller
 			GameManager.Instance.SpawnPlayer(playerShipPosition, playerShipQuaternion);
 		}
 
-		public void NewGame()
+		public void Play()
 		{
-			GameManager.Instance.NewGame();
+			GameManager.Instance.Play();
 		}
 
-		public void LoadGame()
+		public void Load()
 		{
-			GameManager.Instance.LoadGame();
+			GameManager.Instance.Load();
 		}
 
-		public void QuitGame()
+		public void Quit()
 		{
 			Application.Quit();
-		}
-
-		public void Job()
-		{
-			SceneManager.LoadScene(1);
 		}
 	}
 

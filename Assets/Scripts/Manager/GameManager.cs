@@ -4,15 +4,19 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+using Model.Data;
+
 namespace Manager
 {
 
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviour, IDataPersistence
     {
         public static GameManager Instance { get; private set; }
 
         public GameObject playerPrefab;
-        public GameObject playerShip;
+		public GameObject playerShip;
+
+        public bool isNewGame = true;
 
         void Awake()
         {
@@ -29,30 +33,58 @@ namespace Manager
 
 		private void Start()
 		{
+            PersistenceManager.Instance.dataPersistence.Add(this);
         }
 
-        public void NewGame()
+        // IDataPersistence
+        public void Load(GameData gameData)
 		{
-            PersistenceManager.Instance.NewGame();
+            this.isNewGame = gameData.isNewGame;
+		}
 
-            SceneManager.LoadScene(2);
+        // IDataPersistence
+        public void Save(ref GameData gameData)
+		{
+            gameData.isNewGame = this.isNewGame;
         }
 
-        public void LoadGame()
+        public void Play()
+		{
+            PersistenceManager.Instance.LoadGame();
+
+            if (isNewGame)
+            {
+                isNewGame = false;
+            }
+
+            SceneManager.LoadScene(1);
+        }
+
+        public void Load()
         {
             PersistenceManager.Instance.LoadGame();
 
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene(1);
         }
 
-        public void SaveGame()
+        public void Save()
         {
             PersistenceManager.Instance.SaveGame();
         }
 
+        public void StartScenario()
+        {
+            SceneManager.LoadScene(2);
+        }
+
+        public void StopScenario()
+        {
+            SceneManager.LoadScene(1);
+        }
+
         public void SpawnPlayer(Vector3 spawnPosition, Quaternion spawnQuaternion)
         {
-            playerShip = GameObject.Instantiate(playerPrefab, spawnPosition, spawnQuaternion);
+            GameObject.Instantiate(playerPrefab, spawnPosition, spawnQuaternion);
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -68,7 +100,10 @@ namespace Manager
                 JobController.Inst.AcceptJob(1);
             }
 
-            SpawnPlayer(Vector3.zero, Quaternion.identity);
+            JobModel job = JobController.Inst.currJob;
+
+            GameObject ui = GameObject.Find("Canvas");
+            ui.transform.Find("Job Name").GetComponent<Text>().text = job.jobName;
         }
     }
 
