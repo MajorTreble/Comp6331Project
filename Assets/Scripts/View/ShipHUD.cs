@@ -34,4 +34,9 @@ public class ShipHUD : MonoBehaviour
 		healthImage.fillAmount = ship.health / ship.maxHealth;
 		shieldsImage.fillAmount = ship.shields / ship.maxShields;
 	}
+
+	public void Portal()
+	{
+		GameManager.Instance.StopScenario();
+	}
 }

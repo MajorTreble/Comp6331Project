@@ -65,6 +65,11 @@ namespace Manager
 			}
 			
 			gameData = JsonUtility.FromJson<GameData>(dataJSON);
+
+			if (gameData == null)
+			{
+				NewGame();
+			}
 			
 			foreach(IDataPersistence dataPersistence in dataPersistence)
 			{
