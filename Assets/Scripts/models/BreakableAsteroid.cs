@@ -4,8 +4,8 @@ using UnityEngine;
 public class BreakableAsteroid : MonoBehaviour
 {
     public bool canBreak = true; 
-    public float minSize = 0.1f;
-    public int numFragments = 10;
+    public float minSize = 0.2f;
+    public int numFragments = 7;
     public float explosionForce = 3f;
     public float speedMultiplier = 1;
     private Rigidbody rb;
