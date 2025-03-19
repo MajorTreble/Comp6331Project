@@ -94,7 +94,8 @@ GameObject:
   - component: {fileID: 2155741459010282685}
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
-  - component: {fileID: 2421027156658583874}
+  - component: {fileID: -8544558580492178588}
+  - component: {fileID: 4652394156009785954}
   m_Layer: 0
   m_Name: Pirate
   m_TagString: PirateShip
@@ -196,7 +197,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &2421027156658583874
+--- !u!114 &-8544558580492178588
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,20 +206,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 7277576965648325399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b201f6541931dd849a26e8b255c3826c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c55d5426ae67664bb442afb13bfc42c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  speed: 15
-  energy: 100
-  energyRechargeRate: 1
+  behavior: {fileID: 11400000, guid: 06a5235808ba81e4ba9f97e49cb8fda8, type: 2}
+  playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
+  player: {fileID: 0}
+  rb: {fileID: 0}
+  detectionRadius: 25
   roamRadius: 150
   roamSpeed: 3
+  avoidanceForce: 5
+  health: 100
+  maxHealth: 100
+  attackRange: 10
   attackCooldown: 2
+  lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
-  firePoint: {fileID: 7180803749134355734}
-  rotationSpeed: 5
-  acceleration: 5
+  firePoint: {fileID: 6030673257891210850}
+--- !u!114 &4652394156009785954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277576965648325399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7cb52bd6108c254a92071e35fbee7d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthSlider: {fileID: 0}
 --- !u!1001 &3000934694986739847
 PrefabInstance:
   m_ObjectHideFlags: 0

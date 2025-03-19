@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4416928302594464331
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7560730008575809900}
+  m_Layer: 0
+  m_Name: Faction2_Firepoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7560730008575809900
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416928302594464331}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2312662491760270164}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7277576965648325399
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,7 +43,7 @@ GameObject:
   - component: {fileID: 2155741459010282685}
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
-  - component: {fileID: -6183261627015023295}
+  - component: {fileID: -6645510364563409096}
   m_Layer: 0
   m_Name: Faction2
   m_TagString: Faction2
@@ -31,7 +61,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.7935107, y: 3.2224724, z: -0.5053388}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 7560730008575809900}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -113,7 +144,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &-6183261627015023295
+--- !u!114 &-6645510364563409096
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,13 +153,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 7277576965648325399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfa869064c100d2488d8f3697a0530ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c55d5426ae67664bb442afb13bfc42c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  speed: 5
-  energy: 100
-  energyRechargeRate: 1
+  behavior: {fileID: 11400000, guid: 10e8da4e7f6a5f3449c9fd9673c78a38, type: 2}
+  playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
+  player: {fileID: 0}
+  rb: {fileID: 0}
+  detectionRadius: 25
   roamRadius: 150
   roamSpeed: 3
-  formationOffset: 5
+  avoidanceForce: 5
+  health: 100
+  maxHealth: 100
+  attackRange: 10
+  attackCooldown: 2
+  lastAttackTime: 0
+  laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
+  firePoint: {fileID: 4416928302594464331}
