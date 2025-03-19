@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using Model.Data;
+using Model;
+using UnityEngine.Diagnostics;
+using UnityEditor.Playables;
 
 namespace Manager
 {
@@ -89,22 +92,36 @@ namespace Manager
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (!JobController.Inst)
+            if (!JobMenuController.Inst)
 			{
                 return;
 			}
 
-            JobController.JobStatus jobStatus = JobController.Inst.jobStatus;
-            if (jobStatus == JobController.JobStatus.NotSelected)
-			{
-                JobController.Inst.AcceptJob(1);
+            JobStatus jobStatus = JobController.Inst.jobStatus;
+
+            if(scene.name == "Harbor")
+            {
+                JobView.Inst.ListJobs();
+                if(jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
+                    JobView.Inst.ViewJob(JobController.Inst.currJob);
             }
 
-            JobModel job = JobController.Inst.currJob;
+            JobView.Inst.SetTestButtons();
+            JobView.Inst.LookForJobFeeback();
+            JobView.Inst.UpdateJob();
+           
 
+            if (jobStatus == JobStatus.NotSelected)
+			    return;
+                
+            //JobMenuController.Inst.AcceptJob(0);
+            Job job = JobController.Inst.currJob;
             GameObject ui = GameObject.Find("Canvas");
-            ui.transform.Find("Job Name").GetComponent<Text>().text = job.jobName;
+
+            Text jobText =  Utils.FindChildByName(ui.transform, "JobFeedbackText").GetComponent<Text>();
+        
+            jobText.text = job.jobName;
+        
         }
     }
-
 }

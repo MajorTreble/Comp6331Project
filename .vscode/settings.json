@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Comp6331Project.sln"
+    "dotnet.defaultSolution": "Comp6331Project.sln",
+    "dotnet.preferCSharpExtension": true
 }

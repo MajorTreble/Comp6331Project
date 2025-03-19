@@ -33,7 +33,8 @@ public class ButtonJobHandler : MonoBehaviour
         switch (buttonType)
         {
             case ButtonType.Job:
-                JobView.Inst.ViewJob(index);
+                if(JobController.Inst.currJob == null)
+                    JobView.Inst.ViewJob(index);
             break;
             case ButtonType.Accept:
                 JobView.Inst.AcceptJob();

@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Manager;
+using Model;
+
 public class JobController : MonoBehaviour
 {
-    public JobModel[] jobs;
-    
-    public JobModel currJob;
-    public int currJobQtd;
-    public enum JobStatus {NotSelected, InProgress, Failed, Concluded};
+    public static JobController Inst { get; private set; } //Singleton
+
     public JobStatus jobStatus = JobStatus.NotSelected;
 
-    public static JobController Inst { get; private set; } //Singleton
+    public int currJobQtd;
+
+    public Job currJob;
+
     private void Awake()
     {
         if (Inst == null)
@@ -22,28 +25,7 @@ public class JobController : MonoBehaviour
         else Destroy(gameObject);
     }
 
-
-    private void Start() 
-    {
-        DontDestroyOnLoad(this);
-
-        jobs = Resources.LoadAll<JobModel>("Scriptable/Jobs");
-        JobView.Inst.ListJobs();
-
-
-    }
-
-
-    public void AcceptJob(int _index)
-    {
-        if(_index < 0)return;
-        currJob = jobs[_index];
-        Debug.Log("Job changed to: " + currJob.name);
-        jobStatus = JobStatus.InProgress;
-        JobView.Inst.UpdateJob();
-    }
-
-    
+   
     public void UpdateJob(int qtd)
     {
         currJobQtd += qtd;
@@ -57,6 +39,7 @@ public class JobController : MonoBehaviour
 
         JobView.Inst.UpdateJob();
     }
+    
 
     public void FailJob()
     {
@@ -64,36 +47,101 @@ public class JobController : MonoBehaviour
         JobView.Inst.UpdateJob();
     }
 
-    public void FinishJob()
+    bool CheckCurJob()
     {
-        if(currJob==null) return;
-        
-        TemporaryPlayer player = TemporaryPlayer.Inst;
-        
-        switch (jobStatus)
+        if(currJob == null)
         {
-            case JobStatus.Concluded:
-                player.coins += Inst.currJob.rewardCoins;
-                player.ChangeReputation(currJob.rewardType, Inst.currJob.rewardRep);
+            Debug.LogWarning("NO CUR JOB");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    
+    //Job Events
+    public void TargetLeftMap()
+    {//called once the target leaves the map
+        if(!CheckCurJob()) return;
 
-            break;
-            case JobStatus.Failed:
-                player.ChangeReputation(currJob.rewardType, -currJob.rewardRep/2);//Looses half reputation on a failed attempt
-            break;            
-            default:
-                FailJob();
-                FinishJob();
-            break;
+        if(currJob.jobType == JobType.Hunt)
+        {
+            UpdateJob(-1);
         }
 
-        currJob = null;
-        currJobQtd = 0;
-        JobView.Inst.UpdateJob();
+        if(currJob.jobType == JobType.Defend)
+        {
+            UpdateJob(1);
+        }
+        if(currJob.jobType == JobType.Deliver)
+        {
+            UpdateJob(1);
+        }
+        
+    }
 
+    public void TargetDestoyed()
+    {//called once the target destroyed
+        if(!CheckCurJob()) return;
+
+        if(currJob.jobType == JobType.Hunt)
+        {
+            UpdateJob(1);
+        }
+
+        if(currJob.jobType == JobType.Defend)
+        {
+            UpdateJob(-1);
+        }
+    }
+
+    public void OreMined()
+    {//called once the player  get any resource
+        if(!CheckCurJob()) return;
+
+        if(currJob.jobType == JobType.Mine)
+        {
+            UpdateJob(1);
+        }
+    }
+
+
+    
+    public void LeaveMap()
+    {
+        //Player go to the map limit, finishing it.
+        if(!CheckCurJob()) return;
+
+
+        if(currJob.jobType == JobType.Deliver)
+        {
+            JobController.Inst.TargetLeftMap();
+        } 
+        
+        if(jobStatus != JobStatus.Concluded) 
+            FailJob();
+        
+        GameManager.Instance.StopScenario();
     }
 
 
 
+    
+    // Control for tests
+    // Those methods are called once player do some kind of action
+    // Kill, Mine, etc
+    // For tests this will be controlled by buttons and UI
+    public void DestroyTarget()
+    {
+        TargetDestoyed();
+    }
+    public void LeaveTargetMap()
+    {
+        TargetLeftMap();
+    }
 
-
+    public void MineOre()
+    {
+        OreMined();        
+    }
 }
