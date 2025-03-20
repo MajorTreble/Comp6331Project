@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7586051193854166342}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fraction1_FirePoint1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1846331235753851371}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fraction1_FirePoint2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 1150506549398469434}
   - component: {fileID: 5372798382773438139}
   - component: {fileID: 1954055691047232830}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fraction1_FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
   - component: {fileID: 225852488542382329}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Faction1
   m_TagString: Faction1
   m_Icon: {fileID: 0}
@@ -290,18 +290,19 @@ MonoBehaviour:
   behavior: {fileID: 11400000, guid: 2b35ae3f7e0d833468f8bd757e8952ca, type: 2}
   detectionRadius: 25
   roamRadius: 150
-  roamSpeed: 3
   avoidanceForce: 5
   obstacleAvoidanceRange: 10
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
   obstacleAvoidanceWeight: 5
-  attackRange: 12
   attackCooldown: 1.5
   lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
   firePoint: {fileID: 3656561627335258874}
+  shipLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1001 &4542059429034557949
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -365,9 +366,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7924512045268418355, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
       propertyPath: m_Name
       value: SpaceShip
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4944249641855808295, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}

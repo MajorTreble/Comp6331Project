@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7560730008575809900}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Faction2_Firepoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
   - component: {fileID: 5153531479487656165}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Faction2
   m_TagString: Faction2
   m_Icon: {fileID: 0}
@@ -162,17 +162,16 @@ MonoBehaviour:
   behavior: {fileID: 11400000, guid: 10e8da4e7f6a5f3449c9fd9673c78a38, type: 2}
   detectionRadius: 25
   roamRadius: 150
-  roamSpeed: 3
   avoidanceForce: 5
   obstacleAvoidanceRange: 10
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
   obstacleAvoidanceWeight: 5
-  health: 100
-  maxHealth: 100
-  attackRange: 10
   attackCooldown: 2
   lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
   firePoint: {fileID: 4416928302594464331}
+  shipLayer:
+    serializedVersion: 2
+    m_Bits: 128

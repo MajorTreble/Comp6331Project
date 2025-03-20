@@ -27,6 +27,8 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 	protected enum AIState { Roaming, Seeking, Fleeing, AllyAssisting }
 	protected AIState currentState = AIState.Roaming;
 
+	[Header("Layer Masks")]
+	public LayerMask shipLayer;
 
 	public void Start()
 	{
@@ -101,6 +103,14 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 				currentJob.jobTarget == JobTarget.Pirate &&
 				behavior.faction == AIBehavior.Faction.Pirates)
 				return true;
+
+			// Example: If defending Faction1 and this is a Faction2 ship, attack
+			if (currentJob.jobType == JobType.Defend &&
+			currentJob.jobTarget == JobTarget.Faction1 &&
+			behavior.faction == AIBehavior.Faction.Faction2)
+			{
+				return true; // Faction2 ships attack during "Defend Faction1" missions
+			}
 		}
 
 		// Default: Attack if reputation is low
@@ -192,7 +202,8 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 		// Find enemies near the player
 		Collider[] nearbyShips = Physics.OverlapSphere(
 		player.position,
-		behavior.allyAssistRange
+		behavior.allyAssistRange,
+		shipLayer
 		);
 
 
