@@ -36,5 +36,9 @@ public class ReputationData : ScriptableObject
 				piratesReputation += amount;
 				break;
 		}
+
+		faction1Reputation = Mathf.Clamp(faction1Reputation, 0, 100);
+		faction2Reputation = Mathf.Clamp(faction2Reputation, 0, 100);
+		piratesReputation = Mathf.Clamp(piratesReputation, 0, 100);
 	}
 }

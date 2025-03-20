@@ -25,7 +25,7 @@ public class AISpawner : MonoBehaviour
 		GameObject enemy = Instantiate(enemyPrefab, randomPosition, Quaternion.identity);
 
 		// Assign AIBehavior Scriptable Object
-		EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
+		BaseScriptForEnemyAI enemyAI = enemy.GetComponent<BaseScriptForEnemyAI>();
 		if (enemyAI != null)
 		{
 			// Assign the corresponding AIBehavior Scriptable Object

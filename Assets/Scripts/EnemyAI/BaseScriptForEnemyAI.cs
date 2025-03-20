@@ -2,48 +2,112 @@ using UnityEngine;
 
 public class BaseScriptForEnemyAI : MonoBehaviour
 {
-	public AIBehavior behavior; // Faction-specific behavior
 	public ReputationData playerReputation; // Player's reputation
-
 	public Transform player;
 	public Rigidbody rb;
 	protected Vector3 roamTarget;
 
+	public AIBehavior behavior;
+
 	public float detectionRadius = 25f;
 	public float roamRadius = 150f;
-	public float roamSpeed = 3f;
+	//public float roamSpeed = 3f;
 	public float avoidanceForce = 5f; // Force to steer away from obstacles and ships
 
-	void Start()
+	public float obstacleAvoidanceRange = 10f; // Range to detect obstacles
+	public LayerMask obstacleLayer; // Layer for obstacles (e.g., asteroids)
+	public float obstacleAvoidanceWeight = 5f; // Strength of avoidance
+
+	//public float attackRange = 10f; // Attack range
+	public float attackCooldown = 2f; // Cooldown between attacks
+	public float lastAttackTime; // Time of the last attack
+	public GameObject laserPrefab; // Laser prefab for attacks
+	public GameObject firePoint; // Point from which lasers are fired
+
+	protected enum AIState { Roaming, Seeking, Fleeing, AllyAssisting }
+	protected AIState currentState = AIState.Roaming;
+
+
+	public void Start()
 	{
 		if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
 		if (rb == null) rb = GetComponent<Rigidbody>();
+		if (behavior == null)
+		{
+			Debug.Log("AIBehavior is not assigned to " + gameObject.name);
+		}
 		SetNewRoamTarget();
 	}
 
-	protected bool ShouldAttackPlayer()
+	void FixedUpdate()
 	{
-		// Check reputation
-		if (playerReputation.GetReputation(behavior.faction) > behavior.reputationThreshold)
-			return false; // Don't attack if reputation is high
+		if (player == null || rb == null) return;
+
+		// Determine state
+		if (ShouldAllyWithPlayer())
+		{
+			currentState = AIState.AllyAssisting;
+		}
+		else if (IsPlayerInRange())
+		{
+			currentState = AIState.Seeking;
+		}
+		else
+		{
+			currentState = AIState.Roaming;
+		}
+
+		// Execute behavior
+		switch (currentState)
+		{
+			case AIState.Roaming:
+				Roam();
+				break;
+			case AIState.Seeking:
+				SeekPlayer();
+				break;
+			case AIState.AllyAssisting:
+				AllyAssist();
+				break;
+		}
+	}
+
+
+
+	public void SetBehavior(AIBehavior newBehavior)
+	{
+		behavior = newBehavior; // Set the behavior
+	}
+
+	public bool ShouldAttackPlayer()
+	{
+		if (behavior == null || playerReputation == null) return false;
+
+		// Always prioritize ally status
+		if (ShouldAllyWithPlayer()) return false;
 
 		// Check job conditions
 		JobModel currentJob = JobController.Inst.currJob;
 		if (currentJob != null)
 		{
-			// Example: If the job is to defend Faction1 and this is a Faction1 ship, don't attack
-			if (currentJob.jobType == JobType.Defend && currentJob.jobTarget == JobTarget.Faction1 && behavior.faction == AIBehavior.Faction.Faction1)
+			// Example: If defending Faction1 and this is a Faction1 ship, don't attack
+			if (currentJob.jobType == JobType.Defend &&
+				currentJob.jobTarget == JobTarget.Faction1 &&
+				behavior.faction == AIBehavior.Faction.Faction1)
 				return false;
 
-			// Example: If the job is to hunt Pirates and this is a Pirate ship, attack
-			if (currentJob.jobType == JobType.Hunt && currentJob.jobTarget == JobTarget.Pirate && behavior.faction == AIBehavior.Faction.Pirates)
+			// Example: If hunting Pirates and this is a Pirate ship, attack
+			if (currentJob.jobType == JobType.Hunt &&
+				currentJob.jobTarget == JobTarget.Pirate &&
+				behavior.faction == AIBehavior.Faction.Pirates)
 				return true;
 		}
 
-		return false;
+		// Default: Attack if reputation is low
+		return playerReputation.GetReputation(behavior.faction) <= behavior.reputationThreshold;
 	}
 
-	public void RotateTowardTarget(Vector3 direction, float rotationSpeed = 5f)
+	protected void RotateTowardTarget(Vector3 direction, float rotationSpeed = 5f)
 	{
 		if (direction != Vector3.zero)
 		{
@@ -76,8 +140,14 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 
 		// Move toward the roam target
 		Vector3 direction = (roamTarget - transform.position).normalized;
-		AvoidCollisions(ref direction);
-		rb.velocity = direction * roamSpeed;
+		Vector3 avoidance = ComputeObstacleAvoidance(direction);
+
+		if (avoidance != Vector3.zero)
+		{
+			direction = (direction + avoidance).normalized;
+		}
+
+		rb.velocity = direction * behavior.roamSpeed;
 
 		// Rotate toward roam target
 		RotateTowardTarget(direction);
@@ -89,33 +159,137 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 		}
 	}
 
-	public void AvoidCollisions(ref Vector3 direction)
+	protected bool ShouldAllyWithPlayer()
 	{
-		Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, detectionRadius);
-		Vector3 avoidanceDirection = Vector3.zero;
-		int avoidCount = 0;
+		if (behavior == null || playerReputation == null) return false;
+		return playerReputation.GetReputation(behavior.faction) >= behavior.allyReputationThreshold;
+	}
 
-		foreach (Collider collider in nearbyObjects)
+	protected void AllyAssist()
+	{
+		if (player == null || behavior == null) return;
+
+		// Move toward the player to assist
+		Vector3 direction = (player.position - transform.position).normalized;
+		Vector3 avoidance = ComputeObstacleAvoidance(direction);
+
+		if (avoidance != Vector3.zero)
 		{
-			if (collider.gameObject != gameObject && // Skip self
-				(collider.CompareTag("Asteroid") ||
-				 collider.CompareTag("PirateShip") ||
-				 collider.CompareTag("SoloShip") ||
-				 collider.CompareTag("Faction1") ||
-				 collider.CompareTag("Faction2")))
+			direction = (direction + avoidance).normalized;
+		}
+
+		RotateTowardTarget(direction, behavior.rotationSpeed);
+		rb.velocity = direction * behavior.chaseSpeed;
+
+		// Attack enemies near the player
+		AttackEnemiesNearPlayer();
+	}
+
+	protected virtual void AttackEnemiesNearPlayer()
+	{
+		if (player == null || behavior == null) return;
+
+		// Find enemies near the player
+		Collider[] nearbyShips = Physics.OverlapSphere(
+		player.position,
+		behavior.allyAssistRange
+		);
+
+
+		foreach (Collider ship in nearbyShips)
+		{
+			BaseScriptForEnemyAI enemyAI = ship.GetComponent<BaseScriptForEnemyAI>();
+			if (enemyAI != null && enemyAI.ShouldAttackPlayer())
 			{
-				// Calculate direction away from the nearby object
-				Vector3 awayFromObject = (transform.position - collider.transform.position).normalized;
-				avoidanceDirection += awayFromObject;
-				avoidCount++;
+				// Rotate and attack the hostile ship
+				Vector3 targetDirection = (ship.transform.position - transform.position).normalized;
+				RotateTowardTarget(targetDirection, behavior.rotationSpeed);
+
+				if (Time.time > lastAttackTime + behavior.attackCooldown)
+				{
+					Attack();
+				}
 			}
 		}
+	}
 
-		// If there are objects to avoid, adjust the movement direction
-		if (avoidCount > 0)
+	public Vector3 ComputeObstacleAvoidance(Vector3 currentDirection)
+	{
+		Ray ray = new Ray(transform.position, currentDirection);
+		if (Physics.Raycast(ray, out RaycastHit hit, obstacleAvoidanceRange, obstacleLayer))
 		{
-			avoidanceDirection /= avoidCount; // Average the avoidance direction
-			direction = (direction + avoidanceDirection * avoidanceForce).normalized;
+			Debug.Log("Avoiding obstacle");
+			Vector3 avoidDir = hit.normal;
+
+			if (avoidDir.sqrMagnitude < 0.001f)
+			{
+				avoidDir = Vector3.Cross(currentDirection, Vector3.up);
+			}
+
+			avoidDir.Normalize();
+
+			Vector3 steering = avoidDir * obstacleAvoidanceWeight;
+			return steering;
 		}
+
+		return Vector3.zero;
+	}
+
+	public virtual void SeekPlayer()
+	{
+		Vector3 direction = (player.position - transform.position).normalized;
+		Vector3 avoidance = ComputeObstacleAvoidance(direction);
+		if (avoidance != Vector3.zero)
+		{
+			direction = (direction + avoidance).normalized;
+		}
+
+		RotateTowardTarget(direction, behavior.rotationSpeed);
+
+		float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+		if (distanceToPlayer > behavior.attackRange)
+		{
+			rb.velocity = transform.forward * behavior.chaseSpeed;
+		}
+		else
+		{
+			rb.velocity = Vector3.zero; // Stop moving when close to attack range
+		}
+
+		if (distanceToPlayer < behavior.attackRange && Time.time > lastAttackTime + attackCooldown)
+		{
+			Attack();
+		}
+	}
+
+	public virtual void Attack()
+	{
+		if (Time.time < lastAttackTime + attackCooldown) return; // Cooldown check
+
+		if (laserPrefab == null || firePoint == null)
+		{
+			Debug.LogError("Laser prefab or fire point is not assigned!");
+			return;
+		}
+
+		GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation);
+		Rigidbody laserRb = laser.GetComponent<Rigidbody>();
+		if (laserRb == null)
+		{
+			Debug.LogError("Laser prefab is missing a Rigidbody component!");
+			return;
+		}
+		laserRb.velocity = firePoint.transform.forward * 20f;
+
+		Collider laserCollider = laser.GetComponent<Collider>();
+		Collider enemyCollider = GetComponent<Collider>();
+		if (laserCollider != null && enemyCollider != null)
+		{
+			Physics.IgnoreCollision(laserCollider, enemyCollider);
+		}
+
+		lastAttackTime = Time.time; // Update last attack time
+		Debug.Log("Laser fired! Next attack in " + attackCooldown + " seconds.");
 	}
 }

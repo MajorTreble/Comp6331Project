@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 2155741459010282685}
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
-  - component: {fileID: -3135626628628630156}
+  - component: {fileID: 3661450571157287601}
   m_Layer: 0
   m_Name: SoloEnemy
   m_TagString: SoloShip
@@ -145,7 +145,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &-3135626628628630156
+--- !u!114 &3661450571157287601
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -154,21 +154,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 7277576965648325399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c55d5426ae67664bb442afb13bfc42c, type: 3}
+  m_Script: {fileID: 11500000, guid: 2116bf4ce6951c94cad72af4bb4e090c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behavior: {fileID: 11400000, guid: be96e15fc9d361242b62f2671c7852f7, type: 2}
   playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
   player: {fileID: 0}
   rb: {fileID: 0}
+  behavior: {fileID: 11400000, guid: be96e15fc9d361242b62f2671c7852f7, type: 2}
   detectionRadius: 25
   roamRadius: 150
   roamSpeed: 3
   avoidanceForce: 5
-  health: 100
-  maxHealth: 100
-  attackRange: 10
-  attackCooldown: 2
+  obstacleAvoidanceRange: 10
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  obstacleAvoidanceWeight: 5
+  attackRange: 15
+  attackCooldown: 1
   lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
   firePoint: {fileID: 3217806063069641899}
