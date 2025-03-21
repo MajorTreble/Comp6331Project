@@ -29,13 +29,13 @@ public class ShipHUD : MonoBehaviour
 		//JobModel job = JobMenuController.Inst.currJob;
 		//jobNameText.text = job.jobName;
 
-		/*PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
+		PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
 		if(ship!=null)
 		{
 			ammoText.text = ship.ammo.ToString();
 			healthImage.fillAmount = ship.health / ship.maxHealth;
 			shieldsImage.fillAmount = ship.shields / ship.maxShields;
-		}*/
+		}
 	}
 
 	public void Portal()

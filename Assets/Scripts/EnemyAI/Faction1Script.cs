@@ -4,7 +4,7 @@ public class Faction1Script : BaseScriptForEnemyAI
 {
 	private Vector3 cutOffPosition; // Position to cut off the player's path
 
-	void Start()
+	public override void  Start()
 	{
 		base.Start();
 
