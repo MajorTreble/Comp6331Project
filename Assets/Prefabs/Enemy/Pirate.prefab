@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7180803749134355734}
   - component: {fileID: 401292783803901391}
   - component: {fileID: 8991110574378237725}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: firePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,8 +94,8 @@ GameObject:
   - component: {fileID: 2155741459010282685}
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
-  - component: {fileID: 2421027156658583874}
-  m_Layer: 0
+  - component: {fileID: 4882198248570157917}
+  m_Layer: 7
   m_Name: Pirate
   m_TagString: PirateShip
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &2421027156658583874
+--- !u!114 &4882198248570157917
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,20 +205,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 7277576965648325399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b201f6541931dd849a26e8b255c3826c, type: 3}
+  m_Script: {fileID: 11500000, guid: eb73c30081e020849a3d23a0db496cea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  speed: 15
-  energy: 100
-  energyRechargeRate: 1
+  playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
+  player: {fileID: 0}
+  rb: {fileID: 0}
+  behavior: {fileID: 11400000, guid: 06a5235808ba81e4ba9f97e49cb8fda8, type: 2}
+  detectionRadius: 25
   roamRadius: 150
-  roamSpeed: 3
-  attackCooldown: 2
+  avoidanceForce: 5
+  obstacleAvoidanceRange: 10
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  obstacleAvoidanceWeight: 5
+  attackCooldown: 3
+  lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
-  firePoint: {fileID: 7180803749134355734}
-  rotationSpeed: 5
-  acceleration: 5
+  firePoint: {fileID: 6030673257891210850}
+  shipLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  health: 100
+  maxHealth: 100
+  healthSlider: {fileID: 0}
 --- !u!1001 &3000934694986739847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -273,6 +284,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 2fb8ff95d80f138458b16ef0479a83c7, type: 3}
       propertyPath: m_Name
       value: Fighter_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2fb8ff95d80f138458b16ef0479a83c7, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fb8ff95d80f138458b16ef0479a83c7, type: 3}
