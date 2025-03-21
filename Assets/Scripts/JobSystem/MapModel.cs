@@ -9,4 +9,6 @@ public class MapModel : ScriptableObject
     public string mapName = "PlaceHolder Name";
     //Put map data here
     //size, objects, enemies, etc    
+
+    
 }

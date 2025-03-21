@@ -4,12 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Manager;
+using Controller;
+using Model;
+using System;
 
 public class JobView : MonoBehaviour
 {
 
 
-    Transform jobControllerObject;
+    Transform JobMenuControllerObject;
     GameObject jobTemplate;
     Text jobDescription;
     Text jobFeedback;
@@ -24,41 +27,83 @@ public class JobView : MonoBehaviour
             Inst = this;
             DontDestroyOnLoad(gameObject);
         }
-        else Destroy(gameObject);
+        else Destroy(gameObject);        
     }
     
+    public void SetTestButtons()
+    {        
+        GameObject go =  GameObject.Find("JobControl_For_Tests");
+
+        if(go==null) return;
+
+        Transform jobControl = go.transform;
+
+        Utils.FindChildByName(jobControl, "LeaveTargetMap").GetComponent<Button>().onClick.AddListener(JobController.Inst.LeaveTargetMap);
+        Utils.FindChildByName(jobControl, "DestroyTarget").GetComponent<Button>().onClick.AddListener(JobController.Inst.DestroyTarget);
+        Utils.FindChildByName(jobControl, "MineOre").GetComponent<Button>().onClick.AddListener(JobController.Inst.MineOre);        
+        Utils.FindChildByName(jobControl, "LeaveMap").GetComponent<Button>().onClick.AddListener(JobController.Inst.LeaveMap);
+    }
 
 
     void Start()
     {
-        DontDestroyOnLoad(this);
+        SetTestButtons();
 
-        jobControllerObject = GameObject.Find("Canvas").transform;
-        jobTemplate = GameObject.Find("JobTemplate");
-        jobDescription = GameObject.Find("JobDescriptionText").GetComponent<Text>();
-        jobFeedback = GameObject.Find("JobFeedbackText").GetComponent<Text>();
-
+        JobMenuControllerObject = GameObject.Find("Canvas").transform;  
     }
 
-    
+    public void LookForJobFeeback()
+    {
+        GameObject go = GameObject.Find("JobFeedbackText");
+        if(go != null)
+            jobFeedback = go.GetComponent<Text>();
+    }
 
+   
+
+    
     public void ViewJob(int _index)
     {
         jobIndex = _index;
+        ViewJob(JobMenuController.Inst.jobs[jobIndex]);
+    }
+    
 
-        
-        JobController jc = JobController.Inst;
+    public void ViewJob(Job job)
+    {
+
+        GameObject go = GameObject.Find("JobDescriptionText");
+        if(go!=null) jobDescription = go.GetComponent<Text>();  
+
+        if(job == null)
+        {
+            jobDescription.text = "";
+            return;
+        } 
+            
+                
         string jobText = "";
-        jobText += "Name: " + jc.jobs[jobIndex].name + "\n";            
-        jobText += "Map: " + jc.jobs[jobIndex].mapModel.mapName + "\n";
+        jobText += "Name: " + job.name + "\n";            
+        jobText += "Map: " + job.mapModel.mapName + "\n";
 
-        jobText += "Type: " + jc.jobs[jobIndex].jobType + "\n";            
-        jobText += "Target: " + jc.jobs[jobIndex].jobTarget + "\n";                 
-        jobText += "Quantity: " + jc.jobs[jobIndex].quantity + "\n";
+        jobText += "Type: " + job.jobType + "\n";            
+        jobText += "Target: " + job.jobTarget + "\n";                 
+        jobText += "Quantity: " + job.quantity + "\n";
 
-        jobText += "Coins: " + jc.jobs[jobIndex].rewardCoins + "\n";
-        jobText += "Reputation: " + jc.jobs[jobIndex].rewardType + "\n";
-        jobText += "Rep Reward " + jc.jobs[jobIndex].rewardRep + "\n";  
+        jobText += "Coins: " + job.rewardCoins + "\n";
+        jobText += "Reputation: " + job.rewardType + "\n";
+        jobText += "Rep Reward " + job.rewardRep + "\n";  
+
+        if(JobController.Inst.jobStatus == JobStatus.Failed) 
+        {
+            jobDescription.color = Color.red;
+        }
+        else if(JobController.Inst.jobStatus == JobStatus.Concluded)
+        {
+            jobDescription.color = Color.green;
+        }else 
+            jobDescription.color = Color.white;
+
 
         jobDescription.text = jobText;
         
@@ -66,9 +111,10 @@ public class JobView : MonoBehaviour
 
     public void ListJobs()
     {
+        JobMenuController.Inst.LoadJobs();
         string jobText = "";
         int index = 0;
-        foreach (JobModel job in JobController.Inst.jobs)
+        foreach (Job job in JobMenuController.Inst.jobs)
         {
             jobText += "["+ index++ +"]"+ "\t"; 
             jobText += "Name: " + job.name + "\t";            
@@ -84,33 +130,36 @@ public class JobView : MonoBehaviour
         }
         //print(jobText);
         
+        jobTemplate = GameObject.Find("JobTemplate");
         GameObject jobButton = jobTemplate;
-        for (int i = 0; i < JobController.Inst.jobs.Length; i++)
+        
+        for (int i = 0; i < JobMenuController.Inst.jobs.Length; i++)
         {
             if(i>0)
                 jobButton = Instantiate(jobTemplate, jobTemplate.transform.parent);
             
             ButtonJobHandler handler = jobButton.GetComponent<ButtonJobHandler>();
 
-            handler.SetJobButton(i, JobController.Inst.jobs[i].jobName,  JobController.Inst.jobs[i].jobType);
+            handler.SetJobButton(i, JobMenuController.Inst.jobs[i].jobName,  JobMenuController.Inst.jobs[i].jobType);
         }
     }
 
     public void AcceptJob()
     {
-        JobController.Inst.AcceptJob(jobIndex);
+        if(JobController.Inst.currJob == null)
+            JobMenuController.Inst.AcceptJob(jobIndex);
     }
 
     public void FinishJob()
     {
-        JobController.Inst.FinishJob();
+        if(JobController.Inst.currJob != null)
+            JobMenuController.Inst.FinishJob();
     }
 
     public void Departure()
     {
-        print("Departure");
-
-        GameManager.Instance.StartScenario();
+        if(JobController.Inst.currJob != null)
+            GameManager.Instance.StartScenario();
     }
 
 
@@ -118,23 +167,43 @@ public class JobView : MonoBehaviour
     public void UpdateJob()
     {        
         JobController jc = JobController.Inst;
+        if(jobFeedback==null) LookForJobFeeback();
+        if(jobFeedback==null) 
+        {
+            Invoke("UpdateJob", 0.5f);
+            return;
+        }
+        
         if(jc.currJob == null) 
         {
             jobFeedback.text = " ";
             return;
         }
+        
         string jobText = "";
         
-        jobText += "Type: " + jc.currJob.jobType + "\t";            
-        jobText += "Target: " + jc.currJob.jobTarget + "\t";                 
-        jobText += "Quantity: " + jc.currJobQtd + "/" + jc.currJob.quantity + "\n";
-        jobText += jc.jobStatus;
+        jobText += "Type: " + jc.currJob.jobType + "\n";            
+        jobText += "Target: " + jc.currJob.jobTarget + "\n";                 
+        jobText += "Quantity: " + jc.currJobQtd + "/" + jc.currJob.quantity;
+        //jobText += jc.jobStatus;
 
-        if(jc.jobStatus == JobController.JobStatus.Failed) jobText += "[COLOR RED]";
-        if(jc.jobStatus == JobController.JobStatus.Concluded) jobText += "[COLOR GREEN]";
+        Color color = Color.white;
+        if(jc.jobStatus == JobStatus.Failed) 
+        {
+            color = Color.red;
+            jobText += "[F]";
+        }
+        if(jc.jobStatus == JobStatus.Concluded)
+        {
+            color = Color.green;
+            jobText += "[C]";
+        }        
 
         if (jobFeedback)
+        {
+            jobFeedback.color = color;
             jobFeedback.text = jobText;
+        }
         
         //print(jobText);
     }

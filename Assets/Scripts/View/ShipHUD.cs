@@ -16,23 +16,26 @@ public class ShipHUD : MonoBehaviour
 	private void Awake()
 	{
 		GameObject ui = GameObject.Find("Canvas");
-		jobNameText = ui.transform.Find("Job Name").GetComponent<Text>();
+		jobNameText = Utils.FindChildByName(ui.transform, "JobFeedbackText").GetComponent<Text>();
 		ammoText = ui.transform.Find("Ammo").transform.Find("Text").GetComponent<Text>();
 		healthImage = ui.transform.Find("Health Bar").GetComponent<Image>();
 		shieldsImage = ui.transform.Find("Shields").GetComponent<Image>();
+
+		Debug.LogWarning("There is some kind of error on update/ship, commented for now");
 	}
 
 	private void Update()
 	{
-		JobModel job = JobController.Inst.currJob;
+		//JobModel job = JobMenuController.Inst.currJob;
+		//jobNameText.text = job.jobName;
 
-		jobNameText.text = job.jobName;
-
-		PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
-
-		ammoText.text = ship.ammo.ToString();
-		healthImage.fillAmount = ship.health / ship.maxHealth;
-		shieldsImage.fillAmount = ship.shields / ship.maxShields;
+		/*PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
+		if(ship!=null)
+		{
+			ammoText.text = ship.ammo.ToString();
+			healthImage.fillAmount = ship.health / ship.maxHealth;
+			shieldsImage.fillAmount = ship.shields / ship.maxShields;
+		}*/
 	}
 
 	public void Portal()

@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using Model;
+
 public class BaseScriptForEnemyAI : MonoBehaviour
 {
 	public ReputationData playerReputation; // Player's reputation
@@ -89,7 +91,7 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 		if (ShouldAllyWithPlayer()) return false;
 
 		// Check job conditions
-		JobModel currentJob = JobController.Inst.currJob;
+		Job currentJob = JobController.Inst.currJob;
 		if (currentJob != null)
 		{
 			// Example: If defending Faction1 and this is a Faction1 ship, don't attack
