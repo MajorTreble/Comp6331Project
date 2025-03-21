@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Manager;
+
 public class CameraFollow : MonoBehaviour
 {
     public Transform player;
@@ -12,6 +14,8 @@ public class CameraFollow : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
+
+        player = GameManager.Instance.playerShip.transform;
     }
 
     void LateUpdate()
