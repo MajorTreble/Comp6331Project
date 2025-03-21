@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using Model.Data;
 using Model;
 using UnityEngine.Diagnostics;
-using UnityEditor.Playables;
+//using UnityEditor.Playables;
 
 namespace Manager
 {
