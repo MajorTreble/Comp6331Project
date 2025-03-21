@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Model
+using Model;
+
+public class JobModel : Job
 {
-    public class JobModel : Job
-    {
-    }   
-    
 }
 
 
