@@ -53,7 +53,7 @@ public class JobMenuController : MonoBehaviour
         JobController jc = JobController.Inst;
         if(jc.currJob==null) return;
         
-        PlayerController player = PlayerController.Inst;
+        PlayerReputation player = PlayerReputation.Inst;
         
         switch (jc.jobStatus)
         {

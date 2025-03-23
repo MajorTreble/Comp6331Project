@@ -1,6 +1,7 @@
 using UnityEngine;
 
 using Model;
+using Controller;
 
 public class BaseScriptForEnemyAI : MonoBehaviour
 {

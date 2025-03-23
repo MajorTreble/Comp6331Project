@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Job_03
   m_EditorClassIdentifier: 
   jobName: Mine Job 01
+  jobDescription: Placeholder Description
   jobType: 2
-  mapModel: {fileID: 11400000, guid: 0fc47e1f6dfed0b43987330f77350826, type: 2}
+  scenario: {fileID: 11400000, guid: 0fc47e1f6dfed0b43987330f77350826, type: 2}
   rewardCoins: 350
   rewardType: 3
   rewardRep: 150
