@@ -1168,10 +1168,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eff5a99536436a4c9a05ec58252facc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spaceObjectPrefabs:
-  - {fileID: 5058438655821638678, guid: dcdadc335c3fb8c42a449cc222cf0cfa, type: 3}
-  - {fileID: 5058438655821638678, guid: 3e635a86c7d47de44b8149a1dfe0220c, type: 3}
-  - {fileID: 7152616548933556000, guid: e0eba002f06f32c46ba490ddd44511ca, type: 3}
+  spaceObjects:
+  - prefab: {fileID: 5058438655821638678, guid: dcdadc335c3fb8c42a449cc222cf0cfa, type: 3}
+    weight: 20
+  - prefab: {fileID: 5058438655821638678, guid: 3e635a86c7d47de44b8149a1dfe0220c, type: 3}
+    weight: 20
+  - prefab: {fileID: 7152616548933556000, guid: e0eba002f06f32c46ba490ddd44511ca, type: 3}
+    weight: 10
+  - prefab: {fileID: 4225513920101283801, guid: 3dbc8ec9b199aa44ab3a83e6a0fdf62a, type: 3}
+    weight: 1
   player: {fileID: 0}
   spawnRadius: 100
   maxObjects: 30
@@ -1898,7 +1903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  offset: {x: 0, y: 4, z: -10}
+  offset: {x: 0, y: 5, z: -23}
   smoothSpeed: 0.125
 --- !u!114 &963194230
 MonoBehaviour:
