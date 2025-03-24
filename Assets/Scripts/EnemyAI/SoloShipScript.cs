@@ -4,7 +4,7 @@ public class SoloShipScript : BaseScriptForEnemyAI
 {
 	//private AIState currentState = AIState.Roaming;
 	
-	void Start()
+	public override void Start()
 	{
 		base.Start();
 

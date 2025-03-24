@@ -14,7 +14,11 @@ namespace Manager
         public static GameManager Instance { get; private set; }
 
         public GameObject playerPrefab;
-		public GameObject playerShip;
+        public GameObject laserPrefab;
+        public GameObject playerShip;
+
+        public Vector3 playerSpawnPosition;
+        public Quaternion playerSpawnRotation;
 
         public bool isNewGame = true;
 
@@ -84,7 +88,9 @@ namespace Manager
 
         public void SpawnPlayer(Vector3 spawnPosition, Quaternion spawnQuaternion)
         {
-            GameObject.Instantiate(playerPrefab, spawnPosition, spawnQuaternion);
+            playerShip = GameObject.Instantiate(playerPrefab, spawnPosition, spawnQuaternion);
+
+            playerShip.GetComponent<PlayerShip>().SpawnLaser(laserPrefab);
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -118,7 +124,8 @@ namespace Manager
             Text jobText =  Utils.FindChildByName(ui.transform, "JobFeedbackText").GetComponent<Text>();
         
             jobText.text = job.jobName;
-        
+
+            SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
         }
     }
 }
