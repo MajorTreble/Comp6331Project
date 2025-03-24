@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using Model.Data;
 using Model;
-using UnityEngine.Diagnostics;
-//using UnityEditor.Playables;
+using Controller;
 
 namespace Manager
 {

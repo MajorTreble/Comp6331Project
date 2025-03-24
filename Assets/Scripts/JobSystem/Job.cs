@@ -16,7 +16,7 @@ namespace Model
         
         public JobType jobType = JobType.Defend;
 
-        public MapModel  mapModel = null;
+        public Scenario  scenario = null;
 
         public int rewardCoins = 1;
         public RepType rewardType = RepType.Faction1; 

@@ -1522,10 +1522,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 818359495}
-  - component: {fileID: 818359494}
   - component: {fileID: 818359493}
   - component: {fileID: 818359496}
   - component: {fileID: 818359497}
+  - component: {fileID: 818359494}
   m_Layer: 0
   m_Name: Job Controller
   m_TagString: Untagged
@@ -1554,12 +1554,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 818359492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92b00849d1d0e7344b786e26a0b7fc6b, type: 3}
+  m_Script: {fileID: 11500000, guid: ec30074b313bde147ad7b86980198c69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  turnSpeed: 100
-  mouseSensitivity: 2
   reputations: []
   coins: 0
 --- !u!4 &818359495

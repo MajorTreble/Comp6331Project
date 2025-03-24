@@ -84,7 +84,7 @@ public class JobView : MonoBehaviour
                 
         string jobText = "";
         jobText += "Name: " + job.name + "\n";            
-        jobText += "Map: " + job.mapModel.mapName + "\n";
+        jobText += "Map: " + job.scenario.mapName + "\n";
 
         jobText += "Type: " + job.jobType + "\n";            
         jobText += "Target: " + job.jobTarget + "\n";                 
@@ -118,7 +118,7 @@ public class JobView : MonoBehaviour
         {
             jobText += "["+ index++ +"]"+ "\t"; 
             jobText += "Name: " + job.name + "\t";            
-            jobText += "Map: " + job.mapModel.mapName + "\n";
+            jobText += "Map: " + job.scenario.mapName + "\n";
 
             jobText += "Type: " + job.jobType + "\t";            
             jobText += "Target: " + job.jobTarget + "\t";                 

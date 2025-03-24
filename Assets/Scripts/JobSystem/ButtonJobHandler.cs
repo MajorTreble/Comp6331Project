@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Controller;
+
 public enum ButtonType {Job, Accept, Finish, Departure, Other};
 public class ButtonJobHandler : MonoBehaviour
 {
