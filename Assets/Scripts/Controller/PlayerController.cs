@@ -19,13 +19,17 @@ namespace Controller
         private float mouseX;
         private float mouseY;
 
-        bool isSpacePressed = false;
-
         Vector3 Velocity;
         float maxSpeed = 5.0f;
 
         void Update()
         {
+            GameObject playerShip = GameManager.Instance.playerShip;
+            if (playerShip == null)
+            {
+                return;
+            }
+
             verticalInput = Input.GetAxis("Vertical");
             horizontalInput = Input.GetAxis("Horizontal");
 
@@ -40,10 +44,6 @@ namespace Controller
 
             transform.Rotate(Vector3.up * mouseX * mouseSensitivity);
             transform.Rotate(Vector3.left * mouseY * mouseSensitivity);
-
-
-
-            GameObject playerShip = GameManager.Instance.playerShip;
 
             playerShip.GetComponent<PlayerShip>().ShowLaser(Input.GetKey(KeyCode.Space));
 

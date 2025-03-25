@@ -3525,6 +3525,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1299587816}
   - component: {fileID: 1299587815}
+  - component: {fileID: 1299587817}
   m_Layer: 0
   m_Name: EnemyShip1Spawner
   m_TagString: Untagged
@@ -3544,13 +3545,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 040798df6c2d4b14bb8669bcf25fd83f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefabs:
-  - {fileID: 7277576965648325399, guid: 0300c5ce8c61a6c4b83d8487d19245a3, type: 3}
-  - {fileID: 7277576965648325399, guid: 0db4f6cea5bf13047b826d5cfbf528a0, type: 3}
-  - {fileID: 7277576965648325399, guid: f743aa4662ae8e84291763a98ed7235e, type: 3}
-  - {fileID: 7277576965648325399, guid: 8490807d7238503468bd9aeb85e4fe8b, type: 3}
-  numberOfEnemies: 60
-  spawnRadius: 200
 --- !u!4 &1299587816
 Transform:
   m_ObjectHideFlags: 0
@@ -3565,6 +3559,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1299587817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299587814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 893d5a0756b1b1e428cb41c9006d2dc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shipList: []
 --- !u!1 &1321975244
 GameObject:
   m_ObjectHideFlags: 0
@@ -4309,14 +4316,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50196501f5f1528449e98b59fb9ae4a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jobs:
-  - {fileID: 11400000, guid: 48eba8ffe2ea0974dafc69f3476c8e7e, type: 2}
-  - {fileID: 11400000, guid: 049361d36478223498c0e642b4866300, type: 2}
-  - {fileID: 11400000, guid: eadbf452259c4ae4cadb35ab44ba1b39, type: 2}
-  - {fileID: 11400000, guid: a85ab14e238436b4ab5a16b71f666847, type: 2}
-  currJob: {fileID: 0}
-  currJobQtd: 0
   jobStatus: 0
+  currJobQtd: 0
+  currJob: {fileID: 0}
 --- !u!114 &1522851619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4329,8 +4331,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e40921e586e0fe429f2d894eda51b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reputations: []
-  coins: 0
 --- !u!4 &1522851620
 Transform:
   m_ObjectHideFlags: 0

@@ -20,14 +20,14 @@ public class ShipHUD : MonoBehaviour
 		ammoText = ui.transform.Find("Ammo").transform.Find("Text").GetComponent<Text>();
 		healthImage = ui.transform.Find("Health Bar").GetComponent<Image>();
 		shieldsImage = ui.transform.Find("Shields").GetComponent<Image>();
-
-		Debug.LogWarning("There is some kind of error on update/ship, commented for now");
 	}
 
 	private void Update()
 	{
-		//JobModel job = JobMenuController.Inst.currJob;
-		//jobNameText.text = job.jobName;
+		if (GameManager.Instance.playerShip == null)
+		{
+			return;
+		}
 
 		PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
 		if(ship!=null)
