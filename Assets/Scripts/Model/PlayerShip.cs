@@ -18,7 +18,7 @@ namespace Model
 
 		public void ShowLaser(bool isVisible)
 		{
-			laser.active = isVisible;
+			laser.SetActive(isVisible);
 		}
 	}
 

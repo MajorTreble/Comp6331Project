@@ -1,6 +1,8 @@
 using UnityEngine;
 
-public class Faction1Script : BaseScriptForEnemyAI
+using Model.AI;
+
+public class Faction1Script : AIShip
 {
 	private Vector3 cutOffPosition; // Position to cut off the player's path
 
@@ -18,23 +20,7 @@ public class Faction1Script : BaseScriptForEnemyAI
 		SetNewRoamTarget();
 	}
 
-	void FixedUpdate()
-	{
-		if (player == null || rb == null) return;
-
-		// Update state based on player proximity
-		currentState = IsPlayerInRange() ? AIState.Seeking : AIState.Roaming;
-		if (IsPlayerInRange())
-		{
-			SeekPlayer();
-		}
-		else
-		{
-			Roam();
-		}
-	}
-
-	public override void SeekPlayer()
+	public override void UpdateSeek()
 	{
 		// Check if this ship is the "hunter" or the "cutter"
 		bool isHunter = Random.Range(0, 2) == 0; // Randomly assign roles (50% chance)
@@ -42,7 +28,7 @@ public class Faction1Script : BaseScriptForEnemyAI
 		if (isHunter)
 		{
 			// Hunter: Chase the player directly
-			base.SeekPlayer(); // Use the base SeekPlayer() method
+			base.UpdateSeek(); // Use the base SeekPlayer() method
 		}
 		else
 		{
@@ -80,7 +66,7 @@ public class Faction1Script : BaseScriptForEnemyAI
 
 		foreach (Collider enemy in nearbyEnemies)
 		{
-			BaseScriptForEnemyAI enemyAI = enemy.GetComponent<BaseScriptForEnemyAI>();
+			AIShip enemyAI = enemy.GetComponent<AIShip>();
 			if (enemyAI != null && enemyAI.ShouldAttackPlayer())
 			{
 				// Rotate and attack the hostile enemy

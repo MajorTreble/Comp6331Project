@@ -1,6 +1,8 @@
 using UnityEngine;
 
-public class Faction2Script : BaseScriptForEnemyAI
+using Model.AI;
+
+public class Faction2Script : AIShip
 {
 	private enum Role { Tank, FastShip, Attacker }
 	private Role currentRole;
@@ -22,24 +24,7 @@ public class Faction2Script : BaseScriptForEnemyAI
 		SetNewRoamTarget();
 	}
 
-	void FixedUpdate()
-	{
-		if (player == null || rb == null) return;
-
-		// Update state based on player proximity
-		currentState = IsPlayerInRange() ? AIState.Seeking : AIState.Roaming;
-
-		if (IsPlayerInRange())
-		{
-			SeekPlayer();
-		}
-		else
-		{
-			Roam();
-		}
-	}
-
-	public override void SeekPlayer()
+	public override void UpdateSeek()
 	{
 		switch (currentRole)
 		{

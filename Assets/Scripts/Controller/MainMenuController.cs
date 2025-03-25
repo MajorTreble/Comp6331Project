@@ -32,6 +32,11 @@ namespace Controller
 		{
 			Application.Quit();
 		}
+
+		public void QuickPlay()
+		{
+			GameManager.Instance.QuickPlay();
+		}
 	}
 
 }

@@ -79,6 +79,11 @@ namespace Manager
 
         public void SaveGame()
         {
+			if (gameData == null)
+			{
+				return;
+			}
+
 			foreach(IDataPersistence dataPersistence in dataPersistence)
 			{
 				dataPersistence.Save(ref gameData);
