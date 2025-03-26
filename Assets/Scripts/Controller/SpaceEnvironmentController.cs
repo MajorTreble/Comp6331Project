@@ -33,7 +33,7 @@ namespace Controller
                 if (foundPlayer != null)
                 {
                     player = foundPlayer.transform;
-                    Debug.Log("[SpaceEnvironmentController] Player found by tag.");
+                    //Debug.Log("[SpaceEnvironmentController] Player found by tag.");
                 }
                 else
                 {

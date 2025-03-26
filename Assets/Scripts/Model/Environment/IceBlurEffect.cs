@@ -13,7 +13,7 @@ namespace Model.Environment {
         {
             if (postProcessVolume.profile.TryGetSettings(out blurEffect))
             {
-                Debug.Log("Depth of Field effect found! Ready to apply blur.");
+                //Debug.Log("Depth of Field effect found! Ready to apply blur.");
             }
             else
             {

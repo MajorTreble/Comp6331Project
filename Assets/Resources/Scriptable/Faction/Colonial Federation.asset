@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ae010558ce1fa47b7cfc9df5418fce, type: 3}
+  m_Name: Colonial Federation
+  m_EditorClassIdentifier: 
+  title: Colonial Federation
+  description: 
+  prefabs:
+  - {fileID: 7277576965648325399, guid: 0db4f6cea5bf13047b826d5cfbf528a0, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  behavior: {fileID: 11400000, guid: 10e8da4e7f6a5f3449c9fd9673c78a38, type: 2}

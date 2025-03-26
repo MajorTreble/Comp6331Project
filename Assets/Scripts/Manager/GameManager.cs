@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.Diagnostics;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-using Model.Data;
-using Model;
 using Controller;
+using Model;
+using Model.Data;
 
 namespace Manager
 {
@@ -76,6 +77,16 @@ namespace Manager
             PersistenceManager.Instance.SaveGame();
         }
 
+        public void QuickPlay()
+        {
+            Job[] jobs = Resources.LoadAll<Job>("Scriptable/Jobs");
+
+            JobController jc = JobController.Inst;
+            jc.currJob = jobs[0];
+            jc.jobStatus = JobStatus.InProgress;
+            StartScenario();
+        }
+
         public void StartScenario()
         {
             SceneManager.LoadScene(2);
@@ -88,13 +99,18 @@ namespace Manager
 
         public void SpawnPlayer(Vector3 spawnPosition, Quaternion spawnQuaternion)
         {
-            playerShip = GameObject.Instantiate(playerPrefab, spawnPosition, spawnQuaternion);
-
+            SpawnParams spawnParams = new SpawnParams(playerPrefab, spawnPosition, spawnQuaternion);
+            playerShip = SpawningManager.Instance.Spawn(spawnParams);
             playerShip.GetComponent<PlayerShip>().SpawnLaser(laserPrefab);
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            if (scene.name != "MainMenu" && scene.name != "Harbor")
+			{
+                SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+            }
+
             if (!JobMenuController.Inst)
 			{
                 return;
@@ -116,16 +132,7 @@ namespace Manager
 
             if (jobStatus == JobStatus.NotSelected)
 			    return;
-                
-            //JobMenuController.Inst.AcceptJob(0);
-            Job job = JobController.Inst.currJob;
-            GameObject ui = GameObject.Find("Canvas");
 
-            Text jobText =  Utils.FindChildByName(ui.transform, "JobFeedbackText").GetComponent<Text>();
-        
-            jobText.text = job.jobName;
-
-            SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
         }
     }
 }
