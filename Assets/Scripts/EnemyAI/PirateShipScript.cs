@@ -11,9 +11,9 @@ public class PirateShipScript : BaseScriptForEnemyAI
 	public Slider healthSlider; // Reference to the health slider
 
 	private float fleeHealthThreshold = 0.3f; // Flee if health is below 30%
-	private bool isFleeing = false;
+	//private bool isFleeing = false;
 
-	void Start()
+	public override void Start()
 	{
 		base.Start();
 

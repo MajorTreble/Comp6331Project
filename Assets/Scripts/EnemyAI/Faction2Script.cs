@@ -5,7 +5,7 @@ public class Faction2Script : BaseScriptForEnemyAI
 	private enum Role { Tank, FastShip, Attacker }
 	private Role currentRole;
 
-	void Start()
+	public override void Start()
 	{
 		base.Start();
 

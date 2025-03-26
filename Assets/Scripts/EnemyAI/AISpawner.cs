@@ -18,6 +18,7 @@ public class AISpawner : MonoBehaviour
 	{
 		// Random position within spawn radius
 		Vector3 randomPosition = Random.insideUnitSphere * spawnRadius;
+		randomPosition.y = 0.0f;
 		randomPosition += transform.position;
 
 		// Randomly select an enemy prefab

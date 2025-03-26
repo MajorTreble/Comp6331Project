@@ -33,7 +33,7 @@ public class BaseScriptForEnemyAI : MonoBehaviour
 	[Header("Layer Masks")]
 	public LayerMask shipLayer;
 
-	public void Start()
+	public virtual void Start()
 	{
 		if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
 		if (rb == null) rb = GetComponent<Rigidbody>();
