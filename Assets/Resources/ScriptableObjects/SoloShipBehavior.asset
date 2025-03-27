@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: SoloShipBehavior
   m_EditorClassIdentifier: 
   faction: 3
-  aggressionLevel: 0.6
+  aggressionLevel: 0.5
   reputationThreshold: 30
-  attackRange: 10
+  allyReputationThreshold: 70
+  allyAssistRange: 20
+  missionResponseAggression: 1
+  detectionRadius: 25
   roamSpeed: 6
   chaseSpeed: 8
   rotationSpeed: 10
+  attackRange: 10
+  attackCooldown: 2.5

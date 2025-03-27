@@ -50,8 +50,8 @@ namespace Manager
             }
             // Replace with scenario
 
-            int numberOfEnemies = 5; // Number of enemies to spawn
-            float spawnRadius = 40f; // Spawn radius
+            int numberOfEnemies = 10; // Number of enemies to spawn
+            float spawnRadius = 100f; // Spawn radius
 
             for (int i = 0; i < numberOfEnemies; i++)
             {
@@ -64,10 +64,18 @@ namespace Manager
                 SpawnParams spawnParams = new SpawnParams();
                 spawnParams.position = randomPosition;
                 spawnParams.shipType = ShipType.Light;
-                //spawnParams.shipType = (ShipType)Random.Range(0, 2);
-                spawnParams.faction = Resources.Load<Faction>("Scriptable/Faction/Pirate Faction");
+				//spawnParams.shipType = (ShipType)Random.Range(0, 2);
+				List<Faction> AllFactions = new List<Faction>
+                {
+	                Resources.Load<Faction>("Scriptable/Faction/Pirate Faction"),
+	                Resources.Load<Faction>("Scriptable/Faction/Solo Faction"),
+	                Resources.Load<Faction>("Scriptable/Faction/Colonial Federation"),
+	                Resources.Load<Faction>("Scriptable/Faction/Earth Alliance")
+                };
+				spawnParams.faction = AllFactions[Random.Range(0, AllFactions.Count)];
 
-                Spawn(spawnParams);
+
+				Spawn(spawnParams);
             }
         }
 

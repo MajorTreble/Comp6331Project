@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: PiratesBehavior
   m_EditorClassIdentifier: 
   faction: 2
-  aggressionLevel: 0.9
+  aggressionLevel: 0.8
   reputationThreshold: 40
-  attackRange: 15
+  allyReputationThreshold: 70
+  allyAssistRange: 20
+  missionResponseAggression: 2
+  detectionRadius: 25
   roamSpeed: 5
   chaseSpeed: 7
   rotationSpeed: 9
+  attackRange: 15
+  attackCooldown: 1.2

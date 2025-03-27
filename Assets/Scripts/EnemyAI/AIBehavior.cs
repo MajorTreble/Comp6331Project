@@ -12,6 +12,9 @@ public class AIBehavior : ScriptableObject
 	public float reputationThreshold; // Reputation level required to avoid attacks
 	public float allyReputationThreshold = 70f; // Reputation level required to ally with the player
 	public float allyAssistRange = 20f; // Range within which the AI will assist the player
+	[Range(0, 2)] public float missionResponseAggression = 1f;
+	public float detectionRadius = 25f;
+
 
 	[Header("Movement")]
 	public float roamSpeed;
