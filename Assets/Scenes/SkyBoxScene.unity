@@ -1853,7 +1853,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   thirdPersonOffset: {x: 0, y: 2.68, z: -19.8}
-  cockpitOffset: {x: -0.12, y: 0.78, z: 0.13}
+  cockpitOffset: {x: 0, y: 0.78, z: 0.13}
   cockpitView: 0
   smoothSpeed: 0.125
 --- !u!114 &963194230
