@@ -1852,7 +1852,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  offset: {x: 0, y: 5, z: -23}
+  thirdPersonOffset: {x: 0, y: 2.68, z: -19.8}
+  cockpitOffset: {x: 0, y: 0.78, z: 0.13}
+  cockpitView: 0
   smoothSpeed: 0.125
 --- !u!114 &963194230
 MonoBehaviour:
@@ -2540,6 +2542,14 @@ PrefabInstance:
     - target: {fileID: 2855395254434112154, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
       propertyPath: m_Name
       value: Game System
+      objectReference: {fileID: 0}
+    - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: playerSpawnRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: playerSpawnRotation.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2855395254434112164, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
       propertyPath: m_RootOrder

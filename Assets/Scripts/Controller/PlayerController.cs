@@ -45,50 +45,28 @@ namespace Controller
 
             Vector3 desiredMovement = Vector3.forward * verticalInput * moveSpeed * Time.deltaTime;
             desiredMovement.y = Mathf.Clamp(desiredMovement.y, 0, 2);
-
             transform.Translate(desiredMovement);
             transform.Rotate(Vector3.up * horizontalInput * turnSpeed * Time.deltaTime);
 
             mouseX = Input.GetAxis("Mouse X");
             mouseY = Input.GetAxis("Mouse Y");
-
             transform.Rotate(Vector3.up * mouseX * mouseSensitivity);
             transform.Rotate(Vector3.left * mouseY * mouseSensitivity);
 
             playerShip.GetComponent<PlayerShip>().ShowLaser(Input.GetKey(KeyCode.Space));
 
-            Vector3 direction = Vector3.zero;
-            if (Input.GetKey(KeyCode.W))
-            {
-                direction += playerShip.transform.forward;
-				//if (!exhaustFire.isPlaying)
-				//	exhaustFire.Play();
-                //else
-                //{
-				//	if (exhaustFire.isPlaying)
-				//		exhaustFire.Stop();
-				//}
-			}
-            else if (Input.GetKey(KeyCode.S))
-            {
-                direction += -playerShip.transform.forward;
-            }
-
+            Vector3 direction = playerShip.transform.forward * verticalInput;
             Velocity = direction.normalized * maxSpeed;
-
             playerShip.transform.position += Velocity * Time.deltaTime;
 
-            float angle = 0.5f;
-            if (Input.GetKey(KeyCode.A))
+            float angle = 0.5f * horizontalInput;
+            if (Mathf.Abs(horizontalInput) > 0.01f)
             {
-                playerShip.transform.rotation = Quaternion.LookRotation(Quaternion.AngleAxis(-angle, Vector3.up) * playerShip.transform.forward);
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                playerShip.transform.rotation = Quaternion.LookRotation(Quaternion.AngleAxis(angle, Vector3.up) * playerShip.transform.forward);
+                playerShip.transform.rotation = Quaternion.LookRotation(
+                    Quaternion.AngleAxis(angle, Vector3.up) * playerShip.transform.forward);
             }
         }
 
-    }     
-    
+    }
+
 }

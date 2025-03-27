@@ -10,6 +10,7 @@ TagManager:
   - SoloShip
   - PirateShip
   - PlayerComponent
+  - SpaceshipComponent
   layers:
   - Default
   - TransparentFX

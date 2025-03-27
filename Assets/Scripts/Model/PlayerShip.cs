@@ -7,7 +7,7 @@ namespace Model
 	{
 		public GameObject laser = null;
 
-		public Vector3 laserPosition = new Vector3(-1.0f, -1.0f, 20.0f);
+		public Vector3 laserPosition = new Vector3(1.0f, -1.0f, 20.0f);
 		public Quaternion laserRotation;
 
 		public void SpawnLaser(GameObject preFab)
@@ -30,4 +30,4 @@ namespace Model
 		}
 	}
 
-}
+}      
