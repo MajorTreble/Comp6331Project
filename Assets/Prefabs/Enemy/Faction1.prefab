@@ -284,6 +284,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e9a8e95d08c648419b659958a503b4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ammo: 0
+  health: 100
+  maxHealth: 100
+  shields: 100
+  maxShields: 100
   playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
   player: {fileID: 0}
   rb: {fileID: 0}
@@ -300,9 +305,11 @@ MonoBehaviour:
   lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
   firePoint: {fileID: 3656561627335258874}
+  currentState: 0
+  requestState: 1
   shipLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
 --- !u!1001 &4542059429034557949
 PrefabInstance:
   m_ObjectHideFlags: 0

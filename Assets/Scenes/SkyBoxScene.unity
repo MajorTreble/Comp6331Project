@@ -490,8 +490,6 @@ MonoBehaviour:
   moveSpeed: 5
   turnSpeed: 100
   mouseSensitivity: 2
-  reputations: []
-  coins: 0
 --- !u!4 &301326278
 Transform:
   m_ObjectHideFlags: 0
@@ -2587,6 +2585,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2855395254434112166, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: shipList.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2855395254434112166, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: shipList.Array.data[0]
+      value: 
+      objectReference: {fileID: 225852488542382329, guid: f743aa4662ae8e84291763a98ed7235e, type: 3}
+    - target: {fileID: 2855395254434112166, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: shipList.Array.data[1]
+      value: 
+      objectReference: {fileID: 5153531479487656165, guid: 8490807d7238503468bd9aeb85e4fe8b, type: 3}
+    - target: {fileID: 2855395254434112166, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: shipList.Array.data[2]
+      value: 
+      objectReference: {fileID: 4882198248570157917, guid: 0300c5ce8c61a6c4b83d8487d19245a3, type: 3}
+    - target: {fileID: 2855395254434112166, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: shipList.Array.data[3]
+      value: 
+      objectReference: {fileID: 3661450571157287601, guid: 0db4f6cea5bf13047b826d5cfbf528a0, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
 --- !u!1 &1993260050

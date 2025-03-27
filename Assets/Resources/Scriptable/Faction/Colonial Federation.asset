@@ -15,7 +15,5 @@ MonoBehaviour:
   title: Colonial Federation
   description: 
   prefabs:
-  - {fileID: 7277576965648325399, guid: 0db4f6cea5bf13047b826d5cfbf528a0, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 7277576965648325399, guid: 8490807d7238503468bd9aeb85e4fe8b, type: 3}
   behavior: {fileID: 11400000, guid: 10e8da4e7f6a5f3449c9fd9673c78a38, type: 2}

@@ -22,8 +22,18 @@ namespace Controller
         Vector3 Velocity;
         float maxSpeed = 5.0f;
 
-        void Update()
+		public ParticleSystem exhaustFire;
+
+        void Start()
         {
+			//GameObject PS = GameObject.Find("ExhaustFire");
+
+			//exhaustFire = GetComponent<ParticleSystem>();
+        }
+
+		void Update()
+        {
+             
             GameObject playerShip = GameManager.Instance.playerShip;
             if (playerShip == null)
             {
@@ -51,7 +61,14 @@ namespace Controller
             if (Input.GetKey(KeyCode.W))
             {
                 direction += playerShip.transform.forward;
-            }
+				//if (!exhaustFire.isPlaying)
+				//	exhaustFire.Play();
+                //else
+                //{
+				//	if (exhaustFire.isPlaying)
+				//		exhaustFire.Stop();
+				//}
+			}
             else if (Input.GetKey(KeyCode.S))
             {
                 direction += -playerShip.transform.forward;

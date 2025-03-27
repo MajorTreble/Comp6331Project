@@ -15,7 +15,12 @@ MonoBehaviour:
   faction: 1
   aggressionLevel: 0.7
   reputationThreshold: 60
-  attackRange: 25
+  allyReputationThreshold: 70
+  allyAssistRange: 30
+  missionResponseAggression: 1.2
+  detectionRadius: 25
   roamSpeed: 4
   chaseSpeed: 6
   rotationSpeed: 7
+  attackRange: 25
+  attackCooldown: 2

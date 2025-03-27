@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5ae010558ce1fa47b7cfc9df5418fce, type: 3}
-  m_Name: Earth Alliance
+  m_Name: Solo Faction
   m_EditorClassIdentifier: 
-  title: Earth Alliance
+  title: SoloShips
   description: 
   prefabs:
-  - {fileID: 7277576965648325399, guid: f743aa4662ae8e84291763a98ed7235e, type: 3}
-  behavior: {fileID: 11400000, guid: 2b35ae3f7e0d833468f8bd757e8952ca, type: 2}
+  - {fileID: 7277576965648325399, guid: 0db4f6cea5bf13047b826d5cfbf528a0, type: 3}
+  behavior: {fileID: 11400000, guid: be96e15fc9d361242b62f2671c7852f7, type: 2}
