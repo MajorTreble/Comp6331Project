@@ -707,7 +707,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 0}
-  playerShip: {fileID: 4526271667573031266, guid: b8025a8b98ba20a42acdfbd076d496a1, type: 3}
+  laserPrefab: {fileID: 0}
+  playerShip: {fileID: 2462193850337484257, guid: 270f7328ee227ae44aaac2aa921cf183, type: 3}
+  playerSpawnPosition: {x: 0, y: 0, z: 0}
+  playerSpawnRotation: {x: 0, y: 0, z: 0, w: 0}
   isNewGame: 1
 --- !u!4 &238435530
 Transform:
@@ -1710,7 +1713,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 0}
+  laserPrefab: {fileID: 0}
   playerShip: {fileID: 0}
+  playerSpawnPosition: {x: 0, y: 0, z: 0}
+  playerSpawnRotation: {x: 0, y: 0, z: 0, w: 0}
   isNewGame: 1
 --- !u!4 &873661524
 Transform:
