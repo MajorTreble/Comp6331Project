@@ -26,18 +26,37 @@ public class Faction2Script : AIShip
 
 	public override void UpdateSeek()
 	{
-		switch (currentRole)
+		//switch (currentRole)
+		//{
+		//	case Role.Tank:
+		//	TankBehavior();
+		//break;
+		//case Role.FastShip:
+		//FastShipBehavior();
+		//break;
+		//	case Role.Attacker:
+		//	AttackerBehavior();
+		//break;
+		//}
+
+
+		// If mission benefits our faction, fight harder
+		if (IsMissionAlly())
 		{
-			case Role.Tank:
-				TankBehavior();
-				break;
-			case Role.FastShip:
-				FastShipBehavior();
-				break;
-			case Role.Attacker:
-				AttackerBehavior();
-				break;
+			switch (currentRole)
+			{
+				case Role.Tank:
+					behavior.chaseSpeed *= 0.7f;
+					behavior.attackRange *= 0.8f;
+					break;
+				case Role.Attacker:
+					behavior.attackCooldown *= 0.5f;
+					break;
+			}
 		}
+
+		base.UpdateSeek();
+
 	}
 
 	private void TankBehavior()

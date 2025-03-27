@@ -22,8 +22,18 @@ namespace Controller
         Vector3 Velocity;
         float maxSpeed = 5.0f;
 
-        void Update()
+		public ParticleSystem exhaustFire;
+
+        void Start()
         {
+			//GameObject PS = GameObject.Find("ExhaustFire");
+
+			//exhaustFire = GetComponent<ParticleSystem>();
+        }
+
+		void Update()
+        {
+             
             GameObject playerShip = GameManager.Instance.playerShip;
             if (playerShip == null)
             {

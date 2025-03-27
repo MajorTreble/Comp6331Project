@@ -20,6 +20,14 @@ namespace Model
 		{
 			laser.SetActive(isVisible);
 		}
+
+		public override void TakeDamage(float damageAmount)
+		{
+			base.TakeDamage(damageAmount); // Use base ship behavior
+
+			// Just to check if player ship is getting hit
+			Debug.Log("Player took damage!");
+		}
 	}
 
 }      

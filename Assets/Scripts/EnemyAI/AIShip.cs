@@ -6,6 +6,13 @@ using Model.AI.BehaviorTree;
 
 namespace Model.AI
 {
+	//LIMITATIONS! Some things are not yet implemented
+	/*
+	 * Single-Target Focus: Only tracks player as potential ally
+		No Ship-to-Ship Relations: Doesn't check if ships should attack each other
+		Limited Mission Awareness: Only knows about direct player relations 
+	 */
+
 	public class AIShip : Ship
 	{
 		public ReputationData playerReputation; // Player's reputation
@@ -45,6 +52,10 @@ namespace Model.AI
 
 			BT.aiShip = this;
 			BT.Initialize();
+			if (laserPrefab != null && laserPrefab.GetComponent<LaserProjectile>() == null)
+			{
+				laserPrefab.AddComponent<LaserProjectile>();
+			}
 		}
 
 		protected virtual void Update()
@@ -62,11 +73,50 @@ namespace Model.AI
 		{
 			BT.Evaluate();
 
-			// Determine state
+			// Mission-specific state transitions
+			if (JobController.Inst.currJob != null)
+			{
+				if (IsMissionTarget() && currentState != AIState.Flee)
+				{
+					requestState = AIState.Flee;
+				}
+				else if (IsMissionAlly() && currentState != AIState.AllyAssist)
+				{
+					requestState = AIState.AllyAssist;
+				}
+			}
+
+			// Existing decision logic
 			if (ShouldAllyWithPlayer())
 			{
 				requestState = AIState.AllyAssist;
 			}
+		}
+
+		protected bool IsMissionTarget()
+		{
+			if (JobController.Inst.currJob == null) return false;
+
+			return behavior.faction switch
+			{
+				AIBehavior.Faction.Faction1 when JobController.Inst.currJob.jobTarget == JobTarget.Faction1 => true,
+				AIBehavior.Faction.Faction2 when JobController.Inst.currJob.jobTarget == JobTarget.Faction2 => true,
+				AIBehavior.Faction.Pirates when JobController.Inst.currJob.jobTarget == JobTarget.Pirate => true,
+				_ => false
+			};
+		}
+
+		protected bool IsMissionAlly()
+		{
+			if (JobController.Inst.currJob == null) return false;
+
+			return behavior.faction switch
+			{
+				AIBehavior.Faction.Faction1 when JobController.Inst.currJob.rewardType == RepType.Faction1 => true,
+				AIBehavior.Faction.Faction2 when JobController.Inst.currJob.rewardType == RepType.Faction2 => true,
+				AIBehavior.Faction.Pirates when JobController.Inst.currJob.rewardType == RepType.Pirate => true,
+				_ => false
+			};
 		}
 
 		protected void UpdateState()
@@ -140,39 +190,56 @@ namespace Model.AI
 			behavior = newBehavior; // Set the behavior
 		}
 
-		public bool ShouldAttackPlayer()
+		public virtual bool ShouldAttackPlayer()
 		{
 			if (behavior == null || playerReputation == null) return false;
 
 			// Always prioritize ally status
 			if (ShouldAllyWithPlayer()) return false;
 
-			// Check job conditions
+			// Get current job context
 			Job currentJob = JobController.Inst.currJob;
+			bool isMissionTarget = IsMissionTarget();
+			bool isMissionAlly = IsMissionAlly();
+
+			// Mission-based behavior
 			if (currentJob != null)
 			{
-				// Example: If defending Faction1 and this is a Faction1 ship, don't attack
-				if (currentJob.jobType == JobType.Defend &&
-					currentJob.jobTarget == JobTarget.Faction1 &&
-					behavior.faction == AIBehavior.Faction.Faction1)
-					return false;
-
-				// Example: If hunting Pirates and this is a Pirate ship, attack
-				if (currentJob.jobType == JobType.Hunt &&
-					currentJob.jobTarget == JobTarget.Pirate &&
-					behavior.faction == AIBehavior.Faction.Pirates)
-					return true;
-
-				// Example: If defending Faction1 and this is a Faction2 ship, attack
-				if (currentJob.jobType == JobType.Defend &&
-				currentJob.jobTarget == JobTarget.Faction1 &&
-				behavior.faction == AIBehavior.Faction.Faction2)
+				// Strategic responses based on job type
+				switch (currentJob.jobType)
 				{
-					return true; // Faction2 ships attack during "Defend Faction1" missions
+					case JobType.Hunt when isMissionTarget:
+						// If we're the hunt target, become aggressive
+						return true;
+
+					case JobType.Defend when isMissionTarget:
+						// If we're the defend target, protect ourselves
+						return playerReputation.GetReputation(behavior.faction) < behavior.allyReputationThreshold;
+
+					case JobType.Mine when behavior.faction == AIBehavior.Faction.Pirates:
+						// Pirates attack mining operations
+						return true;
+
+					case JobType.Deliver when isMissionTarget:
+						// Intercept delivery missions targeting our faction
+						return true;
+				}
+
+				// Faction response to mission alignment
+				if (isMissionAlly)
+				{
+					// Support player if we're the rewarded faction
+					return false;
+				}
+
+				if (currentJob.rewardType == RepType.Pirate && behavior.faction == AIBehavior.Faction.Pirates)
+				{
+					// Pirates support player if mission benefits them
+					return false;
 				}
 			}
 
-			// Default: Attack if reputation is low
+			// Default reputation-based behavior
 			return playerReputation.GetReputation(behavior.faction) <= behavior.reputationThreshold;
 		}
 
@@ -212,28 +279,27 @@ namespace Model.AI
 
 		protected virtual void AttackEnemiesNearPlayer()
 		{
-			if (player == null || behavior == null) return;
+			if (!player || !behavior) return;
 
-			// Find enemies near the player
-			Collider[] nearbyShips = Physics.OverlapSphere(
-			player.position,
-			behavior.allyAssistRange,
-			shipLayer
+			// Expand detection parameters
+			Collider[] nearbyEnemies = Physics.OverlapSphere(
+				player.position,
+				behavior.allyAssistRange * 1.5f, // Increased range
+				shipLayer  // Check multiple layers
 			);
 
-
-			foreach (Collider ship in nearbyShips)
+			foreach (Collider enemy in nearbyEnemies)
 			{
-				AIShip enemyAI = ship.GetComponent<AIShip>();
-				if (enemyAI != null && enemyAI.ShouldAttackPlayer())
+				AIShip enemyAI = enemy.GetComponent<AIShip>();
+				if (enemyAI && enemyAI.ShouldAttackPlayer())
 				{
-					// Rotate and attack the hostile ship
-					Vector3 targetDirection = (ship.transform.position - transform.position).normalized;
-					RotateTowardTarget(targetDirection, behavior.rotationSpeed);
+					Vector3 targetDirection = (enemy.transform.position - transform.position).normalized;
+					RotateTowardTarget(targetDirection, behavior.rotationSpeed * 0.8f); // Smoother rotation
 
 					if (Time.time > lastAttackTime + behavior.attackCooldown)
 					{
 						Attack();
+						break; // Focus on one target at a time
 					}
 				}
 			}
@@ -263,33 +329,36 @@ namespace Model.AI
 
 		public virtual void Attack()
 		{
-			if (Time.time < lastAttackTime + attackCooldown) return; // Cooldown check
+			// 1.Cooldown check(unchanged)
 
+			if (Time.time < lastAttackTime + behavior.attackCooldown) return;
+			Debug.Log($"{gameObject.name} attacking at {Time.time}");
+
+			// 2. Prefab validation (unchanged)
 			if (laserPrefab == null || firePoint == null)
 			{
 				Debug.LogError("Laser prefab or fire point is not assigned!");
 				return;
 			}
 
-			GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation);
+			// 3. Projectile creation with additional safety checks
+			GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation); //Currently the laser rotation is wrong, I will fix it later
+			//GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, Quaternion.Euler(-90, firePoint.transform.rotation.eulerAngles.y, firePoint.transform.rotation.eulerAngles.z));
+
+
+			// 4. Enhanced physics setup
 			Rigidbody laserRb = laser.GetComponent<Rigidbody>();
 			if (laserRb == null)
 			{
-				Debug.LogError("Laser prefab is missing a Rigidbody component!");
-				return;
+				laserRb = laser.AddComponent<Rigidbody>(); // Auto-add if missing
+				Debug.LogWarning("Added Rigidbody to laser prefab at runtime");
 			}
-			laserRb.velocity = firePoint.transform.forward * 20f;
+			laserRb.velocity = firePoint.transform.forward * 30f;
 
-			Collider laserCollider = laser.GetComponent<Collider>();
-			Collider enemyCollider = GetComponent<Collider>();
-			if (laserCollider != null && enemyCollider != null)
-			{
-				Physics.IgnoreCollision(laserCollider, enemyCollider);
-			}
-
-			lastAttackTime = Time.time; // Update last attack time
-			//Debug.Log("Laser fired! Next attack in " + attackCooldown + " seconds.");
+		
+			lastAttackTime = Time.time;
 		}
+
 
 		public void TakeDamage(float damage)
 		{
@@ -368,6 +437,15 @@ namespace Model.AI
 		public virtual void UpdateSeek()
 		{
 			Vector3 direction = (player.position - transform.position).normalized;
+
+			// If we're a faction ship on defense mission, maintain distance
+			if (JobController.Inst.currJob?.jobType == JobType.Defend &&
+				IsMissionAlly() &&
+				Vector3.Distance(transform.position, player.position) < behavior.attackRange)
+			{
+				direction = -direction; // Back away
+			}
+
 			Vector3 avoidance = ComputeObstacleAvoidance(direction);
 			if (avoidance != Vector3.zero)
 			{
@@ -433,7 +511,28 @@ namespace Model.AI
 		protected void UpdateAllyAssist()
 		{
 			// Move toward the player to assist
-			Vector3 direction = (player.position - transform.position).normalized;
+			//Vector3 direction = (player.position - transform.position).normalized;
+			//Vector3 avoidance = ComputeObstacleAvoidance(direction);
+
+			//if (avoidance != Vector3.zero)
+			//{
+			//	direction = (direction + avoidance).normalized;
+			//}
+
+			//RotateTowardTarget(direction, behavior.rotationSpeed);
+			//rb.velocity = direction * behavior.chaseSpeed;
+
+			// Attack enemies near the player
+			//AttackEnemiesNearPlayer();
+
+			// Maintain distance from player
+			float desiredDistance = 15f;
+			Vector3 playerDirection = (player.position - transform.position).normalized;
+			Vector3 targetPosition = player.position - playerDirection * desiredDistance;
+
+			// Smooth movement
+			Vector3 direction = (targetPosition - transform.position).normalized;
+			direction = Vector3.Lerp(transform.forward, direction, 0.1f);
 			Vector3 avoidance = ComputeObstacleAvoidance(direction);
 
 			if (avoidance != Vector3.zero)
@@ -441,11 +540,17 @@ namespace Model.AI
 				direction = (direction + avoidance).normalized;
 			}
 
-			RotateTowardTarget(direction, behavior.rotationSpeed);
-			rb.velocity = direction * behavior.chaseSpeed;
+			// Smooth rotation
+			RotateTowardTarget(direction, behavior.rotationSpeed * 0.8f);
 
-			// Attack enemies near the player
+			// Use physics-based movement
+			rb.AddForce(direction * behavior.chaseSpeed * Time.deltaTime, ForceMode.VelocityChange);
+
+			// Attack enemies near player
 			AttackEnemiesNearPlayer();
+
+
+
 		}
 	}
 }

@@ -1,9 +1,13 @@
 using UnityEngine;
 
 using Model.AI;
+using Controller;
 
 public class Faction1Script : AIShip
 {
+	private float temporaryChaseSpeed;
+	private float temporaryAttackCooldown;
+
 	private Vector3 cutOffPosition; // Position to cut off the player's path
 
 	public override void  Start()
@@ -22,34 +26,25 @@ public class Faction1Script : AIShip
 
 	public override void UpdateSeek()
 	{
-		// Check if this ship is the "hunter" or the "cutter"
-		bool isHunter = Random.Range(0, 2) == 0; // Randomly assign roles (50% chance)
-
-		if (isHunter)
+		// Mission-specific behavior
+		if (IsMissionTarget() && JobController.Inst.currJob.jobType == JobType.Hunt)
 		{
-			// Hunter: Chase the player directly
-			base.UpdateSeek(); // Use the base SeekPlayer() method
+			// Become more aggressive when being hunted
+			float tempSpeed = behavior.chaseSpeed * 1.3f;
+			rb.AddForce(transform.forward * tempSpeed * Time.deltaTime,
+					   ForceMode.Acceleration);
 		}
 		else
 		{
-			// Cutter: Move to cut off the player's path
-			Vector3 playerDirection = (player.position - transform.position).normalized;
-			Vector3 playerVelocity = player.GetComponent<Rigidbody>().velocity;
-
-			// Predict the player's future position
-			cutOffPosition = player.position + playerVelocity * 2f; // Adjust multiplier for prediction
-
-			// Move toward the predicted position
-			Vector3 cutOffDirection = (cutOffPosition - transform.position).normalized;
-			Vector3 avoidance = ComputeObstacleAvoidance(cutOffDirection);
-			if (avoidance != Vector3.zero)
-			{
-				cutOffDirection = (cutOffDirection + avoidance).normalized;
-			}
-			RotateTowardTarget(cutOffDirection, behavior.rotationSpeed);
-
-			rb.velocity = transform.forward * behavior.chaseSpeed;
+			base.UpdateSeek();
 		}
+
+		// Reset modified values after use
+		//if (IsMissionTarget())
+		//{
+			//behavior.chaseSpeed = originalChaseSpeed;
+			//behavior.attackCooldown = originalAttackCooldown;
+		//}
 	}
 
 
