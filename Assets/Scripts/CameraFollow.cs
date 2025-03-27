@@ -29,8 +29,9 @@ public class CameraFollow : MonoBehaviour
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
 
         transform.position = smoothedPosition;
-
-        Quaternion desiredRotation = Quaternion.LookRotation(player.forward, Vector3.up);
+        
+        Quaternion desiredRotation = Quaternion.Slerp(transform.rotation, player.rotation, smoothSpeed);
+        desiredRotation = Quaternion.LookRotation(player.forward, Vector3.up);
         Quaternion smoothedRotation = Quaternion.Slerp(transform.rotation, desiredRotation, smoothSpeed);
         transform.rotation = smoothedRotation;
     }

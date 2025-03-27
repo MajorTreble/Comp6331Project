@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jobName: Defend Job 01
   jobDescription: Placeholder Description
-  jobType: 1
+  jobType: 0
   scenario: {fileID: 11400000, guid: 0fc47e1f6dfed0b43987330f77350826, type: 2}
   rewardCoins: 50
   rewardType: 0
   rewardRep: 100
-  jobTarget: 0
+  jobTarget: 2
   quantity: 2
   dangerValue: 0

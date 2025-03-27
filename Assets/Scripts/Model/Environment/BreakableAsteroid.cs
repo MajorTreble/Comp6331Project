@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
+using Controller;
+
 namespace Model.Environment {
     public class BreakableAsteroid : MonoBehaviour
     {
@@ -13,6 +15,8 @@ namespace Model.Environment {
 
         private bool canBreakAgain = false;
         private float breakCooldown = 0.5f;
+
+        private float health = 50;
 
 
         void Start()
@@ -33,13 +37,33 @@ namespace Model.Environment {
 
         private void OnCollisionStay(Collision collision)
         {
-            Debug.Log("Asteroid is touching: " + collision.gameObject.name);
+            //Debug.Log("Asteroid is touching: " + collision.gameObject.name);
             if (collision.gameObject.tag != "Asteroid" && canBreak && transform.localScale.x > minSize)
             {
-                Debug.Log("Asteroid is breaking..");
+                //Debug.Log("Asteroid is breaking..");
                 BreakAsteroid();
             }
         }
+
+        
+		public bool ReceiveDamage(float _dmg)
+		{
+			health -= _dmg;
+			Debug.Log(health);
+
+			return CheckDestroyed();
+		}
+
+		public bool CheckDestroyed()
+		{
+			if(health > 0)
+				return false;
+
+            JobController.Inst.OnObjDestroyed(transform.tag);
+			BreakAsteroid();
+
+			return true;	
+		}
 
 
         private void BreakAsteroid()
@@ -55,7 +79,7 @@ namespace Model.Environment {
                 for (int i = 0; i < numFragments; i++)
                 {
                     Vector3 randomOffset = Random.insideUnitSphere * 0.3f;
-                    GameObject fragment = Instantiate(gameObject, transform.position + randomOffset, Random.rotation);
+                    GameObject fragment = Instantiate(gameObject, transform.position + randomOffset, Random.rotation, transform.parent);
 
                     float newSize = transform.localScale.x * 0.5f;
                     fragment.transform.localScale = new Vector3(newSize, newSize, newSize);

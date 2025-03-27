@@ -15,7 +15,6 @@ namespace Manager
         public static GameManager Instance { get; private set; }
 
         public GameObject playerPrefab;
-        public GameObject laserPrefab;
         public GameObject playerShip;
 
         public Vector3 playerSpawnPosition;
@@ -101,7 +100,6 @@ namespace Manager
         {
             SpawnParams spawnParams = new SpawnParams(playerPrefab, spawnPosition, spawnQuaternion);
             playerShip = SpawningManager.Instance.Spawn(spawnParams);
-            playerShip.GetComponent<PlayerShip>().SpawnLaser(laserPrefab);
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -109,17 +107,17 @@ namespace Manager
             if (scene.name != "MainMenu" && scene.name != "Harbor")
 			{
                 SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+
+                if(JobController.Inst.currJob == null)
+                {
+                    QuickPlay();
+                }
             }
 
-            if (!JobMenuController.Inst)
-			{
-                return;
-			}
-
-            JobStatus jobStatus = JobController.Inst.jobStatus;
 
             if(scene.name == "Harbor")
             {
+                JobStatus jobStatus = JobController.Inst.jobStatus;
                 JobView.Inst.ListJobs();
                 if(jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
                     JobView.Inst.ViewJob(JobController.Inst.currJob);
@@ -128,10 +126,6 @@ namespace Manager
             JobView.Inst.SetTestButtons();
             JobView.Inst.LookForJobFeeback();
             JobView.Inst.UpdateJob();
-           
-
-            if (jobStatus == JobStatus.NotSelected)
-			    return;
 
         }
     }

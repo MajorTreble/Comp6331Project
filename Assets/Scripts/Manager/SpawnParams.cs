@@ -11,9 +11,12 @@ namespace Manager
 		public GameObject prefab = null;
 		public Vector3 position = Vector3.zero;
 		public Quaternion rotation = Quaternion.identity;
+		public Transform parent = null;
 
 		public ShipType shipType = ShipType.Light;
 		public Faction faction = null;
+
+
 
 		public SpawnParams() { }
 

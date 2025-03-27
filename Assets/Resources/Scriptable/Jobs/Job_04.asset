@@ -19,6 +19,6 @@ MonoBehaviour:
   rewardCoins: 1000
   rewardType: 1
   rewardRep: 600
-  jobTarget: 4
+  jobTarget: 5
   quantity: 1
   dangerValue: 0

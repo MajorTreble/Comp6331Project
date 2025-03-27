@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using Controller;
 namespace Model
 {
 
@@ -10,6 +11,31 @@ namespace Model
 		public float maxHealth = 100.0f;
 		public float shields = 100.0f;
 		public float maxShields = 100.0f;
-	}
 
+		public bool ReceiveDamage(float _dmg)
+		{
+			health -= _dmg;
+
+			return CheckDestroyed();
+		}
+
+		public bool CheckDestroyed()
+		{
+			if(health > 0)
+				return false;
+
+				
+			JobController.Inst.OnObjDestroyed(transform.tag);
+
+			this.gameObject.SetActive(false);
+
+			return true;	
+		}
+
+		public void Leave()
+		{
+			JobController.Inst.OnObjLeave(transform.tag);
+			this.gameObject.SetActive(false);
+		}
+	}	
 }

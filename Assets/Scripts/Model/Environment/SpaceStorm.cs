@@ -52,6 +52,8 @@ namespace Model.Environment {
             // Check for objects that LEFT the storm
             foreach (Rigidbody rb in lastFrameObjects)
             {
+                if(rb==null) continue;
+                
                 if (!currentFrameObjects.Contains(rb))
                 {
                     OnObjectExitStorm(rb);

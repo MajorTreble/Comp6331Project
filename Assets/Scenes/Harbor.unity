@@ -708,6 +708,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 0}
   playerShip: {fileID: 4526271667573031266, guid: b8025a8b98ba20a42acdfbd076d496a1, type: 3}
+  playerSpawnPosition: {x: 0, y: 0, z: 0}
+  playerSpawnRotation: {x: 0, y: 0, z: 0, w: 0}
   isNewGame: 1
 --- !u!4 &238435530
 Transform:
@@ -1094,6 +1096,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 479076104}
   m_CullTransparentMesh: 1
+--- !u!1001 &567936432
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620970, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1222553440681620974, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
+      propertyPath: m_Name
+      value: JobSystem
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 633a0bd41de8da84dabd93137e023d63, type: 3}
 --- !u!1 &593591111
 GameObject:
   m_ObjectHideFlags: 0
@@ -1524,10 +1583,8 @@ GameObject:
   - component: {fileID: 818359495}
   - component: {fileID: 818359493}
   - component: {fileID: 818359496}
-  - component: {fileID: 818359497}
-  - component: {fileID: 818359494}
   m_Layer: 0
-  m_Name: Job Controller
+  m_Name: JobMenuController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1545,20 +1602,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f8e42e6834fdd45ae329b7c5bb4020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &818359494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 818359492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec30074b313bde147ad7b86980198c69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reputations: []
-  coins: 0
 --- !u!4 &818359495
 Transform:
   m_ObjectHideFlags: 0
@@ -1586,21 +1629,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jobs: []
---- !u!114 &818359497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 818359492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50196501f5f1528449e98b59fb9ae4a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jobStatus: 0
-  currJobQtd: 0
-  currJob: {fileID: 0}
 --- !u!1 &830050382
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,6 +1739,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 0}
   playerShip: {fileID: 0}
+  playerSpawnPosition: {x: 0, y: 0, z: 0}
+  playerSpawnRotation: {x: 0, y: 0, z: 0, w: 0}
   isNewGame: 1
 --- !u!4 &873661524
 Transform:
