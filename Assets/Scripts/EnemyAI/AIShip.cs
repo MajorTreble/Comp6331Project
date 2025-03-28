@@ -332,7 +332,7 @@ namespace Model.AI
 			// 1.Cooldown check(unchanged)
 
 			if (Time.time < lastAttackTime + behavior.attackCooldown) return;
-			Debug.Log($"{gameObject.name} attacking at {Time.time}");
+			//Debug.Log($"{gameObject.name} attacking at {Time.time}");
 
 			// 2. Prefab validation (unchanged)
 			if (laserPrefab == null || firePoint == null)
@@ -360,11 +360,11 @@ namespace Model.AI
 		}
 
 
-		public void TakeDamage(float damage)
-		{
-			health -= damage;
-			health = Mathf.Clamp(health, 0, maxHealth); // Ensure health doesn't go below 0 or above maxHealth
-		}
+		//public void TakeDamage(float damage)
+		//{
+		//	health -= damage;
+		//	health = Mathf.Clamp(health, 0, maxHealth); // Ensure health doesn't go below 0 or above maxHealth
+		//}
 
 		// Idle //
 

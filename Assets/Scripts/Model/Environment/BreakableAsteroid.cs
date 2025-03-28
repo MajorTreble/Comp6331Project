@@ -49,7 +49,6 @@ namespace Model.Environment {
 		public bool ReceiveDamage(float _dmg)
 		{
 			health -= _dmg;
-			Debug.Log(health);
 
 			return CheckDestroyed();
 		}

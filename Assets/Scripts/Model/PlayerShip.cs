@@ -40,9 +40,11 @@ namespace Model
 
         public void SpawnLaser()
 		{
+			laserDist = laserDist == 0 ? 60 : laserDist;
+
 			laser = GameObject.Instantiate(laserPrefab, weapon_1.transform);
-			laser.transform.localScale = new Vector3(0.3f, 0.02f, laserDist);
-			laser.transform.rotation = Quaternion.Euler(0,90,0);
+			laser.transform.localScale = new Vector3(0.3f, 0.3f, laserDist);
+			laser.transform.rotation = Quaternion.Euler(0,0,0);
 			Vector3 laserPos = Vector3.zero;
 			laserPos.z += (float)(laserDist/2) ;
 			laser.transform.localPosition = laserPos;
@@ -67,7 +69,7 @@ namespace Model
 					Ship ship = hit.transform.gameObject.GetComponent<Ship>();
 					if(ship != null)
 					{
-						if(ship.ReceiveDamage(laserDmg*Time.deltaTime))
+						if(ship.TakeDamage(laserDmg*Time.deltaTime))
 						{
 							Debug.Log("DESTROYED BY LASER");
 						}
@@ -87,12 +89,22 @@ namespace Model
 			}
 		}
 
-		public override void TakeDamage(float damageAmount)
+		public override bool TakeDamage(float damageAmount)
 		{
-			base.TakeDamage(damageAmount); // Use base ship behavior
+			bool destroyed = base.TakeDamage(damageAmount); // Use base ship behavior
 
 			// Just to check if player ship is getting hit
 			Debug.Log("Player took damage!");
+
+			return destroyed;
+		}
+
+		public override void Leave()
+		{
+			base.Leave(); 
+			JobController.Inst.LeaveMap();
+
+
 		}
 	}
 }

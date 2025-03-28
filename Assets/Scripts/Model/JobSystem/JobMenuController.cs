@@ -11,6 +11,7 @@ public class JobMenuController : MonoBehaviour
     public Job[] jobs;   
     
     
+    
 
     public static JobMenuController Inst { get; private set; } //Singleton
     private void Awake()
@@ -26,7 +27,7 @@ public class JobMenuController : MonoBehaviour
 
     private void Start() 
     {
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);       
     }
 
     public void LoadJobs()
@@ -43,6 +44,9 @@ public class JobMenuController : MonoBehaviour
         jc.currJob = jobs[_index];
         jc.jobStatus = JobStatus.InProgress;
         JobView.Inst.UpdateJob();
+
+
+
     }
 
     

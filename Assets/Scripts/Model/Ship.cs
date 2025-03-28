@@ -12,7 +12,7 @@ namespace Model
 		public float shields = 100.0f;
 		public float maxShields = 100.0f;
 
-		public bool ReceiveDamage(float _dmg)
+		public virtual bool TakeDamage(float _dmg)
 		{
 			health -= _dmg;
 
@@ -32,7 +32,7 @@ namespace Model
 			return true;	
 		}
 
-		public void Leave()
+		public virtual void Leave()
 		{
 			JobController.Inst.OnObjLeave(transform.tag);
 			this.gameObject.SetActive(false);
