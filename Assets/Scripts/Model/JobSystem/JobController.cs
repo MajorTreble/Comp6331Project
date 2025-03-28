@@ -66,7 +66,7 @@ namespace Controller
         //To be called automatically
         public void OnObjDestroyed(string _tag)
         {
-            Debug.Log(_tag + " - " + currJob.jobTarget+ " - " + JobUtil.ToTag(currJob.jobTarget));
+            //Debug.Log(_tag + " - " + currJob.jobTarget+ " - " + JobUtil.ToTag(currJob.jobTarget));
             if(_tag == JobUtil.ToTag(currJob.jobTarget))
             {
                 TargetDestoyed();
@@ -128,12 +128,6 @@ namespace Controller
         {
             //Player go to the map limit, finishing it.
             if(!CheckCurJob()) return;
-
-
-            if(currJob.jobType == JobType.Deliver)
-            {
-                JobController.Inst.TargetLeftMap();
-            } 
             
             if(jobStatus != JobStatus.Concluded) 
                 FailJob();
@@ -156,7 +150,7 @@ namespace Controller
                 if(s.CompareTag("Player")) continue;
                 if(s.transform.gameObject.activeSelf == true)
                 {
-                    s.ReceiveDamage(s.maxHealth);
+                    s.TakeDamage(s.maxHealth);
                     break;
                 }                
             }     

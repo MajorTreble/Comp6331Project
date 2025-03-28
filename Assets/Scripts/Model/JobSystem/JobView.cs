@@ -12,7 +12,7 @@ public class JobView : MonoBehaviour
 {
 
 
-    Transform JobMenuControllerObject;
+    Transform jobOptions;
     GameObject jobTemplate;
     Text jobDescription;
     Text jobFeedback;
@@ -49,7 +49,9 @@ public class JobView : MonoBehaviour
     {
         SetTestButtons();
 
-        JobMenuControllerObject = GameObject.Find("Canvas").transform;  
+        jobOptions = GameObject.Find("JobOptions").transform;
+        UpdateJob();  
+
     }
 
     public void LookForJobFeeback()
@@ -148,24 +150,39 @@ public class JobView : MonoBehaviour
     {
         if(JobController.Inst.currJob == null)
             JobMenuController.Inst.AcceptJob(jobIndex);
+
+        UpdateButtons();
     }
 
     public void FinishJob()
     {
         if(JobController.Inst.currJob != null)
             JobMenuController.Inst.FinishJob();
+        UpdateButtons();
     }
 
     public void Departure()
     {
         if(JobController.Inst.currJob != null)
             GameManager.Instance.StartScenario();
+        UpdateButtons();
     }
 
+    public void UpdateButtons()
+    {        
+        JobController jc = JobController.Inst;
+        if(jobOptions == null) return;
+
+        Utils.FindChildByName(jobOptions, "AcceptJob").GetComponent<Button>().interactable = (jc.currJob == null);
+        Utils.FindChildByName(jobOptions, "FinishJob").GetComponent<Button>().interactable = (jc.currJob != null);        
+        Utils.FindChildByName(jobOptions, "Departure").GetComponent<Button>().interactable = (jc.currJob != null);
+    }
 
 
     public void UpdateJob()
     {        
+        UpdateButtons();
+
         JobController jc = JobController.Inst;
         if(jobFeedback==null) LookForJobFeeback();
         if(jobFeedback==null) 

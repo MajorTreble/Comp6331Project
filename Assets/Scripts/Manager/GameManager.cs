@@ -96,6 +96,11 @@ namespace Manager
             SceneManager.LoadScene(1);
         }
 
+        public void MenuScenario()
+        {
+            SceneManager.LoadScene(0);
+        }
+
         public void SpawnPlayer(Vector3 spawnPosition, Quaternion spawnQuaternion)
         {
             SpawnParams spawnParams = new SpawnParams(playerPrefab, spawnPosition, spawnQuaternion);

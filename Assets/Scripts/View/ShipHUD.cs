@@ -57,6 +57,6 @@ public class ShipHUD : MonoBehaviour
 	public void Portal()
 	{
 		ship.Leave();
-		GameManager.Instance.StopScenario();
+		//GameManager.Instance.StopScenario();
 	}
 }
