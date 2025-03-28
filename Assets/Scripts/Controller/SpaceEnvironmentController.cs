@@ -80,7 +80,13 @@ namespace Controller
                 spawnPos = mainCam.transform.position + forwardDirection * cameraSpawnDistance + randomOffset;
             }
 
-            GameObject obj = Instantiate(selectedPrefab, spawnPos, Random.rotation);
+            GameObject org = GameObject.Find("Org_"+selectedPrefab.name);
+            if(org == null)
+            {
+                org = new GameObject("Org_"+selectedPrefab.name);
+            }
+
+            GameObject obj = Instantiate(selectedPrefab, spawnPos, Random.rotation, org.transform);
             activeObjects.Add(obj);
         }
 
@@ -90,6 +96,8 @@ namespace Controller
 
             for (int i = activeObjects.Count - 1; i >= 0; i--)
             {
+                if(activeObjects[i] == null) continue;
+                
                 if (Vector3.Distance(referencePoint, activeObjects[i].transform.position) > despawnDistance)
                 {
                     RecycleObject(activeObjects[i]);

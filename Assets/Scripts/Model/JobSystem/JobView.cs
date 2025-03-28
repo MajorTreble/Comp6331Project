@@ -40,8 +40,8 @@ public class JobView : MonoBehaviour
 
         Utils.FindChildByName(jobControl, "LeaveTargetMap").GetComponent<Button>().onClick.AddListener(JobController.Inst.LeaveTargetMap);
         Utils.FindChildByName(jobControl, "DestroyTarget").GetComponent<Button>().onClick.AddListener(JobController.Inst.DestroyTarget);
-        Utils.FindChildByName(jobControl, "MineOre").GetComponent<Button>().onClick.AddListener(JobController.Inst.MineOre);        
-        Utils.FindChildByName(jobControl, "LeaveMap").GetComponent<Button>().onClick.AddListener(JobController.Inst.LeaveMap);
+        //Utils.FindChildByName(jobControl, "MineOre").GetComponent<Button>().onClick.AddListener(JobController.Inst.MineOre);        
+        //Utils.FindChildByName(jobControl, "LeaveMap").GetComponent<Button>().onClick.AddListener(JobController.Inst.LeaveMap);
     }
 
 

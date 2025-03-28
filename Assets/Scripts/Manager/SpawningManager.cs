@@ -30,7 +30,7 @@ namespace Manager
 
         public GameObject Spawn(SpawnParams spawnParams)
         {
-            GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation);
+            GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
             spawnParams.Setup(shipObject);
 
             Ship ship = shipObject.GetComponent<Ship>();
@@ -53,9 +53,11 @@ namespace Manager
             int numberOfEnemies = 10; // Number of enemies to spawn
             float spawnRadius = 100f; // Spawn radius
 
+            GameObject org = new GameObject();
+            org.transform.name = "Org_Pirates";
+
             for (int i = 0; i < numberOfEnemies; i++)
             {
-
                 // Random position within spawn radius
                 Vector3 randomPosition = Random.insideUnitSphere * spawnRadius;
                 randomPosition.y = 0.0f;
@@ -74,8 +76,11 @@ namespace Manager
                 };
 				spawnParams.faction = AllFactions[Random.Range(0, AllFactions.Count)];
 
+                spawnParams.parent = org.transform;
 
-				Spawn(spawnParams);
+                //PirateShipScript
+
+                Spawn(spawnParams);
             }
         }
 

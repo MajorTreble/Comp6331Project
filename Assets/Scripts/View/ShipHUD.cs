@@ -5,41 +5,58 @@ using UnityEngine.UI;
 
 using Manager;
 using Model;
+using Controller;
 
 public class ShipHUD : MonoBehaviour
 {
-	private Text jobNameText;
 	private Text ammoText;
 	private Image healthImage;
 	private Image shieldsImage;
+	
+	private Slider sld_Speed;
+
+	PlayerShip ship;
+	PlayerController pc;
 
 	private void Awake()
 	{
 		GameObject ui = GameObject.Find("Canvas");
-		jobNameText = Utils.FindChildByName(ui.transform, "JobFeedbackText").GetComponent<Text>();
 		ammoText = ui.transform.Find("Ammo").transform.Find("Text").GetComponent<Text>();
 		healthImage = ui.transform.Find("Health Bar").GetComponent<Image>();
-		shieldsImage = ui.transform.Find("Shields").GetComponent<Image>();
+		shieldsImage = ui.transform.Find("Shields").GetComponent<Image>();		
+		sld_Speed = ui.transform.Find("Sld_Speed").GetComponent<Slider>();
+
+		if (GameManager.Instance.playerShip != null)
+		{
+			ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
+			pc = GameManager.Instance.playerShip.GetComponent<PlayerController>();
+		}
 	}
 
 	private void Update()
 	{
-		if (GameManager.Instance.playerShip == null)
+		if (GameManager.Instance.playerShip == null) return;
+		if (ship == null || pc == null)
 		{
+			ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
+			pc = GameManager.Instance.playerShip.GetComponent<PlayerController>();
+			Debug.Log("SHIP OR PC NULL");
 			return;
 		}
 
-		PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
+		
 		if(ship!=null)
 		{
 			ammoText.text = ship.ammo.ToString();
 			healthImage.fillAmount = ship.health / ship.maxHealth;
 			shieldsImage.fillAmount = ship.shields / ship.maxShields;
+			sld_Speed.value = pc.currSpeed/pc.maxSpeed;
 		}
 	}
 
 	public void Portal()
 	{
+		ship.Leave();
 		GameManager.Instance.StopScenario();
 	}
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum JobType{Hunt, Defend, Mine, Deliver};
-public enum JobTarget{Faction1, Faction2, Pirate, Ore, Cargo, Other};
+public enum JobTarget{Faction1, Faction2, Pirate, Solo, Asteroid, Self};
 public enum RepType{Faction1, Faction2, Pirate, Self};
 
 namespace Model
@@ -33,8 +33,31 @@ namespace Model
         //public RepType maxRepType = RepType.Faction2; 
         //public int maxRep = 2;     
 
-    }   
-    
+       
+    }
+    public static class JobUtil
+    {
+        public static string ToTag(this JobTarget target)
+        {
+            switch (target)
+            {
+                case JobTarget.Faction1:
+                    return "Faction1";
+                case JobTarget.Faction2:
+                    return "Faction2";
+                case JobTarget.Pirate:
+                    return "PirateShip";
+                case JobTarget.Solo:
+                    return "SoloShip";
+                case JobTarget.Asteroid:
+                    return "Asteroid";
+                case JobTarget.Self:
+                    return "Player";
+                default:
+                    return "Other";
+            }
+        }
+    }
 }
 
 

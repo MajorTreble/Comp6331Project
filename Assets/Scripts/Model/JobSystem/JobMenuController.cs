@@ -38,9 +38,9 @@ public class JobMenuController : MonoBehaviour
     public void AcceptJob(int _index)
     {
         if(_index < 0)return;
+        
         JobController jc = JobController.Inst;
         jc.currJob = jobs[_index];
-        Debug.Log("Job changed to: " + jc.currJob.name);
         jc.jobStatus = JobStatus.InProgress;
         JobView.Inst.UpdateJob();
     }

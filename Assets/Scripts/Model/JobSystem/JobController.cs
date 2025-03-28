@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 using Manager;
@@ -26,6 +24,8 @@ namespace Controller
                 DontDestroyOnLoad(gameObject);
             }
             else Destroy(gameObject);
+
+
         }
 
     
@@ -63,6 +63,24 @@ namespace Controller
         
         
         //Job Events
+        //To be called automatically
+        public void OnObjDestroyed(string _tag)
+        {
+            Debug.Log(_tag + " - " + currJob.jobTarget+ " - " + JobUtil.ToTag(currJob.jobTarget));
+            if(_tag == JobUtil.ToTag(currJob.jobTarget))
+            {
+                TargetDestoyed();
+            }
+        }
+        public void OnObjLeave(string _tag)
+        {
+            if(_tag == JobUtil.ToTag(currJob.jobTarget))
+            {
+                TargetLeftMap();
+            }
+        }
+        
+
         public void TargetLeftMap()
         {//called once the target leaves the map
             if(!CheckCurJob()) return;
@@ -71,11 +89,11 @@ namespace Controller
             {
                 UpdateJob(-1);
             }
-
             if(currJob.jobType == JobType.Defend)
             {
                 UpdateJob(1);
             }
+
             if(currJob.jobType == JobType.Deliver)
             {
                 UpdateJob(1);
@@ -91,22 +109,18 @@ namespace Controller
             {
                 UpdateJob(1);
             }
-
             if(currJob.jobType == JobType.Defend)
             {
                 UpdateJob(-1);
             }
-        }
-
-        public void OreMined()
-        {//called once the player  get any resource
-            if(!CheckCurJob()) return;
 
             if(currJob.jobType == JobType.Mine)
             {
                 UpdateJob(1);
             }
         }
+
+        
 
 
         
@@ -136,16 +150,29 @@ namespace Controller
         // For tests this will be controlled by buttons and UI
         public void DestroyTarget()
         {
-            TargetDestoyed();
+            //TargetDestoyed();
+            foreach (Ship s in SpawningManager.Instance.shipList)
+            {
+                if(s.CompareTag("Player")) continue;
+                if(s.transform.gameObject.activeSelf == true)
+                {
+                    s.ReceiveDamage(s.maxHealth);
+                    break;
+                }                
+            }     
         }
         public void LeaveTargetMap()
         {
-            TargetLeftMap();
-        }
-
-        public void MineOre()
-        {
-            OreMined();        
+            //TargetLeftMap();
+            foreach (Ship s in SpawningManager.Instance.shipList)
+            {
+                if(s.CompareTag("Player")) continue;
+                if(s.transform.gameObject.activeSelf == true)
+                {
+                    s.Leave();
+                    break;
+                }                
+            } 
         }
     }
 }

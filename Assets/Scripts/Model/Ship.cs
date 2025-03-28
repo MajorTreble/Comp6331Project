@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using Controller;
 namespace Model
 {
 
@@ -11,41 +12,30 @@ namespace Model
 		public float shields = 100.0f;
 		public float maxShields = 100.0f;
 
-
-		// Asma Added this method for allowing ships to take Damage
-		public virtual void TakeDamage(float damageAmount)
+		public bool ReceiveDamage(float _dmg)
 		{
-			// First reduce shields
-			if (shields > 0)
-			{
-				shields -= damageAmount;
-				if (shields < 0)
-				{
-					// If damage exceeds shields, carry over to health
-					health += shields; // shields is negative here
-					shields = 0;
-				}
-			}
-			else
-			{
-				// Direct health damage when shields are down
-				health -= damageAmount;
-			}
+			health -= _dmg;
 
-			// Clamp values
-			health = Mathf.Clamp(health, 0, maxHealth);
-			shields = Mathf.Clamp(shields, 0, maxShields);
-
-			Debug.Log($"{gameObject.name} took {damageAmount} damage. Health: {health}, Shields: {shields}");
-
-			// Optional: Add destruction logic when health reaches 0
-			if (health <= 0)
-			{
-				Destroy(gameObject);
-			}
+			return CheckDestroyed();
 		}
 
+		public bool CheckDestroyed()
+		{
+			if(health > 0)
+				return false;
 
-	}
+				
+			JobController.Inst.OnObjDestroyed(transform.tag);
 
+			this.gameObject.SetActive(false);
+
+			return true;	
+		}
+
+		public void Leave()
+		{
+			JobController.Inst.OnObjLeave(transform.tag);
+			this.gameObject.SetActive(false);
+		}
+	}	
 }
