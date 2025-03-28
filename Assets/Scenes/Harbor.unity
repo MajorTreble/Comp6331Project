@@ -1310,17 +1310,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 479076104}
   m_CullTransparentMesh: 1
---- !u!114 &538282566 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
-  m_PrefabInstance: {fileID: 2002271419}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fcea4a4b04c3574cb2edbde059de83f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &567936432
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1838,8 +1827,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &731887106
 GameObject:
@@ -3946,9 +3935,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 538282566}
-        m_TargetAssemblyTypeName: Manager.GameManager, Scripts
-        m_MethodName: MenuScenario
+      - m_Target: {fileID: 818359496}
+        m_TargetAssemblyTypeName: JobMenuController, Scripts
+        m_MethodName: BackToMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

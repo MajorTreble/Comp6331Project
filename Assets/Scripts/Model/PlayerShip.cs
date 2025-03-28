@@ -15,8 +15,6 @@ namespace Model
 
 		
 		public float laserDist;
-
-
 		float laserDmg = 100;
 
       	public void Awake()
@@ -24,7 +22,12 @@ namespace Model
 			GetWeapon();
 		}
 
-		void GetWeapon()
+        public void Update()
+        {
+            ShieldRecover();
+        }
+
+        void GetWeapon()
 		{
 			weapon_1 = Utils.FindChildByName(this.transform, "Weapon1");
 
@@ -53,10 +56,9 @@ namespace Model
 		public void ShowLaser(bool isVisible)
 		{
 			if(laser == null) return;
-			isVisible = true;
+			//isVisible = true; //For tests
 			laser.SetActive(isVisible);
 			
-			//Is here the best place to put this?!
 			if(isVisible)
 			{
 				RaycastHit hit;
@@ -103,8 +105,6 @@ namespace Model
 		{
 			base.Leave(); 
 			JobController.Inst.LeaveMap();
-
-
 		}
 	}
 }

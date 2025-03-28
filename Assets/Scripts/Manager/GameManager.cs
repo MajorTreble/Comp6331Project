@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.Diagnostics;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 using Controller;
 using Model;
@@ -21,6 +19,7 @@ namespace Manager
         public Quaternion playerSpawnRotation;
 
         public bool isNewGame = true;
+        public bool onMenu = false;
 
         void Awake()
         {
@@ -109,6 +108,8 @@ namespace Manager
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            onMenu = scene.name == "MainMenu";
+
             if (scene.name != "MainMenu" && scene.name != "Harbor")
 			{
                 SpawnPlayer(playerSpawnPosition, playerSpawnRotation);

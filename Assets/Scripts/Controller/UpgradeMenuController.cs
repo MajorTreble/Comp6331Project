@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Controller;
 using Manager;
 using Model;
@@ -10,7 +11,6 @@ using UnityEngine.UI;
 public class UpgradeMenuController : MonoBehaviour
 {
     public Transform upgradeList;
-    
 
     public Text txt_Coins;
 
@@ -21,24 +21,19 @@ public class UpgradeMenuController : MonoBehaviour
         upgradeList = GameObject.Find("UpgradeList").transform;
 
         txt_Coins = GameObject.Find("Txt_Coins").GetComponent<Text>();
+        txt_Coins.text = "Coins:" + PlayerReputation.Inst.coins;
     }
 
     void CreateUpgrades()
     {
-        //if(GameManager.Instance.playerShip == null)
-        //{
-        //    Invoke("CreateUpgrades", 0.3f);
-        //    return;
-        //}
 
-        int[] cost = new int[]{100,150,225,337,506,759,1139,1708,2562,3844};//*1.5
-        float[] valueMult = new float[]{1.3f,1.69f,2.2f,2.86f,3.71f,4.83f,6.27f,8.16f,10.6f,13.79f};//*1.3
-        
-        //PlayerController pc = GameManager.Instance.playerShip.GetComponent<PlayerController>();
-        //PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
-
+        int[] cost = new int[]{100,150,225,337,506,759,1139,1708,2562,3844, 5766};//*1.5
+        float[] valueMult = new float[]{1.3f,1.69f,2.2f,2.86f,3.71f,4.83f,6.27f,8.16f,10.6f,13.79f, 17.9f };//*1.3
         UpgradeController uc = UpgradeController.Inst;
         uc.upgrList = new List<UpgradeController.Upgrade>();
+
+        //Base values should be picked by its original value, 
+        //Maybe create a scriptable for ship variables?
 
         string upgrName = "MaxHealth";
         //float baseValue = ship.maxHealth;
@@ -117,7 +112,7 @@ public class UpgradeMenuController : MonoBehaviour
     public void UpgradeX(int _entryIndex)
     {
         UpgradeController uc = UpgradeController.Inst;
-        if(uc.upgrList[_entryIndex].lvl > 10) return;
+        if(uc.upgrList[_entryIndex].lvl > 9) return;
         
         int upgradeCost = uc.upgrList[_entryIndex].cost[uc.upgrList[_entryIndex].lvl];
 
@@ -136,6 +131,7 @@ public class UpgradeMenuController : MonoBehaviour
         Transform entry = upgradeList.GetChild(_entryIndex);
 
         int lvl = uc.upgrList[_entryIndex].lvl;
+
         Utils.FindChildByName(entry, "Sld_Upgrade").GetComponent<Slider>().value = 0.1f * lvl;
         Utils.FindChildByName(entry, "Txt_Cost").GetComponent<Text>().text = uc.upgrList[_entryIndex].cost[lvl].ToString();
         Utils.FindChildByName(entry, "Txt_Name").GetComponent<Text>().text = uc.upgrList[_entryIndex].name + "\n" + uc.upgrList[_entryIndex].value[lvl].ToString();

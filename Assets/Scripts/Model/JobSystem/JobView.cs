@@ -31,7 +31,7 @@ public class JobView : MonoBehaviour
     }
     
     public void SetTestButtons()
-    {        
+    {   
         GameObject go =  GameObject.Find("JobControl_For_Tests");
 
         if(go==null) return;
@@ -40,14 +40,13 @@ public class JobView : MonoBehaviour
 
         Utils.FindChildByName(jobControl, "LeaveTargetMap").GetComponent<Button>().onClick.AddListener(JobController.Inst.LeaveTargetMap);
         Utils.FindChildByName(jobControl, "DestroyTarget").GetComponent<Button>().onClick.AddListener(JobController.Inst.DestroyTarget);
-        //Utils.FindChildByName(jobControl, "MineOre").GetComponent<Button>().onClick.AddListener(JobController.Inst.MineOre);        
-        //Utils.FindChildByName(jobControl, "LeaveMap").GetComponent<Button>().onClick.AddListener(JobController.Inst.LeaveMap);
     }
 
 
     void Start()
     {
-        SetTestButtons();       
+        SetTestButtons();
+
         
         UpdateJob();  
 
@@ -114,25 +113,6 @@ public class JobView : MonoBehaviour
     {
         JobMenuController.Inst.LoadJobs();
         
-        /*string jobText = "";
-        int index = 0;
-        foreach (Job job in JobMenuController.Inst.jobs)
-        {
-            jobText += "["+ index++ +"]"+ "\t"; 
-            jobText += "Name: " + job.name + "\t";            
-            jobText += "Map: " + job.scenario.mapName + "\n";
-
-            jobText += "Type: " + job.jobType + "\t";            
-            jobText += "Target: " + job.jobTarget + "\t";                 
-            jobText += "Quantity: " + job.quantity + "\n";
-
-            jobText += "Coins: " + job.rewardCoins + "\t";
-            jobText += "Reputation: " + job.rewardType + "\t";
-            jobText += " " + job.rewardRep + "\n\n";            
-        }
-        print(jobText);
-        */
-        
         jobTemplate = GameObject.Find("JobTemplate");
         GameObject jobButton = jobTemplate;
         
@@ -183,7 +163,7 @@ public class JobView : MonoBehaviour
 
         Utils.FindChildByName(jobOptions, "AcceptJob").GetComponent<Button>().interactable = (jc.currJob == null);
         Utils.FindChildByName(jobOptions, "FinishJob").GetComponent<Button>().interactable = (jc.currJob != null);        
-        Utils.FindChildByName(jobOptions, "Departure").GetComponent<Button>().interactable = (jc.currJob != null);
+        Utils.FindChildByName(jobOptions, "Departure").GetComponent<Button>().interactable = (jc.jobStatus == JobStatus.InProgress);
     }
 
 
@@ -206,22 +186,44 @@ public class JobView : MonoBehaviour
         }
         
         string jobText = "";
+
+        switch (jc.currJob.jobType)
+        {
+            case JobType.Defend:
+                jobText += "Defend";
+            break;
+            case JobType.Deliver:
+                jobText += "Deliver";
+                break;
+            case JobType.Hunt:
+                jobText += "Destroy";
+                break;
+            case JobType.Mine:
+                jobText += "Mine";
+                break;
+            default:
+                break;
+        }
+
+        jobText += " " + jc.currJob.quantity;
+                  
+        jobText += " " + jc.currJob.jobTarget;   
+
+        jobText += jc.currJob.quantity > 1? "s": ""; 
+
+        jobText += " - " + jc.currJobQtd + "/" + jc.currJob.quantity;
         
-        jobText += "Type: " + jc.currJob.jobType + "\n";            
-        jobText += "Target: " + jc.currJob.jobTarget + "\n";                 
-        jobText += "Quantity: " + jc.currJobQtd + "/" + jc.currJob.quantity;
-        //jobText += jc.jobStatus;
 
         Color color = Color.white;
         if(jc.jobStatus == JobStatus.Failed) 
         {
             color = Color.red;
-            jobText += "[F]";
+            jobText += " [F]";
         }
         if(jc.jobStatus == JobStatus.Concluded)
         {
             color = Color.green;
-            jobText += "[C]";
+            jobText += " [C]";
         }        
 
         if (jobFeedback)
@@ -230,6 +232,6 @@ public class JobView : MonoBehaviour
             jobFeedback.text = jobText;
         }
         
-        //print(jobText);
     }
+
 }
