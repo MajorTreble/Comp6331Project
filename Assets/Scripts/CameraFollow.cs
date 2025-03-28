@@ -1,38 +1,58 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using Manager;
 
 public class CameraFollow : MonoBehaviour
 {
     public Transform player;
-    public Vector3 offset;
-    public float smoothSpeed = 0.125f; 
+
+    [Header("View Settings")]
+    public Vector3 thirdPersonOffset = new Vector3(0, 5, -10);
+    public Vector3 cockpitOffset = new Vector3(0, 1, 1);
+
+    [Header("Cockpit View")]
+    public bool cockpitView = false;
+
+    public float smoothSpeed = 0.125f;
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
 
-        player = GameManager.Instance.playerShip.transform;
+        if (GameManager.Instance.playerShip != null)
+        {
+            player = GameManager.Instance.playerShip.transform;
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            cockpitView = !cockpitView;
+        }
     }
 
     void LateUpdate()
     {
         if (player == null)
-		{
             return;
-		}
 
+        Vector3 offset = cockpitView ? cockpitOffset : thirdPersonOffset;
         Vector3 desiredPosition = player.position + player.rotation * offset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        Quaternion desiredRotation = Quaternion.LookRotation(player.forward, Vector3.up);
 
-        transform.position = smoothedPosition;
-        
-        Quaternion desiredRotation = Quaternion.Slerp(transform.rotation, player.rotation, smoothSpeed);
-        desiredRotation = Quaternion.LookRotation(player.forward, Vector3.up);
-        Quaternion smoothedRotation = Quaternion.Slerp(transform.rotation, desiredRotation, smoothSpeed);
-        transform.rotation = smoothedRotation;
+        if (cockpitView)
+        {
+            // Stick to cockpit immediately (no smoothing)
+            transform.position = desiredPosition;
+            transform.rotation = desiredRotation;
+        }
+        else
+        {
+            // Smooth follow for third-person view
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, smoothSpeed);
+        }
     }
 }

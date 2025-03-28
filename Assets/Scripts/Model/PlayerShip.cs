@@ -86,5 +86,13 @@ namespace Model
 				Debug.DrawRay(weapon_1.transform.position, direction * laserDist, Color.yellow);
 			}
 		}
+
+		public override void TakeDamage(float damageAmount)
+		{
+			base.TakeDamage(damageAmount); // Use base ship behavior
+
+			// Just to check if player ship is getting hit
+			Debug.Log("Player took damage!");
+		}
 	}
 }

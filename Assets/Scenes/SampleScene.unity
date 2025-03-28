@@ -3571,7 +3571,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 893d5a0756b1b1e428cb41c9006d2dc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shipList: []
+  shipList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &1321975244
 GameObject:
   m_ObjectHideFlags: 0

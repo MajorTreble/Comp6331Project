@@ -1738,6 +1738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 0}
+  laserPrefab: {fileID: 0}
   playerShip: {fileID: 0}
   playerSpawnPosition: {x: 0, y: 0, z: 0}
   playerSpawnRotation: {x: 0, y: 0, z: 0, w: 0}
