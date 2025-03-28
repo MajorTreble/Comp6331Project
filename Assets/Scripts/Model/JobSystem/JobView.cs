@@ -47,9 +47,8 @@ public class JobView : MonoBehaviour
 
     void Start()
     {
-        SetTestButtons();
-
-        jobOptions = GameObject.Find("JobOptions").transform;
+        SetTestButtons();       
+        
         UpdateJob();  
 
     }
@@ -114,7 +113,8 @@ public class JobView : MonoBehaviour
     public void ListJobs()
     {
         JobMenuController.Inst.LoadJobs();
-        string jobText = "";
+        
+        /*string jobText = "";
         int index = 0;
         foreach (Job job in JobMenuController.Inst.jobs)
         {
@@ -130,7 +130,8 @@ public class JobView : MonoBehaviour
             jobText += "Reputation: " + job.rewardType + "\t";
             jobText += " " + job.rewardRep + "\n\n";            
         }
-        //print(jobText);
+        print(jobText);
+        */
         
         jobTemplate = GameObject.Find("JobTemplate");
         GameObject jobButton = jobTemplate;
@@ -171,7 +172,14 @@ public class JobView : MonoBehaviour
     public void UpdateButtons()
     {        
         JobController jc = JobController.Inst;
-        if(jobOptions == null) return;
+        if(jobOptions == null) 
+        {
+            GameObject go = GameObject.Find("JobOptions");
+            if(go!= null)
+                jobOptions = go.transform;
+            else
+                return;
+        }
 
         Utils.FindChildByName(jobOptions, "AcceptJob").GetComponent<Button>().interactable = (jc.currJob == null);
         Utils.FindChildByName(jobOptions, "FinishJob").GetComponent<Button>().interactable = (jc.currJob != null);        
