@@ -1,5 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
+using Controller;
+using Manager;
+using Model;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,29 +9,135 @@ using UnityEngine.UI;
 
 public class UpgradeMenuController : MonoBehaviour
 {
-    Transform upgradeList;
+    public Transform upgradeList;
+    
 
-    void Start()
+    public Text txt_Coins;
+
+    public void Start()
     {
+        CreateUpgrades();
+
         upgradeList = GameObject.Find("UpgradeList").transform;
-    }
-    public void UpgradeX(int _entryIndex)
-    {
-        int upgradeCost = -50;
-        if(PlayerReputation.Inst.coins > upgradeCost)
-        {
-            Slider sld = Utils.FindChildByName(upgradeList.GetChild(_entryIndex), "Sld_Upgrade").GetComponent<Slider>(); 
-            if(sld == null)
-            {
-                Debug.Log("upgrade slider not found");
-                return;
-            }
 
-            if(sld.value < 1)
-            {
-                sld.value = sld.value + 0.1f;
-                Debug.Log("UPGRADED!");
-            }            
+        txt_Coins = GameObject.Find("Txt_Coins").GetComponent<Text>();
+    }
+
+    void CreateUpgrades()
+    {
+        //if(GameManager.Instance.playerShip == null)
+        //{
+        //    Invoke("CreateUpgrades", 0.3f);
+        //    return;
+        //}
+
+        int[] cost = new int[]{100,150,225,337,506,759,1139,1708,2562,3844};//*1.5
+        float[] valueMult = new float[]{1.3f,1.69f,2.2f,2.86f,3.71f,4.83f,6.27f,8.16f,10.6f,13.79f};//*1.3
+        
+        //PlayerController pc = GameManager.Instance.playerShip.GetComponent<PlayerController>();
+        //PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
+
+        UpgradeController uc = UpgradeController.Inst;
+        uc.upgrList = new List<UpgradeController.Upgrade>();
+
+        string upgrName = "MaxHealth";
+        //float baseValue = ship.maxHealth;
+        float baseValue = 100;
+        float[] value = new float[valueMult.Length];
+        for (int i = 0; i < valueMult.Length; i++)
+        {
+            value[i] = baseValue * valueMult[i];            
+        }
+        uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
+
+        upgrName = "Ammo";
+        //baseValue = ship.ammo;
+        value = new float[valueMult.Length];
+        for (int i = 0; i < valueMult.Length; i++)
+        {
+            value[i] = baseValue * valueMult[i];            
+        }        
+        uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
+       
+        upgrName = "MaxShield";
+        //baseValue = ship.maxShields;
+        value = new float[valueMult.Length];
+        for (int i = 0; i < valueMult.Length; i++)
+        {
+            value[i] = baseValue * valueMult[i];            
+        }        
+        uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
+
+        upgrName = "Acc";
+        //baseValue = pc.acc;
+        baseValue = 10;
+        value = new float[valueMult.Length];
+        for (int i = 0; i < valueMult.Length; i++)
+        {
+            value[i] = baseValue * valueMult[i];            
+        }        
+        uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
+
+        upgrName = "MaxSpeed";
+        //baseValue = pc.maxSpeed;
+        baseValue = 50;
+        value = new float[valueMult.Length];
+        for (int i = 0; i < valueMult.Length; i++)
+        {
+            value[i] = baseValue * valueMult[i];            
+        }        
+        uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
+
+        InstantiateUpgrades();
+    }
+
+    void InstantiateUpgrades()
+    {
+
+        UpgradeController uc = UpgradeController.Inst;
+        GameObject template = GameObject.Find("UpgradeEntryTemplate");
+        
+        for (int i = 0; i < uc.upgrList.Count; i++)
+        {
+            if(i>0)
+                template = Instantiate(template, template.transform.parent);
+            
+           UpgradeController.Upgrade up = uc.upgrList[i];
+
+            int lvl = uc.upgrList[i].lvl;
+            Utils.FindChildByName(template.transform, "Sld_Upgrade").GetComponent<Slider>().value = 0.1f * lvl;
+            Utils.FindChildByName(template.transform, "Txt_Cost").GetComponent<Text>().text = up.cost[lvl].ToString();
+            Utils.FindChildByName(template.transform, "Txt_Name").GetComponent<Text>().text = up.name + "\n" + up.value[lvl].ToString();
+
+            int index = i;
+            Utils.FindChildByName(template.transform, "Btn_Upgrade").GetComponent<Button>().onClick.AddListener(() => UpgradeX(index));
         }
     }
+
+    public void UpgradeX(int _entryIndex)
+    {
+        UpgradeController uc = UpgradeController.Inst;
+        if(uc.upgrList[_entryIndex].lvl > 10) return;
+        
+        int upgradeCost = uc.upgrList[_entryIndex].cost[uc.upgrList[_entryIndex].lvl];
+
+        if(PlayerReputation.Inst.coins > upgradeCost)
+        {            
+            PlayerReputation.Inst.coins -= upgradeCost;
+            uc.upgrList[_entryIndex].lvl += 1;
+            UpdateList(_entryIndex);
+        }
+    }
+
+    void UpdateList(int _entryIndex)
+    {
+        UpgradeController uc = UpgradeController.Inst;
+        txt_Coins.text = "Coins:" + PlayerReputation.Inst.coins;
+        Transform entry = upgradeList.GetChild(_entryIndex);
+
+        int lvl = uc.upgrList[_entryIndex].lvl;
+        Utils.FindChildByName(entry, "Sld_Upgrade").GetComponent<Slider>().value = 0.1f * lvl;
+        Utils.FindChildByName(entry, "Txt_Cost").GetComponent<Text>().text = uc.upgrList[_entryIndex].cost[lvl].ToString();
+        Utils.FindChildByName(entry, "Txt_Name").GetComponent<Text>().text = uc.upgrList[_entryIndex].name + "\n" + uc.upgrList[_entryIndex].value[lvl].ToString();
+    }    
 }

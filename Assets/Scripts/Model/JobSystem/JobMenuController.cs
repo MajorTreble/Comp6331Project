@@ -19,7 +19,7 @@ public class JobMenuController : MonoBehaviour
         if (Inst == null)
         {
             Inst = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else Destroy(gameObject);
     }

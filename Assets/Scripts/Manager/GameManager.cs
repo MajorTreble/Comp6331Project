@@ -112,6 +112,7 @@ namespace Manager
             if (scene.name != "MainMenu" && scene.name != "Harbor")
 			{
                 SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+                UpgradeController.Inst.UpdateValues();
 
                 if(JobController.Inst.currJob == null)
                 {
