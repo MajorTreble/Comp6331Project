@@ -157,6 +157,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2116bf4ce6951c94cad72af4bb4e090c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  oriData: {fileID: 11400000, guid: a4c3c1d0ec94b3744a0fd33545dd2b3d, type: 2}
+  upgrData: {fileID: 0}
+  ammo: 0
+  health: 0
+  shields: 0
   playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
   player: {fileID: 0}
   rb: {fileID: 0}
@@ -173,9 +178,13 @@ MonoBehaviour:
   lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
   firePoint: {fileID: 3217806063069641899}
+  currentState: 0
+  requestState: 1
   shipLayer:
     serializedVersion: 2
     m_Bits: 128
+  randomDecisionInterval: 3
+  aggressionProbability: 0.4
 --- !u!1001 &6542066700235273163
 PrefabInstance:
   m_ObjectHideFlags: 0

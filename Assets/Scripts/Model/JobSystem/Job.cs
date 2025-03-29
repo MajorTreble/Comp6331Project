@@ -15,7 +15,7 @@ namespace Model
         public string jobDescription = "Placeholder Description";
         
         public JobType jobType = JobType.Defend;
-
+ 
         public Scenario  scenario = null;
 
         public int rewardCoins = 1;
@@ -26,12 +26,7 @@ namespace Model
         public int quantity = 1;
 
         public int dangerValue = 0;
-
-        //public RepType minRepType = RepType.Faction1;
-        //public int minRep = 0;     
-        
-        //public RepType maxRepType = RepType.Faction2; 
-        //public int maxRep = 2;     
+ 
 
        
     }

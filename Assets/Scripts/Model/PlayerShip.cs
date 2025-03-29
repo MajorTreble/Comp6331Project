@@ -8,10 +8,21 @@ namespace Model
 
 	public class PlayerShip : Ship
 	{
+
+
 		public GameObject laserPrefab = null;
 		public GameObject laser = null;
 
 		public Transform weapon_1;
+
+
+		//Upgrade System, get curr values for the ship
+		public float CurrMaxHealth { get { return oriData.maxHealth + UpgradeController.Inst.upgrData.maxHealth; } }
+		public float CurrMaxShields { get { return oriData.maxShields + UpgradeController.Inst.upgrData.maxShields; } }
+		public float CurrShieldRegen { get { return oriData.shieldRegen + UpgradeController.Inst.upgrData.shieldRegen; } }
+		public float CurrAcc { get { return oriData.acc + UpgradeController.Inst.upgrData.acc; } }
+		public float CurrMaxSpeed { get { return oriData.maxSpeed + UpgradeController.Inst.upgrData.maxSpeed; } }
+		public float CurrTurnSpeed { get { return oriData.turnSpeed + UpgradeController.Inst.upgrData.turnSpeed; } } 
 
 		
 		public float laserDist;
@@ -26,6 +37,22 @@ namespace Model
         {
             ShieldRecover();
         }
+
+		public override void SetStats()
+		{
+			health = CurrMaxHealth;
+			shields = CurrMaxShields;
+		}
+
+		public override void ShieldRecover()
+		{
+			shields += CurrShieldRegen;
+			shields = Mathf.Clamp(shields, 0, CurrMaxShields);
+		}
+
+
+
+
 
         void GetWeapon()
 		{

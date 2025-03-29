@@ -78,7 +78,10 @@ public class JobMenuController : MonoBehaviour
         jc.currJob = null;
         jc.jobStatus = JobStatus.NotSelected;
         jc.currJobQtd = 0;
+        UpgradeController.Inst.umc.UpdateCoins();
+        JobView.Inst.jobIndex = -1;
         JobView.Inst.ViewJob(null);
+
     }
 
     

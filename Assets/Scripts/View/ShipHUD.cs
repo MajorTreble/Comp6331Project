@@ -48,9 +48,9 @@ public class ShipHUD : MonoBehaviour
 		if(ship!=null)
 		{
 			ammoText.text = ship.ammo.ToString();
-			healthImage.fillAmount = ship.health / ship.maxHealth;
-			shieldsImage.fillAmount = ship.shields / ship.maxShields;
-			sld_Speed.value = pc.currSpeed/pc.maxSpeed;
+			healthImage.fillAmount = ship.health / ship.CurrMaxHealth;
+			shieldsImage.fillAmount = ship.shields / ship.CurrMaxShields;
+			sld_Speed.value = pc.currSpeed/ship.CurrMaxSpeed;
 		}
 	}
 
