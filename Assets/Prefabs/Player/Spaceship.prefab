@@ -80,11 +80,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2be469c41a60f7448c5e4d7d9d618de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  oriData: {fileID: 11400000, guid: 7b13e89c0221e3e4eb992ba4d86f3b22, type: 2}
   ammo: 0
   health: 100
-  maxHealth: 100
   shields: 100
-  maxShields: 100
   laserPrefab: {fileID: 2254531325587726217, guid: 15d30101cc2178d488611d4a1cb65218, type: 3}
   laser: {fileID: 0}
   weapon_1: {fileID: 0}
@@ -101,10 +100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92b00849d1d0e7344b786e26a0b7fc6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acc: 0
   currSpeed: 0
-  maxSpeed: 0
-  turnSpeed: 0
+  throttle: 0
   mouseSensitivity: 0
 --- !u!1 &5692264513234847176
 GameObject:

@@ -17,7 +17,7 @@ public class JobView : MonoBehaviour
     Text jobDescription;
     Text jobFeedback;
 
-    int jobIndex = -1;
+    public int jobIndex = -1;
 
     public static JobView Inst { get; private set; } //Singleton
     private void Awake()

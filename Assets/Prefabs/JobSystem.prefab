@@ -87,4 +87,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99da50d990efbc74da4815b6f35cf533, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  upgrData: {fileID: 11400000, guid: 62d729df1123fe94592beb8b97efc364, type: 2}
+  ammo: 0
   upgrList: []

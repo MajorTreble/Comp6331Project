@@ -1,5 +1,6 @@
 using UnityEngine;
 using Manager;
+using System;
 
 public class CameraFollow : MonoBehaviour
 {
@@ -13,6 +14,16 @@ public class CameraFollow : MonoBehaviour
     public bool cockpitView = false;
 
     public float smoothSpeed = 0.125f;
+
+    public static CameraFollow Inst { get; private set; } //Singleton
+    void Awake()
+    {
+        if (Inst == null)
+        {
+            Inst = this;
+        }
+        else Destroy(gameObject);
+    }
 
     void Start()
     {
@@ -33,7 +44,12 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    public void LateUpdate()
+    {
+        MoveCamera();
+    }
+
+    public void  MoveCamera()
     {
         if (player == null)
             return;
@@ -51,8 +67,13 @@ public class CameraFollow : MonoBehaviour
         else
         {
             // Smooth follow for third-person view
-            transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-            transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, smoothSpeed);
+            transform.position = desiredPosition;
+            transform.rotation = desiredRotation;
+            //The jittering was caused by high speeds and the smoothness, if the smooth is took out the jitter stops
+            //Maybe with the cinemachine this resolves better. 
+
+            //transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed *Time.deltaTime);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, smoothSpeed *Time.deltaTime);
         }
     }
 }

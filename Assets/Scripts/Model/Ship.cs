@@ -1,30 +1,33 @@
 using UnityEngine;
 
 using Controller;
-using System;
+
 namespace Model
 {
 
 	public class Ship : MonoBehaviour
 	{
-		public int ammo = 0;
-		public float health = 100.0f;
-		public float maxHealth = 100.0f;
-		public float shields = 100.0f;
-		public float shieldRegen = 10;
-		public float maxShields = 100.0f;
+		public ShipData oriData;
+
+
+
+		public int ammo;
+		public float health;
+		public float shields;
+
 
 		public virtual void SetStats()
 		{
-			health = maxHealth;
-			shields = maxShields;
+			health = oriData.maxHealth;
+			shields = oriData.maxShields;
 		}
 
 		public virtual void ShieldRecover()
 		{
-			shields += shieldRegen;
-			shields = Mathf.Clamp(shields, 0, maxShields);
+			shields += oriData.shieldRegen;
+			shields = Mathf.Clamp(shields, 0, oriData.maxShields);
 		}
+
 
 		public virtual bool TakeDamage(float _dmg)
 		{

@@ -9,27 +9,22 @@ namespace Controller
 
     public class PlayerController : MonoBehaviour
     {
-        public float acc;
+       
         public float currSpeed;
-
         public int throttle;
-        public float maxSpeed;        
-        public float turnSpeed;
         public float mouseSensitivity;
 
 
         Vector3 Velocity;
-        Rigidbody playerShip;
+        Rigidbody playerShipRb;
+        PlayerShip playerShip;
 
         void Start()
         {
-            playerShip = GameManager.Instance.playerShip.GetComponent<Rigidbody>();  
+            playerShipRb = GameManager.Instance.playerShip.GetComponent<Rigidbody>();  
+            playerShip = GameManager.Instance.playerShip.GetComponent<PlayerShip>();  
 
-            acc = acc == 0 ? 1 : acc;
-            maxSpeed = maxSpeed == 0 ? 50 : maxSpeed;
-            turnSpeed = turnSpeed == 0 ? 10 : turnSpeed;
             mouseSensitivity = mouseSensitivity == 0 ? 10 : mouseSensitivity;
-
         }
 
         void LateUpdate()
@@ -37,9 +32,10 @@ namespace Controller
             if(GameManager.Instance.onMenu)
                 return;
 
-            if (playerShip == null)
+            if (playerShipRb == null || playerShip == null)
             {
-                playerShip = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
+                playerShipRb = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
+                playerShip = GameManager.Instance.playerShip.GetComponent<PlayerShip>();  
                 return;
             }
 
@@ -55,33 +51,35 @@ namespace Controller
                 throttle -= 1;
 
             throttle = Mathf.Clamp(throttle, -1,3);
-            float desiredMov = maxSpeed * throttle/3;
+            float desiredMov = playerShip.CurrMaxSpeed * throttle/3;
             //Mov
-            currSpeed = Mathf.Lerp(currSpeed, desiredMov, acc * Time.deltaTime);
+            currSpeed = Mathf.Lerp(currSpeed, desiredMov, playerShip.CurrAcc * Time.deltaTime);
 
             //Rot
-            Vector3 rotation = new Vector3(-mouseY, mouseX, horizontal) * turnSpeed * Time.deltaTime * mouseSensitivity;
+            Vector3 rotation = new Vector3(-mouseY, mouseX, horizontal) *  playerShip.CurrTurnSpeed * Time.deltaTime * mouseSensitivity;
         
             //RigidBody based movement
-            playerShip.MovePosition(playerShip.position + (playerShip.transform.forward * currSpeed * Time.deltaTime));
+            playerShipRb.MovePosition(playerShipRb.position + (playerShipRb.transform.forward * currSpeed * Time.deltaTime));
             Quaternion deltaRotation = Quaternion.Euler(rotation);
-            playerShip.MoveRotation(playerShip.rotation * deltaRotation);    
+            playerShipRb.MoveRotation(playerShipRb.rotation * deltaRotation);    
 
             //Laser
             bool laser = Input.GetKey(KeyCode.Space)||Input.GetKey(KeyCode.Mouse0);
-            playerShip.GetComponent<PlayerShip>().ShowLaser(laser);
+            playerShipRb.GetComponent<PlayerShip>().ShowLaser(laser);
 
             if(Input.GetKey(KeyCode.E)) Stabilize();
+
+            CameraFollow.Inst.MoveCamera();
         }
 
 
         void Stabilize()
         {
-            currSpeed = currSpeed = Mathf.Clamp(currSpeed + (-acc * Time.deltaTime), 0, maxSpeed);
+            currSpeed = currSpeed = Mathf.Clamp(currSpeed + (- playerShip.CurrAcc * Time.deltaTime), 0, playerShip.CurrMaxSpeed);
 
-            playerShip.velocity = Vector3.Lerp(playerShip.velocity, Vector3.zero, Time.deltaTime);
-            playerShip.angularVelocity = Vector3.Lerp(playerShip.angularVelocity, Vector3.zero, Time.deltaTime);            
-            playerShip.rotation = Quaternion.Lerp(playerShip.rotation, Quaternion.identity, Time.deltaTime);
+            playerShipRb.velocity = Vector3.Lerp(playerShipRb.velocity, Vector3.zero, Time.deltaTime);
+            playerShipRb.angularVelocity = Vector3.Lerp(playerShipRb.angularVelocity, Vector3.zero, Time.deltaTime);            
+            playerShipRb.rotation = Quaternion.Lerp(playerShipRb.rotation, Quaternion.identity, Time.deltaTime);
         }
     }      
   
