@@ -2,6 +2,7 @@ using UnityEngine;
 
 using Manager;
 using Model;
+using UnityEngine.UI;
 
 namespace Controller
 {
@@ -10,24 +11,21 @@ namespace Controller
     {
         public float acc;
         public float currSpeed;
+
+        public int throttle;
         public float maxSpeed;        
         public float turnSpeed;
         public float mouseSensitivity;
 
-        bool isSpacePressed = false;
-
 
         Vector3 Velocity;
-
-        //GameObject playerShip;
         Rigidbody playerShip;
 
         void Start()
         {
-            //GameObject playerShip = GameManager.Instance.playerShip;
             playerShip = GameManager.Instance.playerShip.GetComponent<Rigidbody>();  
 
-            acc = acc == 0 ? 10 : acc;
+            acc = acc == 0 ? 1 : acc;
             maxSpeed = maxSpeed == 0 ? 50 : maxSpeed;
             turnSpeed = turnSpeed == 0 ? 10 : turnSpeed;
             mouseSensitivity = mouseSensitivity == 0 ? 10 : mouseSensitivity;
@@ -36,32 +34,34 @@ namespace Controller
 
         void LateUpdate()
         {            
+            if(GameManager.Instance.onMenu)
+                return;
+
             if (playerShip == null)
             {
                 playerShip = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
                 return;
             }
 
-            //Some redundancies on the code, and mouse not working, 
             //Input 
             float vertical = Input.GetAxis("Vertical");
             float horizontal = Input.GetAxis("Horizontal");
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
 
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                throttle += 1;
+            if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+                throttle -= 1;
+
+            throttle = Mathf.Clamp(throttle, -1,3);
+            float desiredMov = maxSpeed * throttle/3;
             //Mov
-            currSpeed = Mathf.Clamp(currSpeed + (vertical * acc * Time.deltaTime), 0, maxSpeed);
+            currSpeed = Mathf.Lerp(currSpeed, desiredMov, acc * Time.deltaTime);
 
             //Rot
-            //playerShip.transform.Rotate(Vector3.left, mouseY * turnSpeed * Time.deltaTime);   //X    
-            //playerShip.transform.Rotate(Vector3.up, mouseX * turnSpeed * Time.deltaTime);   //Y
-            //playerShip.transform.Rotate(Vector3.forward, horizontal * turnSpeed * Time.deltaTime); //Z            
             Vector3 rotation = new Vector3(-mouseY, mouseX, horizontal) * turnSpeed * Time.deltaTime * mouseSensitivity;
-            
-            //Transform based movement 
-            //playerShip.transform.Rotate(rotation);    
-            //playerShip.transform.position += (playerShip.transform.forward*currSpeed);
-
+        
             //RigidBody based movement
             playerShip.MovePosition(playerShip.position + (playerShip.transform.forward * currSpeed * Time.deltaTime));
             Quaternion deltaRotation = Quaternion.Euler(rotation);

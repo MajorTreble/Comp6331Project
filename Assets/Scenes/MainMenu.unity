@@ -1512,7 +1512,7 @@ PrefabInstance:
     - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
       propertyPath: playerPrefab
       value: 
-      objectReference: {fileID: 4526271667573031266, guid: b8025a8b98ba20a42acdfbd076d496a1, type: 3}
+      objectReference: {fileID: 2462193850337484257, guid: 270f7328ee227ae44aaac2aa921cf183, type: 3}
     - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
       propertyPath: playerSpawnRotation.w
       value: 1

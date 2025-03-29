@@ -25,9 +25,9 @@ namespace Controller
         public class Upgrade
         {
             public string name = "placeholder_name";        
-            public int lvl = 0; //1-10
-            public int[] cost = new int[10];
-            public float[] value = new float[10];
+            public int lvl = 0; //0-10
+            public int[] cost = new int[11];
+            public float[] value = new float[11];
 
             public Upgrade(string name, int lvl, int[] cost, float[] value)
             {
