@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement; // Debug only
 
 using Model;
+using Model.AI;
 
 namespace Manager
 {
@@ -13,8 +14,9 @@ namespace Manager
         public static SpawningManager Instance { get; private set; }
 
         public List<Ship> shipList = new List<Ship>();
+		private Dictionary<Faction.FactionType, AIShip> factionLeaders = new Dictionary<Faction.FactionType, AIShip>();
 
-        void Awake()
+		void Awake()
         {
             if (Instance != null)
             {
@@ -28,21 +30,40 @@ namespace Manager
             SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
         }
 
-        public GameObject Spawn(SpawnParams spawnParams)
-        {
-            GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
-            spawnParams.Setup(shipObject);
+		public GameObject Spawn(SpawnParams spawnParams)
+		{
+			GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
+			spawnParams.Setup(shipObject);
 
-            Ship ship = shipObject.GetComponent<Ship>();
-            if (ship != null)
-            {
-                shipList.Add(ship);
-            }
+			Ship ship = shipObject.GetComponent<Ship>();
+			if (ship != null)
+			{
+				shipList.Add(ship);
+			}
 
-            return shipObject;
-        }
+			AIShip aiShip = shipObject.GetComponent<AIShip>();
+			if (aiShip != null)
+			{
+				// Check if this faction already has a leader
+				AIShip designatedLeader = null;
 
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+				if (aiShip.behavior != null && aiShip.behavior.groupMode == AIBehavior.GroupMode.Formation)
+				{
+					if (!factionLeaders.TryGetValue(aiShip.factionType, out designatedLeader))
+					{
+						// Assign as leader
+						factionLeaders[aiShip.factionType] = aiShip;
+					}
+				}
+
+				aiShip.InitializeShip(aiShip.behavior, aiShip.factionType, designatedLeader);
+			}
+
+			return shipObject;
+		}
+
+
+		void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (scene.name == "MainMenu" || scene.name == "Harbor")
             {
@@ -50,7 +71,7 @@ namespace Manager
             }
             // Replace with scenario
 
-            int numberOfEnemies = 10; // Number of enemies to spawn
+            int numberOfEnemies = 30; // Number of enemies to spawn
             float spawnRadius = 100f; // Spawn radius
 
             GameObject org = new GameObject();
@@ -61,9 +82,10 @@ namespace Manager
                 // Random position within spawn radius
                 Vector3 randomPosition = Random.insideUnitSphere * spawnRadius;
                 randomPosition.y = 0.0f;
-                randomPosition += transform.position;
+				//randomPosition += transform.position;
+				randomPosition += new Vector3(50, 0, 50); // Far from center
 
-                SpawnParams spawnParams = new SpawnParams();
+				SpawnParams spawnParams = new SpawnParams();
                 spawnParams.position = randomPosition;
                 spawnParams.shipType = ShipType.Light;
 				//spawnParams.shipType = (ShipType)Random.Range(0, 2);

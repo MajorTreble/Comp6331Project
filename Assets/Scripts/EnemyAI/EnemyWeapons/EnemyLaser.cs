@@ -26,7 +26,7 @@ public class EnemyLaser : MonoBehaviour
 	{
 		//Debug.Log("Laser collided with: " + other.name);
 
-		if (other.CompareTag("Player"))
+		if (other.CompareTag("Player") || other.CompareTag("SpaceshipComponent"))
 		{
 			//Debug.Log("Laser hit player!");
 			playerHitCount++;

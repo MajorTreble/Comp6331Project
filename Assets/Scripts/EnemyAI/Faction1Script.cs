@@ -70,7 +70,7 @@ public class Faction1Script : AIShip
 
 				if (Time.time > lastAttackTime + behavior.attackCooldown)
 				{
-					Attack();
+					//Attack();
 				}
 			}
 		}

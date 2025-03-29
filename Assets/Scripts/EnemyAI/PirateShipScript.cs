@@ -30,7 +30,7 @@ public class PirateShipScript : AIShip
 		// Update state based on health and player proximity
 		if (health <= maxHealth * fleeHealthThreshold)
 		{
-			requestState = AIState.Flee;
+			requestedState = AIState.Flee;
 		}
 	}
 
