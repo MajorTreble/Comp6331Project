@@ -65,7 +65,7 @@ namespace Model
 				return;
 			}
 
-			SpawnLaser();
+			//SpawnLaser();
 		}
 
         public void SpawnLaser()
