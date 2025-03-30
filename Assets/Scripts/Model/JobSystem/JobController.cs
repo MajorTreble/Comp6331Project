@@ -11,9 +11,7 @@ namespace Controller
         public static JobController Inst { get; private set; } //Singleton
 
         public JobStatus jobStatus = JobStatus.NotSelected;
-
         public int currJobQtd;
-
         public Job currJob;
 
         private void Awake()
@@ -24,8 +22,6 @@ namespace Controller
                 DontDestroyOnLoad(gameObject);
             }
             else Destroy(gameObject);
-
-
         }
 
     
