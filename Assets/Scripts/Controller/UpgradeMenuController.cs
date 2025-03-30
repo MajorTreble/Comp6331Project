@@ -132,6 +132,7 @@ public class UpgradeMenuController : MonoBehaviour
         UpgradeController uc = UpgradeController.Inst;
         
         Transform entry = upgradeList.GetChild(_entryIndex);
+        UpdateCoins();
 
         int lvl = uc.upgrList[_entryIndex].lvl;
 
