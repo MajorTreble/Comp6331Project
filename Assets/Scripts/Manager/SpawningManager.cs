@@ -28,6 +28,8 @@ namespace Manager
 
             SceneManager.sceneLoaded += OnSceneLoaded; // Debug
             SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
+
+            portalPosition = GameObject.Find("HarborPortal").transform.position;
         }
 
         public GameObject Spawn(SpawnParams spawnParams)
