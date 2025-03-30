@@ -85,9 +85,10 @@ MonoBehaviour:
   ammo: 0
   health: 100
   shields: 100
-  laserPrefab: {fileID: 2254531325587726217, guid: 15d30101cc2178d488611d4a1cb65218, type: 3}
   laser: {fileID: 0}
+  laserPrefab: {fileID: 8220181580064264272, guid: b06f1a81083ec7c42a0a43e177b3654f, type: 3}
   weapon_1: {fileID: 0}
+  fireRate: 0.2
   laserDist: 60
 --- !u!114 &-2124949118174447166
 MonoBehaviour:

@@ -9,11 +9,11 @@ namespace Model
 	public class PlayerShip : Ship
 	{
 
-
-		public GameObject laserPrefab = null;
 		public GameObject laser = null;
-
+		public GameObject laserPrefab;
 		public Transform weapon_1;
+		public float fireRate = 0.2f;
+		private float fireCooldown = 0f;
 
 
 		//Upgrade System, get curr values for the ship
@@ -69,56 +69,68 @@ namespace Model
 		}
 
         public void SpawnLaser()
-		{
-			laserDist = laserDist == 0 ? 60 : laserDist;
+        {
+            laserDist = laserDist == 0 ? 60 : laserDist;
 
-			laser = GameObject.Instantiate(laserPrefab, weapon_1.transform);
-			laser.transform.localScale = new Vector3(0.3f, 0.3f, laserDist);
-			laser.transform.rotation = Quaternion.Euler(0,0,0);
-			Vector3 laserPos = Vector3.zero;
-			laserPos.z += (float)(laserDist/2) ;
-			laser.transform.localPosition = laserPos;
-		}
+            laser = GameObject.Instantiate(laserPrefab, weapon_1.transform);
+            laser.transform.localScale = new Vector3(0.3f, 0.3f, laserDist);
+            laser.transform.rotation = Quaternion.Euler(0, 0, 0);
+            Vector3 laserPos = Vector3.zero;
+            laserPos.z += (float)(laserDist / 2);
+            laser.transform.localPosition = laserPos;
+        }
 
-		public void ShowLaser(bool isVisible)
-		{
-			if(laser == null) return;
-			//isVisible = true; //For tests
-			laser.SetActive(isVisible);
-			
-			if(isVisible)
-			{
-				RaycastHit hit;
-				Vector3 direction = laser.transform.forward;
+        public void ShowLaser(bool isVisible)
+        {
+            if (laser == null) return;
+            //isVisible = true; //For tests
+            laser.SetActive(isVisible);
 
-				if (Physics.Raycast(weapon_1.transform.position, direction, out hit, laserDist))
-				{
-					if(hit.transform.CompareTag(this.transform.tag)) return;
+            if (isVisible)
+            {
+                RaycastHit hit;
+                Vector3 direction = laser.transform.forward;
 
-					Ship ship = hit.transform.gameObject.GetComponent<Ship>();
-					if(ship != null)
-					{
-						if(ship.TakeDamage(laserDmg*Time.deltaTime))
-						{
-							Debug.Log("DESTROYED BY LASER");
-						}
-					}
+                if (Physics.Raycast(weapon_1.transform.position, direction, out hit, laserDist))
+                {
+                    if (hit.transform.CompareTag(this.transform.tag)) return;
 
-					BreakableAsteroid ba = hit.transform.gameObject.GetComponent<BreakableAsteroid>();
-					if(ba != null)
-					{
-						if(ba.ReceiveDamage(laserDmg*Time.deltaTime))
-						{
-							Debug.Log("DESTROYED BY LASER");
-						}
-					}
-				}
+                    Ship ship = hit.transform.gameObject.GetComponent<Ship>();
+                    if (ship != null)
+                    {
+                        if (ship.TakeDamage(laserDmg * Time.deltaTime))
+                        {
+                            Debug.Log("DESTROYED BY LASER");
+                        }
+                    }
 
-				Debug.DrawRay(weapon_1.transform.position, direction * laserDist, Color.yellow);
-			}
-		}
+                    BreakableAsteroid ba = hit.transform.gameObject.GetComponent<BreakableAsteroid>();
+                    if (ba != null)
+                    {
+                        if (ba.ReceiveDamage(laserDmg * Time.deltaTime))
+                        {
+                            Debug.Log("DESTROYED BY LASER");
+                        }
+                    }
+                }
 
-		public override bool TakeDamage(float damageAmount)
+                Debug.DrawRay(weapon_1.transform.position, direction * laserDist, Color.yellow);
+            }
+        }
+
+        public void FireLaser()
+        {
+            if (Time.time < fireCooldown) return;
+
+            if (laserPrefab != null && weapon_1 != null)
+            {
+                GameObject laser = Instantiate(laserPrefab, weapon_1.position, weapon_1.rotation);
+            }
+
+            fireCooldown = Time.time + fireRate;
+        }
+
+        public override bool TakeDamage(float damageAmount)
 		{
 			bool destroyed = base.TakeDamage(damageAmount); // Use base ship behavior
 

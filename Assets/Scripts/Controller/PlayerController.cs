@@ -64,10 +64,15 @@ namespace Controller
             playerShipRb.MoveRotation(playerShipRb.rotation * deltaRotation);    
 
             //Laser
-            bool laser = Input.GetKey(KeyCode.Space)||Input.GetKey(KeyCode.Mouse0);
-            playerShipRb.GetComponent<PlayerShip>().ShowLaser(laser);
+            //bool laser = Input.GetKey(KeyCode.Space)||Input.GetKey(KeyCode.Mouse0);
+            //playerShipRb.GetComponent<PlayerShip>().ShowLaser(laser);
 
-            if(Input.GetKey(KeyCode.E)) Stabilize();
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0))
+            {
+                playerShipRb.GetComponent<PlayerShip>().FireLaser();
+            }
+
+            if (Input.GetKey(KeyCode.E)) Stabilize();
 
             CameraFollow.Inst.MoveCamera();
         }
