@@ -145,7 +145,12 @@ public class JobView : MonoBehaviour
     public void Departure()
     {
         if(JobController.Inst.currJob != null)
-            GameManager.Instance.StartScenario();
+		{
+            if (GameManager.Instance.SelectScenario(JobController.Inst.currJob.jobType, ScenarioDifficulty.Easy))
+			{
+                GameManager.Instance.StartScenario();
+            }
+        }
         UpdateButtons();
     }
 
