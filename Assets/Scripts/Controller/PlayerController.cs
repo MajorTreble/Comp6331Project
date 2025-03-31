@@ -63,10 +63,6 @@ namespace Controller
             Quaternion deltaRotation = Quaternion.Euler(rotation);
             playerShipRb.MoveRotation(playerShipRb.rotation * deltaRotation);    
 
-            //Laser
-            //bool laser = Input.GetKey(KeyCode.Space)||Input.GetKey(KeyCode.Mouse0);
-            //playerShipRb.GetComponent<PlayerShip>().ShowLaser(laser);
-
             if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0))
             {
                 playerShipRb.GetComponent<PlayerShip>().FireLaser();
