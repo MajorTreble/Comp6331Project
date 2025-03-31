@@ -82,6 +82,11 @@ namespace Manager
             }
         }
 
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log("Check After Build");
+        }
+
         void OnSceneUnloaded(Scene scene)
         {
             shipList.Clear();
