@@ -11,6 +11,7 @@ namespace Model.Data
     public class GameData
     {
         public bool isNewGame = true;
+        public bool hasPlayedTutorial = false;
     }
 
 }

@@ -26,8 +26,7 @@ namespace Manager
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            SceneManager.sceneLoaded += OnSceneLoaded; // Debug
-            SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
         public GameObject Spawn(SpawnParams spawnParams)
@@ -44,43 +43,35 @@ namespace Manager
             return shipObject;
         }
 
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        public void SpawnScenario(Scenario scenario)
         {
-            if (scene.name == "MainMenu" || scene.name == "Harbor")
+            foreach (UnitGroup unitGroup in scenario.unitGroups)
             {
-                return;
-            }
-            // Replace with scenario
+                GameObject orgFaction = new GameObject();
+                orgFaction.transform.name = "Org_" + unitGroup.faction.name;
 
-            int numberOfEnemies = 10; // Number of enemies to spawn
-            float spawnRadius = 100f; // Spawn radius
-
-            GameObject org = new GameObject();
-            org.transform.name = "Org_Pirates";
-
-            for (int i = 0; i < numberOfEnemies; i++)
-            {
-                // Random position within spawn radius
-                Vector3 randomPosition = Random.insideUnitSphere * spawnRadius;
-                randomPosition.y = 0.0f;
-                randomPosition += transform.position;
-
-                SpawnParams spawnParams = new SpawnParams();
-                spawnParams.position = randomPosition;
-                spawnParams.shipType = ShipType.Light;
-				//spawnParams.shipType = (ShipType)Random.Range(0, 2);
-				List<Faction> AllFactions = new List<Faction>
+                foreach (ShipType type in unitGroup.shipTypes)
                 {
-	                Resources.Load<Faction>("Scriptable/Faction/Pirate Faction"),
-	                Resources.Load<Faction>("Scriptable/Faction/Solo Faction"),
-	                Resources.Load<Faction>("Scriptable/Faction/Colonial Federation"),
-	                Resources.Load<Faction>("Scriptable/Faction/Earth Alliance")
-                };
-				spawnParams.faction = AllFactions[Random.Range(0, AllFactions.Count)];
+                    SpawnParams spawnParams = new SpawnParams();
+                    spawnParams.position = unitGroup.SpawnPosition();
+                    spawnParams.rotation = unitGroup.rotation;
+                    spawnParams.faction = unitGroup.faction;
+                    spawnParams.shipType = type;
+                    spawnParams.parent = orgFaction.transform;
 
-                spawnParams.parent = org.transform;
+                    Spawn(spawnParams);
+                }
+            }
 
-                //PirateShipScript
+            GameObject orgSpaceObject = new GameObject();
+            orgSpaceObject.transform.name = "Org_Space Object";
+            foreach (SpaceObjectGroup spaceObjectGroup in scenario.spaceObjectGroups)
+            {
+                SpawnParams spawnParams = new SpawnParams();
+                spawnParams.position = spaceObjectGroup.SpawnPosition();
+                spawnParams.rotation = spaceObjectGroup.rotation;
+                spawnParams.prefab = spaceObjectGroup.prefab;
+                spawnParams.parent = orgSpaceObject.transform;
 
                 Spawn(spawnParams);
             }
