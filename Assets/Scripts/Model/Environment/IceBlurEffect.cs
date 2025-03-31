@@ -9,6 +9,7 @@ namespace Model.Environment {
         private DepthOfField blurEffect;
         private bool isBlurring = false;
 
+
         void Start()
         {
             if (postProcessVolume.profile.TryGetSettings(out blurEffect))
@@ -40,34 +41,36 @@ namespace Model.Environment {
         private IEnumerator BlurEffectRoutine(float duration)
         {
             isBlurring = true;
+
             float elapsedTime = 0f;
             float startAperture = blurEffect.aperture.value;
-            float maxBlur = 1.0f;
+            float targetBlur = 0.1f; // Max blur
 
             while (elapsedTime < duration / 2)
             {
-                blurEffect.aperture.value = Mathf.Lerp(startAperture, maxBlur, elapsedTime / (duration / 2));
+                blurEffect.aperture.value = Mathf.Lerp(startAperture, targetBlur, elapsedTime / (duration / 2));
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
 
+            blurEffect.aperture.value = targetBlur;
             yield return new WaitForSeconds(2f);
         }
 
         private IEnumerator BlurFadeOut()
         {
             float elapsedTime = 0f;
-            float currentBlur = blurEffect.aperture.value;
-            float minBlur = 0.1f;
+            float startBlur = blurEffect.aperture.value;
+            float targetClear = 32f; // Fully clear
 
-            while (elapsedTime < 2f)
+            while (elapsedTime < 5f)
             {
-                blurEffect.aperture.value = Mathf.Lerp(currentBlur, minBlur, elapsedTime / 2f);
+                blurEffect.aperture.value = Mathf.Lerp(startBlur, targetClear, elapsedTime / 2f);
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
 
-            blurEffect.aperture.value = 32;
+            blurEffect.aperture.value = targetClear;
             isBlurring = false;
         }
     }
