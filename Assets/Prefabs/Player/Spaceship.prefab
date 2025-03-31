@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2463156675679193863}
   - component: {fileID: -6639418880188792714}
   - component: {fileID: -2124949118174447166}
+  - component: {fileID: 4568182390670334844}
   m_Layer: 0
   m_Name: Spaceship
   m_TagString: Player
@@ -84,9 +85,10 @@ MonoBehaviour:
   ammo: 0
   health: 100
   shields: 100
-  laserPrefab: {fileID: 2254531325587726217, guid: 15d30101cc2178d488611d4a1cb65218, type: 3}
   laser: {fileID: 0}
+  laserPrefab: {fileID: 8220181580064264272, guid: b06f1a81083ec7c42a0a43e177b3654f, type: 3}
   weapon_1: {fileID: 0}
+  fireRate: 0.2
   laserDist: 60
 --- !u!114 &-2124949118174447166
 MonoBehaviour:
@@ -102,7 +104,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currSpeed: 0
   throttle: 0
-  mouseSensitivity: 0
+  mouseSensitivity: 5
+--- !u!65 &4568182390670334844
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2462193850337484257}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.446079, y: 1.6461797, z: 11.417653}
+  m_Center: {x: 1.4500303, y: 0.32308984, z: -1.2186646}
 --- !u!1 &5692264513234847176
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,14 +725,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
---- !u!4 &775844627533567493 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4413083218773408, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
-  m_PrefabInstance: {fileID: 777987184846574501}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &778340702780243831 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1917032075865298, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
+  m_PrefabInstance: {fileID: 777987184846574501}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &775844627533567493 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4413083218773408, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
   m_PrefabInstance: {fileID: 777987184846574501}
   m_PrefabAsset: {fileID: 0}
 --- !u!65 &2463156675679193969

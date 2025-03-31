@@ -18,7 +18,6 @@ namespace Model.Environment {
 
         void Start()
         {
-            //Debug.Log("[SpaceStorm] Storm Initialized.");
             InvokeRepeating(nameof(FindAffectedObjects), 0f, forceUpdateInterval);
         }
 
@@ -32,9 +31,6 @@ namespace Model.Environment {
             HashSet<Rigidbody> currentFrameObjects = new HashSet<Rigidbody>();
             affectedObjects.Clear();
 
-            //Debug.Log($"[SpaceStorm] Checking at {boxCenter} (Size: {boxSize}, Rotation: {transform.rotation.eulerAngles})");
-            //Debug.Log($"[SpaceStorm] Found {nearbyObjects.Length} objects.");
-
             foreach (Collider col in nearbyObjects)
             {
                 Rigidbody rb = col.GetComponent<Rigidbody>();
@@ -42,8 +38,6 @@ namespace Model.Environment {
                 {
                     affectedObjects.Add(rb);
                     currentFrameObjects.Add(rb);
-
-                    //Debug.Log($"[SpaceStorm] {col.name} tag : {col.tag} detected at {col.transform.position}");
                 }
             }
 
@@ -60,14 +54,13 @@ namespace Model.Environment {
                 }
             }
 
-            lastFrameObjects = currentFrameObjects; // Update tracking for next frame
+            lastFrameObjects = currentFrameObjects;
         }
 
         void ApplyStormEffects()
         {
             if (affectedObjects.Count == 0)
             {
-                //Debug.Log("[SpaceStorm] No objects inside storm.");
                 return;
             }
 
@@ -77,13 +70,11 @@ namespace Model.Environment {
 
                 Vector3 randomForce = Random.insideUnitSphere * objectPushForce;
                 rb.AddForce(randomForce, ForceMode.Acceleration);
-                //Debug.Log($"[SpaceStorm] Applying force {randomForce} to {rb.gameObject.name}");
 
                 if (rb.CompareTag("Player"))
                 {
-                    Vector3 turbulence = Random.insideUnitSphere * turbulenceStrength;
-                    rb.AddForce(turbulence, ForceMode.Acceleration);
-                    //Debug.Log($"[SpaceStorm] Applying turbulence {turbulence} to Player.");
+                    CameraFollow.Inst?.StartShake(0.3f);
+                    Debug.Log($"[SpaceStorm] Applying turbulence to Player.");
                 }
             }
         }
@@ -96,8 +87,9 @@ namespace Model.Environment {
             if (rb.CompareTag("Player"))
             {
                 Debug.Log("[SpaceStorm] Resetting Player turbulence effect.");
-                rb.velocity = Vector3.zero;
+                CameraFollow.Inst?.StopShake();
             }
+        
         }
 
         void OnDrawGizmosSelected()

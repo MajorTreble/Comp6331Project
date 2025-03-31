@@ -17,6 +17,8 @@ namespace Manager
         public GameObject playerPrefab;
         public GameObject playerShip;
 
+        public GameObject playerLaserPrefab;
+
         public Vector3 playerSpawnPosition;
         public Quaternion playerSpawnRotation;
 

@@ -1522,6 +1522,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 14d8742131d858c4691c5442129473c0, type: 2}
     - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: playerLaserPrefab
+      value: 
+      objectReference: {fileID: 8220181580064264272, guid: b06f1a81083ec7c42a0a43e177b3654f, type: 3}
+    - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
       propertyPath: quickPlayScenario
       value: 
       objectReference: {fileID: 11400000, guid: e371798ec0652a54f8c19df950343949, type: 2}
