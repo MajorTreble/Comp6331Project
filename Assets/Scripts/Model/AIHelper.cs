@@ -13,7 +13,7 @@ namespace Model
         {
             if (ship == null) return false;
 
-            return IsTargetInRange(ship, ship.target, ship.detectionRadius);
+            return IsTargetInRange(ship, ship.targetShip, ship.detectionRadius);
         }
 
         public static bool IsTargetInRange(Ship ship, Ship target, float detectionRadius)

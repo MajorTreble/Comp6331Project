@@ -29,6 +29,11 @@ namespace Model
             reputations.Add(new Reputation (RepType.Self, 0));     
         }
 
+        public float GetReputation(Faction faction)
+        {
+            return 0.0f;
+        }
+
         public ReputationStatus GetReputationStatus(Faction faction)
         {
             return ReputationStatus.Neutral;

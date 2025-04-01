@@ -24,7 +24,7 @@ namespace Model.AI.BehaviorTree
                 return NodeState.FAILURE;
 			}
 
-            aiShip.requestedState = (AIShip.AIState)aiState;
+            aiShip.requestedState = aiState;
 
             return NodeState.SUCCESS;
         }
