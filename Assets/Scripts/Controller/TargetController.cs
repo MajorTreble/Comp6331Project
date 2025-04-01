@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Controller;
 using Manager;
+
+using Model;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +14,10 @@ public class TargetController : MonoBehaviour
 
     Vector2 targetOriSize;
 
+
+    public bool showPortal;
+
+
     private void Awake()
     {
         if (Inst == null)
@@ -18,52 +25,112 @@ public class TargetController : MonoBehaviour
             Inst = this;
         }
         else Destroy(gameObject);
+
+
+        showPortal = true;
     }
 
 
 
 
-    public Image targetIcon; 
-    public Vector3 target;
+    public List<Transform> targets;
+    public List<Image> targetsIcon;
 
     void Start()
     {
-        targetOriSize = targetIcon.rectTransform.sizeDelta;
+       
+
+        Invoke("InstantiateTargets",1);
+    }
+
+
+    void InstantiateTargets()
+    {
+        showPortal = false;
+
+        GameObject template = GameObject.Find("TargetTemplate");
+        GameObject go = template;
+        targetOriSize = template.GetComponent<Image>().rectTransform.sizeDelta;
+
+        if(JobController.Inst.currJob.jobType == JobType.Deliver)
+        {
+            targets.Add(GameObject.Find("HarborPortal").transform); 
+            showPortal = true;
+        }else if(JobController.Inst.currJob.jobType == JobType.Mine)
+        {
+            foreach (GameObject s in SpaceEnvironmentController.Instance.activeObjects)
+            {                
+                targets.Add(s.transform);            
+            } 
+        }else //HUNT AND DEFEND
+        {
+            foreach (Ship s in SpawningManager.Instance.shipList)
+            {
+                if(s is PlayerShip) continue;
+
+                if(s.CompareTag(JobUtil.ToTag(JobController.Inst.currJob.jobTarget)))
+                    targets.Add(s.transform);            
+            }            
+        }
+        
+        
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if(i>0)
+                go = Instantiate(template, template.transform.parent);
+            
+            targetsIcon.Add(go.GetComponent<Image>());            
+        }
     }
 
     void Update()
     {
-        target = SpawningManager.Instance.portalPosition;
+        if(targets.Count == 0) return;
 
-        SetTarget(target, targetIcon);
-        
+        if(showPortal)
+        {            
+            foreach (Image t in targetsIcon)
+            {
+                t.gameObject.SetActive(false);                
+            }
+
+            targetsIcon[0].gameObject.SetActive(true);
+            SetTarget(SpawningManager.Instance.portalPosition, targetsIcon[0]);
+        }else
+        {
+            for (int i = 0; i < targets.Count; i++)
+            {
+                if(targets[i].gameObject.activeSelf)
+                    SetTarget(targets[i].position, targetsIcon[i]);     
+                else targetsIcon[i].gameObject.SetActive(false);
+            }  
+        }        
     }
 
-    void SetTarget(Vector3 _pos, Image _Icon)
+    void SetTarget(Vector3 _pos, Image _icon)
     {
-        if (target != null)
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(_pos);
+
+        if (screenPos.z > 0)
         {
-            Vector3 screenPos = Camera.main.WorldToScreenPoint(target);
+            screenPos.x = Mathf.Clamp(screenPos.x, 0, Screen.width);
+            screenPos.y = Mathf.Clamp(screenPos.y, 0, Screen.height);
+            _icon.transform.position = screenPos;
+            _icon.enabled = true;
 
-            if (screenPos.z > 0)
-            {
-                screenPos.x = Mathf.Clamp(screenPos.x, 0, Screen.width);
-                screenPos.y = Mathf.Clamp(screenPos.y, 0, Screen.height);
-                targetIcon.transform.position = screenPos;
-                targetIcon.enabled = true;
+            float dist = Vector3.Distance(Camera.main.transform.position, _pos);
 
-                float dist = Vector3.Distance(Camera.main.transform.position, target);
+            float scale = Mathf.Clamp(100 / dist, 0.25f, 1f); 
+            Vector2 newSize = Vector2.Lerp(targetOriSize*0.25f, targetOriSize, scale);
 
-                float scale = Mathf.Clamp(100 / dist, 0.25f, 1f); 
-                Vector2 newSize = Vector2.Lerp(targetOriSize*0.25f, targetOriSize, scale);
-
-                targetIcon.rectTransform.sizeDelta = newSize;
-            }
-            else
-            {
-                targetIcon.enabled = false;
-            }
+            _icon.rectTransform.sizeDelta = newSize;
         }
+        else
+        {
+            _icon.enabled = false;
+        }
+
+    
 
     }
 }

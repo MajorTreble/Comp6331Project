@@ -26,7 +26,12 @@ namespace Manager
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
+
+            SceneManager.sceneLoaded += OnSceneLoaded; // Debug
+            SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
+
+            portalPosition = GameObject.Find("HarborPortal").transform.position;
+
         }
 
         public GameObject Spawn(SpawnParams spawnParams)
@@ -75,6 +80,11 @@ namespace Manager
 
                 Spawn(spawnParams);
             }
+        }
+
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log("Check After Build");
         }
 
         void OnSceneUnloaded(Scene scene)

@@ -31,9 +31,11 @@ namespace Controller
             if(currJobQtd >= currJob.quantity)
             {
                 jobStatus = JobStatus.Concluded;
+                TargetController.Inst.showPortal = true;
             }else if (currJobQtd < 0)
             {
-                jobStatus = JobStatus.Failed;
+                jobStatus = JobStatus.Failed;                
+                TargetController.Inst.showPortal = true;
             }
 
             JobView.Inst.UpdateJob();
@@ -43,6 +45,7 @@ namespace Controller
         public void FailJob()
         {
             jobStatus = JobStatus.Failed;
+            TargetController.Inst.showPortal = true;
             JobView.Inst.UpdateJob();
         }
 
