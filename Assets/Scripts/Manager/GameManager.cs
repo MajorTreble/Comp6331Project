@@ -159,7 +159,7 @@ namespace Manager
 
                 GameObject portal = GameObject.Find("HarborPortal");
                 if (portal)
-				{
+                {
                     portalPosition = portal.transform.position;
                 }
 
