@@ -12,6 +12,8 @@ namespace Model
 		public string title;
 		public string description;
 
+		public FactionType factionType;
+
 		public GameObject[] prefabs = { null, null, null };
 		public AIBehavior behavior = null;
 	}

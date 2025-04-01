@@ -49,14 +49,14 @@ namespace Manager
 
 				if (aiShip.behavior != null && aiShip.behavior.groupMode == AIBehavior.GroupMode.Formation)
 				{
-					if (!factionLeaders.TryGetValue(aiShip.factionType, out designatedLeader))
+					if (!factionLeaders.TryGetValue(aiShip.faction.factionType, out designatedLeader))
 					{
 						// Assign as leader
-						factionLeaders[aiShip.factionType] = aiShip;
+						factionLeaders[aiShip.faction.factionType] = aiShip;
 					}
 				}
 
-				aiShip.InitializeShip(aiShip.behavior, aiShip.factionType, designatedLeader);
+				aiShip.InitializeShip(designatedLeader);
 			}
 
 			return shipObject;

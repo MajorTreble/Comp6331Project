@@ -48,7 +48,7 @@ MonoBehaviour:
   reputation: {fileID: 11400000, guid: 8ea7d138f1c905945908b28ebbbb7648, type: 2}
   playerPrefab: {fileID: 2462193850337484257, guid: 270f7328ee227ae44aaac2aa921cf183, type: 3}
   playerShip: {fileID: 0}
-  playerLaserPrefab: {fileID: 0}
+  playerLaserPrefab: {fileID: 8220181580064264272, guid: b06f1a81083ec7c42a0a43e177b3654f, type: 3}
   playerSpawnPosition: {x: 0, y: 0, z: 0}
   playerSpawnRotation: {x: 0, y: 0, z: 0, w: 1}
   isNewGame: 1
