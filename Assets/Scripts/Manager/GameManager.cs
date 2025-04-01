@@ -176,6 +176,7 @@ namespace Manager
             {
                 JobStatus jobStatus = JobController.Inst.jobStatus;
                 JobView.Inst.ListJobs();
+                JobView.Inst.ListReputations();
                 if(jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
                     JobView.Inst.ViewJob(JobController.Inst.currJob);
             }

@@ -19,14 +19,24 @@ public class PlayerReputation : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         else Destroy(gameObject);
+
+
+        foreach (RepType rep in System.Enum.GetValues(typeof(RepType)))
+        {
+            reputations.Add(new Reputation (rep, 0));
+        }
+
+        /*
+        reputations.Add(new Reputation (RepType.Faction1, 0));
+        reputations.Add(new Reputation (RepType.Faction2, 0));
+        reputations.Add(new Reputation (RepType.Pirate, 0));
+        reputations.Add(new Reputation (RepType.Self, 0)); 
+        */
     }
     
     public void Start()
     {
-        reputations.Add(new Reputation (RepType.Faction1, 0));
-        reputations.Add(new Reputation (RepType.Faction2, 0));
-        reputations.Add(new Reputation (RepType.Pirate, 0));
-        reputations.Add(new Reputation (RepType.Self, 0));     
+            
     }
 
     public void ChangeReputation(RepType _type, int _value)

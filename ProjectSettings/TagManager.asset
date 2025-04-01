@@ -11,6 +11,7 @@ TagManager:
   - PirateShip
   - PlayerComponent
   - SpaceshipComponent
+  - Asteroid_Debri
   layers:
   - Default
   - TransparentFX

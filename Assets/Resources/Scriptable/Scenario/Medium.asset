@@ -19,3 +19,4 @@ MonoBehaviour:
   difficulty: 0
   supportedJobType: 00000000010000000200000003000000
   unitGroups: []
+  spaceObjectGroups: []

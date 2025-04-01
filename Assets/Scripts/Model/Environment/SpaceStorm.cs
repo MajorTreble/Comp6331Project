@@ -74,7 +74,7 @@ namespace Model.Environment {
                 if (rb.CompareTag("Player"))
                 {
                     CameraFollow.Inst?.StartShake(0.3f);
-                    Debug.Log($"[SpaceStorm] Applying turbulence to Player.");
+                    Utils.DebugLog($"[SpaceStorm] Applying turbulence to Player.");
                 }
             }
         }
@@ -82,11 +82,11 @@ namespace Model.Environment {
         // Reset Effects When Object Leaves Storm
         void OnObjectExitStorm(Rigidbody rb)
         {
-            Debug.Log($"[SpaceStorm] {rb.gameObject.name} LEFT the storm.");
+            Utils.DebugLog($"[SpaceStorm] {rb.gameObject.name} LEFT the storm.");
 
             if (rb.CompareTag("Player"))
             {
-                Debug.Log("[SpaceStorm] Resetting Player turbulence effect.");
+                Utils.DebugLog("[SpaceStorm] Resetting Player turbulence effect.");
                 CameraFollow.Inst?.StopShake();
             }
         

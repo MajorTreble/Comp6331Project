@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
-  m_Name: Job_04
+  m_Name: Job18_Solo_3
   m_EditorClassIdentifier: 
-  jobName: Deliver Job 01
-  jobDescription: Placeholder Description
+  jobName: Deliver Self
+  jobDescription: Deliver 1 Self
   jobType: 3
-  scenario: {fileID: 11400000, guid: 0fc47e1f6dfed0b43987330f77350826, type: 2}
-  rewardCoins: 1000
-  rewardType: 1
-  rewardRep: 600
+  scenario: {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
+  rewardCoins: 250
+  rewardType: 3
+  rewardRep: 170
   jobTarget: 5
   quantity: 1
-  dangerValue: 0
+  dangerValue: 2

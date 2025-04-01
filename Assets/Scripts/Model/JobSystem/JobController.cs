@@ -38,6 +38,7 @@ namespace Controller
                 TargetController.Inst.showPortal = true;
             }
 
+
             JobView.Inst.UpdateJob();
         }
         
@@ -45,7 +46,8 @@ namespace Controller
         public void FailJob()
         {
             jobStatus = JobStatus.Failed;
-            TargetController.Inst.showPortal = true;
+            if(TargetController.Inst != null)
+                TargetController.Inst.showPortal = true;
             JobView.Inst.UpdateJob();
         }
 

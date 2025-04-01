@@ -26,6 +26,11 @@ public class ShipHUD : MonoBehaviour
 		shieldsImage = ui.transform.Find("Shields").GetComponent<Image>();		
 		sld_Speed = ui.transform.Find("Sld_Speed").GetComponent<Slider>();
 
+		
+	}
+
+	private void Start() 
+	{
 		if (GameManager.Instance.playerShip != null)
 		{
 			ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();

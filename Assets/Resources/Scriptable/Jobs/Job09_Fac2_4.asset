@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
-  m_Name: Job_03
+  m_Name: Job09_Fac2_4
   m_EditorClassIdentifier: 
-  jobName: Mine Job 01
-  jobDescription: Placeholder Description
-  jobType: 2
-  scenario: {fileID: 11400000, guid: 0fc47e1f6dfed0b43987330f77350826, type: 2}
-  rewardCoins: 350
-  rewardType: 3
-  rewardRep: 150
-  jobTarget: 4
-  quantity: 10
-  dangerValue: 0
+  jobName: Defend Faction2
+  jobDescription: Defend 3 Faction2
+  jobType: 1
+  scenario: {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
+  rewardCoins: 250
+  rewardType: 1
+  rewardRep: 170
+  jobTarget: 1
+  quantity: 3
+  dangerValue: 2

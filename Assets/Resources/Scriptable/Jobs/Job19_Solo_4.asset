@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
-  m_Name: Job_02
+  m_Name: Job19_Solo_4
   m_EditorClassIdentifier: 
-  jobName: Hunt Job 01
-  jobDescription: Placeholder Description
-  jobType: 0
-  scenario: {fileID: 11400000, guid: 0fc47e1f6dfed0b43987330f77350826, type: 2}
-  rewardCoins: 500
-  rewardType: 2
-  rewardRep: 500
-  jobTarget: 1
-  quantity: 1
-  dangerValue: 0
+  jobName: Mine Self
+  jobDescription: Mine 10 Asteroid
+  jobType: 2
+  scenario: {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
+  rewardCoins: 250
+  rewardType: 3
+  rewardRep: 170
+  jobTarget: 4
+  quantity: 10
+  dangerValue: 2

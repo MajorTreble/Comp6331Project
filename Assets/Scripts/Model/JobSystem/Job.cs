@@ -6,6 +6,9 @@ public enum JobType{Hunt, Defend, Mine, Deliver};
 public enum JobTarget{Faction1, Faction2, Pirate, Solo, Asteroid, Self};
 public enum RepType{Faction1, Faction2, Pirate, Self};
 
+
+
+
 namespace Model
 {
     [CreateAssetMenu(fileName = "Job", menuName = "ScriptableObjects/Job", order = 0)]

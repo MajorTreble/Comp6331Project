@@ -24,7 +24,7 @@ namespace Manager
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            SceneManager.sceneLoaded += OnSceneLoaded; // Debug
+            
             SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
         }
 
@@ -76,10 +76,6 @@ namespace Manager
             }
         }
 
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            Debug.Log("Check After Build");
-        }
 
         void OnSceneUnloaded(Scene scene)
         {

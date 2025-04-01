@@ -17,6 +17,9 @@ public class JobView : MonoBehaviour
     Text jobDescription;
     Text jobFeedback;
 
+
+    public Transform reputationList;
+
     public int jobIndex = -1;
 
     public static JobView Inst { get; private set; } //Singleton
@@ -45,11 +48,8 @@ public class JobView : MonoBehaviour
 
     void Start()
     {
-        SetTestButtons();
-
-        
+        SetTestButtons();        
         UpdateJob();  
-
     }
 
     public void LookForJobFeeback()
@@ -127,6 +127,55 @@ public class JobView : MonoBehaviour
         }
     }
 
+    public void ListReputations()
+    {
+        GameObject template = GameObject.Find("ReputationTemplate");
+        GameObject go = template;
+
+        //Debug.Log(PlayerReputation.Inst.reputations);        
+        for (int i = 0; i < PlayerReputation.Inst.reputations.Count; i++)
+        {            
+            if(i>0)
+                go = Instantiate(template, template.transform.parent);
+        }
+        
+
+        UpdateReputations();
+    }
+
+    void UpdateReputations()
+    {
+        for (int i = 0; i < PlayerReputation.Inst.reputations.Count; i++)
+        {
+            UpdateReputation(i);            
+        }
+    }
+
+    void UpdateReputation(int _index)
+    {
+        reputationList = GameObject.Find("ReputationList").transform;
+        Transform tr = reputationList.GetChild(_index);
+        Reputation rep = PlayerReputation.Inst.reputations[_index];
+
+        Slider sld = Utils.FindChildByName(tr, "Sld_Value").GetComponent<Slider>();
+        sld.maxValue = 1000;
+        sld.value = Mathf.Abs(rep.value);
+
+        if(rep.value > 0)
+        {
+            Utils.FindChildByName(sld.transform, "Fill").GetComponent<Image>().color = Color.green;
+            sld.direction = Slider.Direction.LeftToRight;
+        }else
+        {
+            Utils.FindChildByName(sld.transform, "Fill").GetComponent<Image>().color = Color.red;
+            sld.direction = Slider.Direction.RightToLeft;
+        } 
+        
+        Text txt = Utils.FindChildByName(tr, "Txt_Name").GetComponent<Text>();
+        txt.text = rep.type + " [" + rep.value + "]";
+    }
+
+
     public void AcceptJob()
     {
         if(JobController.Inst.currJob == null)
@@ -140,6 +189,7 @@ public class JobView : MonoBehaviour
         if(JobController.Inst.currJob != null)
             JobMenuController.Inst.FinishJob();
         UpdateButtons();
+        UpdateReputations();
     }
 
     public void Departure()
