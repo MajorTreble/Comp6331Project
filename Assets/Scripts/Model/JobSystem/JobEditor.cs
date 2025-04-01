@@ -6,7 +6,9 @@ using System.IO;
 using UnityEditor;
 using Model;
 
-//[CustomEditor(typeof(Job))]
+/* 
+//Created to change jobname and decription in a easier and fast way, no real changes for the game.
+[CustomEditor(typeof(Job))]
 public class JobEditor : Editor
 {
     public override void OnInspectorGUI()
@@ -43,3 +45,4 @@ public class JobEditor : Editor
     }
 
 }
+*/
