@@ -69,8 +69,7 @@ namespace Model.AI
 
 		private SteeringAgent steeringAgent;
 		private Wander wander;
-
-
+		private bool hostile;
 
 		public virtual void Start()
 		{
@@ -330,6 +329,34 @@ namespace Model.AI
 			return GetPlayerReputation(behavior.faction) < behavior.reputationThreshold;
 		}
 
+		private bool IsShipMissionTarget(AIShip other)
+		{
+			if (JobController.Inst.currJob == null || other == null) return false;
+
+			return JobController.Inst.currJob.jobTarget switch
+			{
+				JobTarget.Colonial => other.factionType == FactionType.Colonial && other.factionType != this.factionType,
+				JobTarget.Earth => other.factionType == FactionType.Earth && other.factionType != this.factionType,
+				JobTarget.Pirate => other.factionType == FactionType.Pirates && other.factionType != this.factionType,
+				JobTarget.Solo => other.factionType == FactionType.Solo && other.factionType != this.factionType,
+				_ => false
+			};
+		}
+
+		private bool IsShipMissionAlly(AIShip other)
+		{
+			if (JobController.Inst.currJob == null || other == null) return false;
+
+			return JobController.Inst.currJob.rewardType switch
+			{
+				RepType.Colonial => other.factionType == FactionType.Colonial,
+				RepType.Earth => other.factionType == FactionType.Earth,
+				RepType.Pirate => other.factionType == FactionType.Pirates,
+				RepType.Self => other.factionType == FactionType.Solo,
+				_ => false
+			};
+		}
+
 		public void TakeDamage(GameObject attacker)
 		{
 			Debug.Log($"[{name}] was hit by {attacker.name}");
@@ -392,21 +419,40 @@ namespace Model.AI
 
 		private void EvaluateCombatTarget()
 		{
+			if (IsMissionTargetFaction())
+			{
+				Debug.Log($"[{name}] I am a mission target. Looking for player to attack.");
+				currentTarget = player;
+				requestedState = AIState.Seek;
+				return;
+			}
+
+			if (IsMissionAllyFaction())
+			{
+				Debug.Log($"[{name}] My faction is allied in this mission. Roaming.");
+				currentTarget = null;
+				requestedState = AIState.Roaming;
+				return;
+			}
+
+			// Fallback: Use reputation + fuzzy logic to decide about player
 			if (player != null && ShouldAttackPlayer())
 			{
 				float dist = Vector3.Distance(transform.position, player.position);
 				if (dist <= behavior.detectionRadius)
 				{
+					Debug.Log($"[{name}] Player is enemy. Engaging.");
 					currentTarget = player;
 					requestedState = AIState.Seek;
 					return;
 				}
 			}
 
-			// Look for nearest enemy ship (excluding player)
+			// Look for other hostile AI ships
 			AIShip enemyShip = FindNearestHostile();
 			if (enemyShip != null)
 			{
+				Debug.Log($"[{name}] Found hostile target: {enemyShip.name}");
 				currentTarget = enemyShip.transform;
 				requestedState = AIState.Seek;
 				return;
@@ -415,13 +461,23 @@ namespace Model.AI
 			currentTarget = null;
 			requestedState = AIState.Roaming;
 		}
+		public static bool IsHostileDuringMission(FactionType self, FactionType other)
+		{
+			var job = JobController.Inst.currJob;
+			if (job == null) return false;
 
+			// If I (self) am in the mission's target faction, anyone from the reward faction is hostile to me.
+			bool selfIsTarget = job.jobTarget.ToString() == self.ToString();
+			bool otherIsReward = job.rewardType.ToString() == other.ToString();
 
+			return selfIsTarget && otherIsReward;
+		}
 
 		private AIShip FindNearestHostile()
 		{
 			AIShip nearest = null;
 			float nearestDist = float.MaxValue;
+
 			foreach (Ship ship in SpawningManager.Instance.shipList)
 			{
 				if (ship == this) continue;
@@ -429,8 +485,14 @@ namespace Model.AI
 				AIShip other = ship as AIShip;
 				if (other == null) continue;
 
-				bool hostile = (other.factionType != this.factionType && IsHostile(factionType, other.factionType));
+				hostile = IsShipMissionTarget(other) ||
+				IsHostileDuringMission(this.factionType, other.factionType) ||
+				(other.factionType != this.factionType && IsHostile(factionType, other.factionType));
+
+
 				if (!hostile) continue;
+				if (hostile)
+					Debug.Log($"[{name}] Found hostile: {other.name} due to mission logic.");
 
 				float d = Vector3.Distance(transform.position, other.transform.position);
 				if (d < nearestDist)
@@ -439,8 +501,10 @@ namespace Model.AI
 					nearest = other;
 				}
 			}
+
 			return nearest;
 		}
+
 
 		private void UpdateStateMachine()
 		{
@@ -488,8 +552,8 @@ namespace Model.AI
 
 			return behavior.faction switch
 			{
-				AIBehavior.Faction.Faction1 when JobController.Inst.currJob.jobTarget == JobTarget.Faction1 => true,
-				AIBehavior.Faction.Faction2 when JobController.Inst.currJob.jobTarget == JobTarget.Faction2 => true,
+				AIBehavior.Faction.Colonial when JobController.Inst.currJob.jobTarget == JobTarget.Colonial => true,
+				AIBehavior.Faction.Earth when JobController.Inst.currJob.jobTarget == JobTarget.Earth => true,
 				AIBehavior.Faction.Pirates when JobController.Inst.currJob.jobTarget == JobTarget.Pirate => true,
 				_ => false
 			};
@@ -501,8 +565,8 @@ namespace Model.AI
 
 			return behavior.faction switch
 			{
-				AIBehavior.Faction.Faction1 when JobController.Inst.currJob.rewardType == RepType.Faction1 => true,
-				AIBehavior.Faction.Faction2 when JobController.Inst.currJob.rewardType == RepType.Faction2 => true,
+				AIBehavior.Faction.Colonial when JobController.Inst.currJob.rewardType == RepType.Colonial => true,
+				AIBehavior.Faction.Earth when JobController.Inst.currJob.rewardType == RepType.Earth => true,
 				AIBehavior.Faction.Pirates when JobController.Inst.currJob.rewardType == RepType.Pirate => true,
 				_ => false
 			};
@@ -511,7 +575,7 @@ namespace Model.AI
 
 		public virtual void UpdateSeek()
 		{
-			if (player == null || steeringAgent == null) return;
+			if (currentTarget == null || steeringAgent == null) return;
 
 			if (!ShouldAttackPlayer())
 			{
@@ -519,7 +583,7 @@ namespace Model.AI
 				return;
 			}
 
-			float dist = Vector3.Distance(transform.position, player.position);
+			float dist = Vector3.Distance(transform.position, currentTarget.position);
 			if (dist <= behavior.attackRange)
 			{
 				requestedState = AIState.Attack;
@@ -532,12 +596,23 @@ namespace Model.AI
 			}
 
 			steeringAgent.UnTrackTarget();
-			steeringAgent.targetPosition = player.position;
-			Debug.Log($"[{name}] Seeking target: {player.name}");
+			steeringAgent.targetPosition = currentTarget.position;
+			Vector3 direction = (currentTarget.position - transform.position).normalized;
+			Vector3 avoidance = ComputeObstacleAvoidance(direction);
+			if (avoidance != Vector3.zero)
+			{
+				direction = (direction + avoidance).normalized;
+			}
+
+			Debug.Log($"[{name}] Seeking target: {currentTarget.name}");
 
 			Seek seek = new Seek();
 			var steering = seek.GetSteering(steeringAgent);
-			rb.velocity += steering.linear * Time.deltaTime;
+			//rb.velocity += steering.linear * Time.deltaTime;
+			rb.velocity += (steering.linear + avoidance) * Time.deltaTime;
+
+			RotateTowardTarget(direction, behavior.rotationSpeed);
+
 		}
 
 
@@ -606,9 +681,9 @@ namespace Model.AI
 			switch (factionType)
 			{
 				case Faction.FactionType.Colonial:
-					return JobController.Inst.currJob.jobTarget == JobTarget.Faction1;
+					return JobController.Inst.currJob.jobTarget == JobTarget.Colonial;
 				case Faction.FactionType.Earth:
-					return JobController.Inst.currJob.jobTarget == JobTarget.Faction2;
+					return JobController.Inst.currJob.jobTarget == JobTarget.Earth;
 				case Faction.FactionType.Pirates:
 					return JobController.Inst.currJob.jobTarget == JobTarget.Pirate;
 				case Faction.FactionType.Solo:
@@ -625,9 +700,9 @@ namespace Model.AI
 			switch (factionType)
 			{
 				case Faction.FactionType.Colonial:
-					return JobController.Inst.currJob.rewardType == RepType.Faction1;
+					return JobController.Inst.currJob.rewardType == RepType.Colonial;
 				case Faction.FactionType.Earth:
-					return JobController.Inst.currJob.rewardType == RepType.Faction2;
+					return JobController.Inst.currJob.rewardType == RepType.Earth;
 				case Faction.FactionType.Pirates:
 					return JobController.Inst.currJob.rewardType == RepType.Pirate;
 				case Faction.FactionType.Solo:
@@ -738,6 +813,7 @@ namespace Model.AI
 
 		public virtual void Attack()
 		{
+
 			if (Time.time < lastAttackTime + behavior.attackCooldown) return;
 			if (laserPrefab == null || firePoint == null) return;
 
@@ -745,6 +821,13 @@ namespace Model.AI
 			GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation);
 
 			Debug.Log($"[{name}] Engaging target: {currentTarget?.name ?? "None"}");
+
+			EnemyLaser laserScript = laser.GetComponent<EnemyLaser>();
+			if (laserScript != null)
+			{
+				laserScript.shooter = gameObject;
+				laserScript.shooterFaction = factionType;
+			}
 
 			// Just move the laser forward using physics or custom code
 			Rigidbody laserRb = laser.GetComponent<Rigidbody>();

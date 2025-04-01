@@ -6,6 +6,7 @@ using Controller;
 
 public class PirateShipScript : AIShip
 {
+	/*
 	private float originalDetectionRadius;
 	private float fleeHealthThreshold = 0.3f; // Flee if health is below 30%
 	//private bool isFleeing = false;
@@ -33,5 +34,6 @@ public class PirateShipScript : AIShip
 			requestedState = AIState.Flee;
 		}
 	}
+	*/
 
 }

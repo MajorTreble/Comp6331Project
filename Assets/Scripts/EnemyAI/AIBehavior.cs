@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New AI Behavior", menuName = "AI/Behavior")]
 public class AIBehavior : ScriptableObject
 {
-	public enum Faction { Faction1, Faction2, Pirates, Solo }
+	public enum Faction { Colonial, Earth, Pirates, Solo }
 	public enum GroupMode { None, Formation }
 
 	[Header("General Settings")]

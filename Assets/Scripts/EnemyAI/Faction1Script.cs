@@ -5,6 +5,7 @@ using Controller;
 
 public class Faction1Script : AIShip
 {
+	/*
 	private float temporaryChaseSpeed;
 	private float temporaryAttackCooldown;
 
@@ -76,5 +77,5 @@ public class Faction1Script : AIShip
 		}
 	}
 
-
+	*/
 }

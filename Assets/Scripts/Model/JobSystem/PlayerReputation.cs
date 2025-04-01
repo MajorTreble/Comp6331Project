@@ -23,8 +23,8 @@ public class PlayerReputation : MonoBehaviour
     
     public void Start()
     {
-        reputations.Add(new Reputation (RepType.Faction1, 0));
-        reputations.Add(new Reputation (RepType.Faction2, 0));
+        reputations.Add(new Reputation (RepType.Colonial, 0));
+        reputations.Add(new Reputation (RepType.Earth, 0));
         reputations.Add(new Reputation (RepType.Pirate, 0));
         reputations.Add(new Reputation (RepType.Self, 0));     
     }
