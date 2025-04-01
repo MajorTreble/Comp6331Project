@@ -131,7 +131,7 @@ public class Faction2Script : AIShip
 
 		if (distanceToPlayer < behavior.attackRange && Time.time > lastAttackTime + attackCooldown)
 		{
-			Attack();
+			//Attack();
 			lastAttackTime = Time.time;
 		}
 	}

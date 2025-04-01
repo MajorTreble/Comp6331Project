@@ -24,3 +24,7 @@ MonoBehaviour:
   rotationSpeed: 8
   attackRange: 20
   attackCooldown: 1.5
+  groupMode: 1
+  aggressionCalmValue: 1
+  aggressionAverageValue: 4
+  aggressionAggressiveValue: 10
