@@ -18,6 +18,7 @@ namespace Model.AI.BehaviorTree
 				{
 					new Condition( () => aiShip.currentState != AIState.Seek ),
 					new Condition( () => AIHelper.IsTargetInRange(aiShip) ),
+
 					new SetAIStateNode(aiShip, AIState.Seek)
 				}),
 				new SetAIStateNode(aiShip, AIState.Roam)

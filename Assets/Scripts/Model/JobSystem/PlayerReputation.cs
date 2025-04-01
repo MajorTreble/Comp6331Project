@@ -23,10 +23,15 @@ namespace Model
 
         public void Start()
         {
-            reputations.Add(new Reputation(RepType.Faction1, 0));
-            reputations.Add(new Reputation(RepType.Faction2, 0));
-            reputations.Add(new Reputation(RepType.Pirate, 0));
-            reputations.Add(new Reputation(RepType.Self, 0));
+            reputations.Add(new Reputation (RepType.Colonial, 0));
+            reputations.Add(new Reputation (RepType.Earth, 0));
+            reputations.Add(new Reputation (RepType.Pirate, 0));
+            reputations.Add(new Reputation (RepType.Self, 0));     
+        }
+
+        public float GetReputation(Faction faction)
+        {
+            return 0.0f;
         }
 
         public ReputationStatus GetReputationStatus(Faction faction)
