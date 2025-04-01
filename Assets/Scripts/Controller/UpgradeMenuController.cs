@@ -24,7 +24,7 @@ public class UpgradeMenuController : MonoBehaviour
         upgradeList = GameObject.Find("UpgradeList").transform;
 
         txt_Coins = GameObject.Find("Txt_Coins").GetComponent<Text>();
-        txt_Coins.text = "Coins:" + PlayerReputation.Inst.coins;
+        txt_Coins.text = "Coins:" + GameManager.Instance.reputation;
     }
 
     void CreateUpgrades()
@@ -119,9 +119,10 @@ public class UpgradeMenuController : MonoBehaviour
         
         int upgradeCost = uc.upgrList[_entryIndex].cost[uc.upgrList[_entryIndex].lvl];
 
-        if(PlayerReputation.Inst.coins > upgradeCost)
-        {            
-            PlayerReputation.Inst.coins -= upgradeCost;
+        PlayerReputation reputation = GameManager.Instance.reputation;
+        if (reputation.coins > upgradeCost)
+        {
+            reputation.coins -= upgradeCost;
             uc.upgrList[_entryIndex].lvl += 1;
             UpdateList(_entryIndex);
         }
@@ -143,6 +144,6 @@ public class UpgradeMenuController : MonoBehaviour
 
     public void UpdateCoins()
     {
-        txt_Coins.text = "Coins:" + PlayerReputation.Inst.coins;
+        txt_Coins.text = "Coins:" + GameManager.Instance.reputation.coins;
     }
 }

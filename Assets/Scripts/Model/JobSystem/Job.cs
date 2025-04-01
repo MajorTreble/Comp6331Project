@@ -25,6 +25,9 @@ namespace Model
         public JobTarget jobTarget = JobTarget.Faction1;
         public int quantity = 1;
 
+        public Faction targetFaction = null;
+        public Faction allyFaction = null;
+
         public int dangerValue = 0;
  
 

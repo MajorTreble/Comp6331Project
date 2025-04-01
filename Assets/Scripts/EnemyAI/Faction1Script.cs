@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using Model;
 using Model.AI;
 using Controller;
 
@@ -27,7 +28,7 @@ public class Faction1Script : AIShip
 	public override void UpdateSeek()
 	{
 		// Mission-specific behavior
-		if (IsMissionTarget() && JobController.Inst.currJob.jobType == JobType.Hunt)
+		if (AIHelper.IsMissionTarget(target) && JobController.Inst.currJob.jobType == JobType.Hunt)
 		{
 			// Become more aggressive when being hunted
 			float tempSpeed = behavior.chaseSpeed * 1.3f;
@@ -50,6 +51,8 @@ public class Faction1Script : AIShip
 
 	protected override void AttackEnemiesNearPlayer()
 	{
+		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+
 		if (player == null || behavior == null) return;
 
 		// Prioritize attacking enemies targeting the player
@@ -61,8 +64,10 @@ public class Faction1Script : AIShip
 
 		foreach (Collider enemy in nearbyEnemies)
 		{
+			
+			Job job = JobController.Inst.currJob;
 			AIShip enemyAI = enemy.GetComponent<AIShip>();
-			if (enemyAI != null && enemyAI.ShouldAttackPlayer())
+			if (enemyAI != null && AIHelper.ShouldAttackPlayer(enemyAI, player.gameObject, job, enemyAI.faction))
 			{
 				// Rotate and attack the hostile enemy
 				Vector3 targetDirection = (enemy.transform.position - transform.position).normalized;
