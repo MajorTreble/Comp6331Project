@@ -16,7 +16,7 @@ namespace Model.AI.BehaviorTree
 			{
 				new Sequence(new List<Node>
 				{
-					new Condition( () => aiShip.currentState != AIState.Seek ),
+					new Condition( () => aiShip.currentState != AIShip.AIState.Seek ),
 					new Condition( () => aiShip.IsPlayerInRange() ),
 					new SetAIStateNode(aiShip, AIState.Seek)
 				}),

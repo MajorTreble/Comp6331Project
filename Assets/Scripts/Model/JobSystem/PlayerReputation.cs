@@ -36,7 +36,7 @@ public class PlayerReputation : MonoBehaviour
     
     public void Start()
     {
-            
+
     }
 
     public void ChangeReputation(RepType _type, int _value)
