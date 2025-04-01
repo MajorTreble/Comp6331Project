@@ -49,6 +49,11 @@ public class TargetController : MonoBehaviour
         showPortal = false;
 
         GameObject template = GameObject.Find("TargetTemplate");
+        if (template == null)
+		{
+            return;
+		}
+
         GameObject go = template;
         targetOriSize = template.GetComponent<Image>().rectTransform.sizeDelta;
 
@@ -95,7 +100,7 @@ public class TargetController : MonoBehaviour
             }
 
             targetsIcon[0].gameObject.SetActive(true);
-            SetTarget(SpawningManager.Instance.portalPosition, targetsIcon[0]);
+            SetTarget(GameManager.Instance.portalPosition, targetsIcon[0]);
         }else
         {
             for (int i = 0; i < targets.Count; i++)

@@ -12,8 +12,6 @@ namespace Manager
     {
         public static SpawningManager Instance { get; private set; }
 
-        public Vector3 portalPosition = new Vector3(25, 25, 25);
-
         public List<Ship> shipList = new List<Ship>();
 
         void Awake()
@@ -26,12 +24,8 @@ namespace Manager
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-
             SceneManager.sceneLoaded += OnSceneLoaded; // Debug
             SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
-
-            portalPosition = GameObject.Find("HarborPortal").transform.position;
-
         }
 
         public GameObject Spawn(SpawnParams spawnParams)
