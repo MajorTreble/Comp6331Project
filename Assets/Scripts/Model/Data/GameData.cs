@@ -12,6 +12,8 @@ namespace Model.Data
     {
         public bool isNewGame = true;
         public bool hasPlayedTutorial = false;
+
+        public PlayerReputation reputation = null;
     }
 
 }
