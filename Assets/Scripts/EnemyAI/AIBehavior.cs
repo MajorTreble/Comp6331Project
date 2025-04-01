@@ -4,7 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New AI Behavior", menuName = "AI/Behavior")]
 public class AIBehavior : ScriptableObject
 {
-	public enum Faction { Faction1, Faction2, Pirates, Solo }
+	public enum Faction { Colonial, Earth, Pirates, Solo }
+	public enum GroupMode { None, Formation }
 
 	[Header("General Settings")]
 	public Faction faction;
@@ -14,8 +15,7 @@ public class AIBehavior : ScriptableObject
 	public float allyAssistRange = 20f; // Range within which the AI will assist the player
 	[Range(0, 2)] public float missionResponseAggression = 1f;
 	public float detectionRadius = 25f;
-
-
+	
 	[Header("Movement")]
 	public float roamSpeed;
 	public float chaseSpeed;
@@ -24,4 +24,13 @@ public class AIBehavior : ScriptableObject
 	[Header("Combat")]
 	public float attackRange;
 	public float attackCooldown;
+
+	[Header("Group Behavior")]
+	public GroupMode groupMode = GroupMode.None;
+
+	[Header("Aggression Tuning")]
+	public float aggressionCalmValue = 1f; 
+	public float aggressionAverageValue = 4f;
+	public float aggressionAggressiveValue = 10f; 
+
 }
