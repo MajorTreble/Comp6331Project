@@ -21,8 +21,6 @@ public class Faction1Script : AIShip
 		{
 			behavior = Resources.Load<AIBehavior>("ScriptableObjects/Faction1Behavior");
 		}
-
-		SetNewRoamTarget();
 	}
 
 	public override void UpdateSeek()
@@ -69,9 +67,6 @@ public class Faction1Script : AIShip
 			AIShip enemyAI = enemy.GetComponent<AIShip>();
 			if (enemyAI != null && AIHelper.ShouldAttackPlayer(enemyAI, player.gameObject, job, enemyAI.faction))
 			{
-				// Rotate and attack the hostile enemy
-				Vector3 targetDirection = (enemy.transform.position - transform.position).normalized;
-				RotateTowardTarget(targetDirection, behavior.rotationSpeed);
 
 				if (Time.time > lastAttackTime + behavior.attackCooldown)
 				{

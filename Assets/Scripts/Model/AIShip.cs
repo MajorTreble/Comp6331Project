@@ -1,7 +1,9 @@
 using UnityEngine;
 
+using AI.Steering;
 using AI.BehaviorTree;
-using Controller; // remove this
+using Controller;
+using Manager;
 using Model.AI.BehaviorTree;
 
 namespace Model.AI
@@ -15,20 +17,12 @@ namespace Model.AI
 
     public class AIShip : Ship
     {
-        public Rigidbody rb;
-        protected Vector3 roamTarget;
-
         public Faction faction = null;
         public AIBehavior behavior;
 
         public float detectionRadius = 25f;
-        public float roamRadius = 150f;
-        //public float roamSpeed = 3f;
-        public float avoidanceForce = 5f; // Force to steer away from obstacles and ships
 
-        public float obstacleAvoidanceRange = 10f; // Range to detect obstacles
         public LayerMask obstacleLayer; // Layer for obstacles (e.g., asteroids)
-        public float obstacleAvoidanceWeight = 5f; // Strength of avoidance
 
         //public float attackRange = 10f; // Attack range
         public float attackCooldown = 2f; // Cooldown between attacks
@@ -47,9 +41,9 @@ namespace Model.AI
 
         protected AIShipBehaviorTree BT = new AIShipBehaviorTree();
 
-        public virtual void Start()
+        public override void Start()
         {
-            this.rb = GetComponent<Rigidbody>();
+            base.Start();
 
             this.target = GameObject.FindGameObjectWithTag("Player").GetComponent<Ship>();
 
@@ -158,26 +152,6 @@ namespace Model.AI
             return base.IsJobTarget();
         }
 
-        protected void RotateTowardTarget(Vector3 direction, float rotationSpeed = 5f)
-        {
-            if (direction != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    targetRotation,
-                    Time.deltaTime * rotationSpeed
-                );
-            }
-        }
-
-        protected void SetNewRoamTarget()
-        {
-            // Set a random target within the roam radius
-            roamTarget = transform.position + Random.insideUnitSphere * roamRadius;
-            roamTarget.y = 0; // Keep the target on the same horizontal plane
-        }
-
         protected virtual void AttackEnemiesNearPlayer()
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -197,8 +171,7 @@ namespace Model.AI
                 if (enemyAI && AIHelper.ShouldAttackPlayer(enemyAI, player, job, enemyAI.faction))
                 {
                     Vector3 targetDirection = (enemy.transform.position - transform.position).normalized;
-                    RotateTowardTarget(targetDirection, behavior.rotationSpeed * 0.8f); // Smoother rotation
-
+                    
                     if (Time.time > lastAttackTime + behavior.attackCooldown)
                     {
                         Attack();
@@ -206,28 +179,6 @@ namespace Model.AI
                     }
                 }
             }
-        }
-
-        public Vector3 ComputeObstacleAvoidance(Vector3 currentDirection)
-        {
-            Ray ray = new Ray(transform.position, currentDirection);
-            if (Physics.Raycast(ray, out RaycastHit hit, obstacleAvoidanceRange, obstacleLayer))
-            {
-                Debug.Log("Avoiding obstacle");
-                Vector3 avoidDir = hit.normal;
-
-                if (avoidDir.sqrMagnitude < 0.001f)
-                {
-                    avoidDir = Vector3.Cross(currentDirection, Vector3.up);
-                }
-
-                avoidDir.Normalize();
-
-                Vector3 steering = avoidDir * obstacleAvoidanceWeight;
-                return steering;
-            }
-
-            return Vector3.zero;
         }
 
         public virtual void Attack()
@@ -266,7 +217,7 @@ namespace Model.AI
 
         protected void EnterIdle()
         {
-
+            steering.Velocity = Vector3.zero;
         }
 
         protected void ExitIdle()
@@ -282,75 +233,55 @@ namespace Model.AI
 
         protected void EnterRoam()
         {
-            SetNewRoamTarget();
+            steering.movements.Add(new Wander());
+            steering.movements.Add(new LookWhereYouAreGoing());
+
+            CollisionAvoidance avoidance = new CollisionAvoidance();
+            avoidance.weight = 2.0f;
+            foreach (Ship ship in SpawningManager.Instance.shipList)
+            {
+                SteeringAgent agent = ship.steering;
+                if (agent != null)
+                {
+                    avoidance.avoidList.Add(agent);
+                }
+            }
+            steering.movements.Add(avoidance);
         }
 
         protected void ExitRoam()
         {
-
+            steering.movements.Clear();
+            steering.Velocity = Vector3.zero;
         }
 
         protected void UpdateRoam()
         {
-            if (roamTarget == null)
-            {
-                return;
-            }
-
-            // Move toward the roam target
-            Vector3 direction = (roamTarget - transform.position).normalized;
-            Vector3 avoidance = ComputeObstacleAvoidance(direction);
-
-            if (avoidance != Vector3.zero)
-            {
-                direction = (direction + avoidance).normalized;
-            }
-
-            rb.velocity = direction * behavior.roamSpeed;
-
-            // Rotate toward roam target
-            RotateTowardTarget(direction);
-
-            // If close to the target, set a new one
-            if (Vector3.Distance(transform.position, roamTarget) < 5f)
-            {
-                SetNewRoamTarget();
-            }
         }
 
         // Seek //
 
         protected void EnterSeek()
         {
-
+            steering.movements.Add(new Pursue());
+            steering.movements.Add(new LookWhereYouAreGoing());
         }
 
         protected void ExitSeek()
         {
-
+            steering.movements.Clear();
         }
 
         public virtual void UpdateSeek()
         {
+            if (behavior == null)
+            {
+
+            }
+
             Transform player = GameObject.FindGameObjectWithTag("Player").transform;
 
             Vector3 direction = (player.position - transform.position).normalized;
-
-            // If we're a faction ship on defense mission, maintain distance
-            if (JobController.Inst.currJob?.jobType == JobType.Defend &&
-                AIHelper.IsMissionAlly(faction) &&
-                Vector3.Distance(transform.position, player.position) < behavior.attackRange)
-            {
-                direction = -direction; // Back away
-            }
-
-            Vector3 avoidance = ComputeObstacleAvoidance(direction);
-            if (avoidance != Vector3.zero)
-            {
-                direction = (direction + avoidance).normalized;
-            }
-
-            RotateTowardTarget(direction, behavior.rotationSpeed);
 
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
@@ -373,30 +304,21 @@ namespace Model.AI
 
         protected void EnterFlee()
         {
-
+            steering.movements.Add(new Flee());
+            steering.movements.Add(new Evade());
         }
 
         protected void ExitFlee()
         {
-
+            steering.movements.Clear();
+            steering.Velocity = Vector3.zero;
         }
 
         protected void UpdateFlee()
         {
-            Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-
-            Vector3 fleeDirection = (transform.position - player.position).normalized;
-            Vector3 avoidance = ComputeObstacleAvoidance(fleeDirection);
-            if (avoidance != Vector3.zero)
-            {
-                fleeDirection = (fleeDirection + avoidance).normalized;
-            }
-
-            RotateTowardTarget(fleeDirection, behavior.rotationSpeed * 1.5f); // Faster rotation while fleeing
-            rb.velocity = transform.forward * behavior.chaseSpeed * 1.5f; // Faster movement while fleeing
         }
 
-        // Flee //
+        // Ally Assist //
 
         protected void EnterAllyAssist()
         {
@@ -435,16 +357,6 @@ namespace Model.AI
 
             // Smooth movement
             Vector3 direction = (targetPosition - transform.position).normalized;
-            direction = Vector3.Lerp(transform.forward, direction, 0.1f);
-            Vector3 avoidance = ComputeObstacleAvoidance(direction);
-
-            if (avoidance != Vector3.zero)
-            {
-                direction = (direction + avoidance).normalized;
-            }
-
-            // Smooth rotation
-            RotateTowardTarget(direction, behavior.rotationSpeed * 0.8f);
 
             // Use physics-based movement
             rb.AddForce(direction * behavior.chaseSpeed * Time.deltaTime, ForceMode.VelocityChange);

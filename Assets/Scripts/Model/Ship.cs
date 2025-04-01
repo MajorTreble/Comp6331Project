@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using AI.Steering;
 using Controller;
 
 namespace Model
@@ -8,10 +9,18 @@ namespace Model
     public class Ship : MonoBehaviour
     {
         public ShipData oriData;
+        public Rigidbody rb;
+        public SteeringAgent steering = null;
 
         public int ammo;
         public float health;
         public float shields;
+
+        public virtual void Start()
+        {
+            this.rb = GetComponent<Rigidbody>();
+            this.steering = new SteeringAgent(gameObject, rb);
+        }
 
         public virtual void SetStats()
         {

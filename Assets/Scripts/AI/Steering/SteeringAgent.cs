@@ -7,6 +7,7 @@ namespace AI.Steering
     public class SteeringAgent
     {
         public GameObject owner;
+        public Rigidbody rigidBody;
 
         public float initialMaxSpeed;
         public float maxSpeed;
@@ -48,7 +49,7 @@ namespace AI.Steering
 
         public Vector3 Velocity { get; set; }
 
-        public Transform transform 
+        public Transform transform
         {
             get => owner.transform;
         }
@@ -63,17 +64,18 @@ namespace AI.Steering
             trackedTarget = null;
         }
 
-        public SteeringAgent(GameObject owner)
-		{
+        public SteeringAgent(GameObject owner, Rigidbody rigidBody)
+        {
             this.owner = owner;
+            this.rigidBody = rigidBody;
         }
 
-		public void Update()
+        public void Update()
         {
             if (!owner)
-			{
+            {
                 return;
-			}
+            }
 
             if (debug)
             {
@@ -102,7 +104,14 @@ namespace AI.Steering
                 transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * rotation, rotationSpeed * Time.deltaTime);
             }
 
-            transform.position += Velocity * Time.deltaTime;
+            if (rigidBody)
+            {
+                rigidBody.transform.position += Velocity * Time.deltaTime;
+            }
+            else
+            {
+                transform.position += Velocity * Time.deltaTime;
+            }
         }
 
         private void GetKinematicAvg(out Vector3 kinematicAvg, out Quaternion rotation)
