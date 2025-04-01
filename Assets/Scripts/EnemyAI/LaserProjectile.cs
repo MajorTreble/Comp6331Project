@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Model;
 using Model.AI;
-using Codice.CM.Triggers;
 
 public class LaserProjectile : MonoBehaviour
 {
