@@ -11,9 +11,7 @@ namespace Controller
         public static JobController Inst { get; private set; } //Singleton
 
         public JobStatus jobStatus = JobStatus.NotSelected;
-
         public int currJobQtd;
-
         public Job currJob;
 
         private void Awake()
@@ -24,8 +22,6 @@ namespace Controller
                 DontDestroyOnLoad(gameObject);
             }
             else Destroy(gameObject);
-
-
         }
 
     
@@ -35,9 +31,11 @@ namespace Controller
             if(currJobQtd >= currJob.quantity)
             {
                 jobStatus = JobStatus.Concluded;
+                TargetController.Inst.showPortal = true;
             }else if (currJobQtd < 0)
             {
-                jobStatus = JobStatus.Failed;
+                jobStatus = JobStatus.Failed;                
+                TargetController.Inst.showPortal = true;
             }
 
             JobView.Inst.UpdateJob();
@@ -47,6 +45,7 @@ namespace Controller
         public void FailJob()
         {
             jobStatus = JobStatus.Failed;
+            TargetController.Inst.showPortal = true;
             JobView.Inst.UpdateJob();
         }
 
@@ -150,7 +149,7 @@ namespace Controller
                 if(s.CompareTag("Player")) continue;
                 if(s.transform.gameObject.activeSelf == true)
                 {
-                    s.TakeDamage(s.maxHealth);
+                    s.TakeDamage(s.oriData.maxHealth);
                     break;
                 }                
             }     

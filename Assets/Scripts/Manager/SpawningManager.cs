@@ -13,6 +13,8 @@ namespace Manager
     {
         public static SpawningManager Instance { get; private set; }
 
+        public Vector3 portalPosition = new Vector3(25, 25, 25);
+
         public List<Ship> shipList = new List<Ship>();
 		private Dictionary<Faction.FactionType, AIShip> factionLeaders = new Dictionary<Faction.FactionType, AIShip>();
 
@@ -26,8 +28,12 @@ namespace Manager
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
+
             SceneManager.sceneLoaded += OnSceneLoaded; // Debug
             SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
+
+            portalPosition = GameObject.Find("HarborPortal").transform.position;
+
         }
 
 		public GameObject Spawn(SpawnParams spawnParams)
@@ -63,47 +69,43 @@ namespace Manager
 		}
 
 
-		void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        public void SpawnScenario(Scenario scenario)
         {
-            if (scene.name == "MainMenu" || scene.name == "Harbor")
+            foreach (UnitGroup unitGroup in scenario.unitGroups)
             {
-                return;
-            }
-            // Replace with scenario
+                GameObject orgFaction = new GameObject();
+                orgFaction.transform.name = "Org_" + unitGroup.faction.name;
 
-            int numberOfEnemies = 30; // Number of enemies to spawn
-            float spawnRadius = 100f; // Spawn radius
-
-            GameObject org = new GameObject();
-            org.transform.name = "Org_Pirates";
-
-            for (int i = 0; i < numberOfEnemies; i++)
-            {
-                // Random position within spawn radius
-                Vector3 randomPosition = Random.insideUnitSphere * spawnRadius;
-                randomPosition.y = 0.0f;
-				//randomPosition += transform.position;
-				randomPosition += new Vector3(50, 0, 50); // Far from center
-
-				SpawnParams spawnParams = new SpawnParams();
-                spawnParams.position = randomPosition;
-                spawnParams.shipType = ShipType.Light;
-				//spawnParams.shipType = (ShipType)Random.Range(0, 2);
-				List<Faction> AllFactions = new List<Faction>
+                foreach (ShipType type in unitGroup.shipTypes)
                 {
-	                Resources.Load<Faction>("Scriptable/Faction/Pirate Faction"),
-	                Resources.Load<Faction>("Scriptable/Faction/Solo Faction"),
-	                Resources.Load<Faction>("Scriptable/Faction/Colonial Federation"),
-	                Resources.Load<Faction>("Scriptable/Faction/Earth Alliance")
-                };
-				spawnParams.faction = AllFactions[Random.Range(0, AllFactions.Count)];
+                    SpawnParams spawnParams = new SpawnParams();
+                    spawnParams.position = unitGroup.SpawnPosition();
+                    spawnParams.rotation = unitGroup.rotation;
+                    spawnParams.faction = unitGroup.faction;
+                    spawnParams.shipType = type;
+                    spawnParams.parent = orgFaction.transform;
 
-                spawnParams.parent = org.transform;
+                    Spawn(spawnParams);
+                }
+            }
 
-                //PirateShipScript
+            GameObject orgSpaceObject = new GameObject();
+            orgSpaceObject.transform.name = "Org_Space Object";
+            foreach (SpaceObjectGroup spaceObjectGroup in scenario.spaceObjectGroups)
+            {
+                SpawnParams spawnParams = new SpawnParams();
+                spawnParams.position = spaceObjectGroup.SpawnPosition();
+                spawnParams.rotation = spaceObjectGroup.rotation;
+                spawnParams.prefab = spaceObjectGroup.prefab;
+                spawnParams.parent = orgSpaceObject.transform;
 
                 Spawn(spawnParams);
             }
+        }
+
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log("Check After Build");
         }
 
         void OnSceneUnloaded(Scene scene)

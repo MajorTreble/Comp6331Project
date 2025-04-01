@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Controller;
 using Manager;
 using Model;
@@ -10,39 +11,36 @@ using UnityEngine.UI;
 public class UpgradeMenuController : MonoBehaviour
 {
     public Transform upgradeList;
-    
 
     public Text txt_Coins;
 
     public void Start()
     {
         CreateUpgrades();
+        InstantiateUpgrades();
+
+        UpgradeController.Inst.umc = this;
 
         upgradeList = GameObject.Find("UpgradeList").transform;
 
         txt_Coins = GameObject.Find("Txt_Coins").GetComponent<Text>();
+        txt_Coins.text = "Coins:" + PlayerReputation.Inst.coins;
     }
 
     void CreateUpgrades()
     {
-        //if(GameManager.Instance.playerShip == null)
-        //{
-        //    Invoke("CreateUpgrades", 0.3f);
-        //    return;
-        //}
-
-        int[] cost = new int[]{100,150,225,337,506,759,1139,1708,2562,3844};//*1.5
-        float[] valueMult = new float[]{1.3f,1.69f,2.2f,2.86f,3.71f,4.83f,6.27f,8.16f,10.6f,13.79f};//*1.3
-        
-        //PlayerController pc = GameManager.Instance.playerShip.GetComponent<PlayerController>();
-        //PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
-
         UpgradeController uc = UpgradeController.Inst;
+        if(uc.upgrList.Count > 0) return;
+
         uc.upgrList = new List<UpgradeController.Upgrade>();
 
+        int[] cost = new int[]{100,150,225,337,506,759,1139,1708,2562,3844, 5766};//*1.5
+        float[] valueMult = new float[]{1.0f, 1.3f,1.69f,2.2f,2.86f,3.71f,4.83f,6.27f,8.16f,10.6f,13.79f };//*1.3
+
+        ShipData oriData = Resources.Load<ShipData>("Scriptable/Ships/Player");
+
         string upgrName = "MaxHealth";
-        //float baseValue = ship.maxHealth;
-        float baseValue = 100;
+        float baseValue = oriData.maxHealth;
         float[] value = new float[valueMult.Length];
         for (int i = 0; i < valueMult.Length; i++)
         {
@@ -60,7 +58,7 @@ public class UpgradeMenuController : MonoBehaviour
         uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
        
         upgrName = "MaxShield";
-        //baseValue = ship.maxShields;
+        baseValue = oriData.maxShields;
         value = new float[valueMult.Length];
         for (int i = 0; i < valueMult.Length; i++)
         {
@@ -69,7 +67,7 @@ public class UpgradeMenuController : MonoBehaviour
         uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
 
         upgrName = "Acc";
-        //baseValue = pc.acc;
+        baseValue = oriData.acc;
         baseValue = 10;
         value = new float[valueMult.Length];
         for (int i = 0; i < valueMult.Length; i++)
@@ -79,7 +77,7 @@ public class UpgradeMenuController : MonoBehaviour
         uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
 
         upgrName = "MaxSpeed";
-        //baseValue = pc.maxSpeed;
+        baseValue = oriData.maxSpeed;
         baseValue = 50;
         value = new float[valueMult.Length];
         for (int i = 0; i < valueMult.Length; i++)
@@ -88,7 +86,7 @@ public class UpgradeMenuController : MonoBehaviour
         }        
         uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
 
-        InstantiateUpgrades();
+        
     }
 
     void InstantiateUpgrades()
@@ -117,7 +115,7 @@ public class UpgradeMenuController : MonoBehaviour
     public void UpgradeX(int _entryIndex)
     {
         UpgradeController uc = UpgradeController.Inst;
-        if(uc.upgrList[_entryIndex].lvl > 10) return;
+        if(uc.upgrList[_entryIndex].lvl > 9) return;
         
         int upgradeCost = uc.upgrList[_entryIndex].cost[uc.upgrList[_entryIndex].lvl];
 
@@ -132,12 +130,19 @@ public class UpgradeMenuController : MonoBehaviour
     void UpdateList(int _entryIndex)
     {
         UpgradeController uc = UpgradeController.Inst;
-        txt_Coins.text = "Coins:" + PlayerReputation.Inst.coins;
+        
         Transform entry = upgradeList.GetChild(_entryIndex);
+        UpdateCoins();
 
         int lvl = uc.upgrList[_entryIndex].lvl;
+
         Utils.FindChildByName(entry, "Sld_Upgrade").GetComponent<Slider>().value = 0.1f * lvl;
         Utils.FindChildByName(entry, "Txt_Cost").GetComponent<Text>().text = uc.upgrList[_entryIndex].cost[lvl].ToString();
         Utils.FindChildByName(entry, "Txt_Name").GetComponent<Text>().text = uc.upgrList[_entryIndex].name + "\n" + uc.upgrList[_entryIndex].value[lvl].ToString();
     }    
+
+    public void UpdateCoins()
+    {
+        txt_Coins.text = "Coins:" + PlayerReputation.Inst.coins;
+    }
 }

@@ -6,6 +6,9 @@ namespace Controller
 {
     public class SpaceEnvironmentController : MonoBehaviour
     {
+        public static SpaceEnvironmentController Instance { get; private set; }
+
+
         [System.Serializable]
         public class SpaceObject
         {
@@ -22,8 +25,18 @@ namespace Controller
         public float despawnDistance = 200f;
         public float cameraSpawnDistance = 50f;
 
-        private List<GameObject> activeObjects = new List<GameObject>();
+        public List<GameObject> activeObjects = new List<GameObject>();
         private int totalWeight;
+
+        void Awake()
+        {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }            
+            Instance = this;
+        }
 
         void Start()
         {

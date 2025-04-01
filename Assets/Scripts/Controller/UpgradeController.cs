@@ -11,6 +11,13 @@ namespace Controller
     public class UpgradeController : MonoBehaviour
     {
         public static UpgradeController Inst { get; private set; } //Singleton
+        public UpgradeMenuController umc;
+
+        public ShipData upgrData;
+        public float ammo;
+
+
+
         private void Awake()
         {
             if (Inst == null)
@@ -25,9 +32,9 @@ namespace Controller
         public class Upgrade
         {
             public string name = "placeholder_name";        
-            public int lvl = 0; //1-10
-            public int[] cost = new int[10];
-            public float[] value = new float[10];
+            public int lvl = 0; //0-10
+            public int[] cost = new int[11];
+            public float[] value = new float[11];
 
             public Upgrade(string name, int lvl, int[] cost, float[] value)
             {
@@ -38,7 +45,7 @@ namespace Controller
             }
         }
 
-        public List<Upgrade> upgrList = new List<Upgrade>();
+        public List<Upgrade> upgrList;
 
         public void AddUpgrade(Upgrade up)
         {
@@ -56,30 +63,29 @@ namespace Controller
         void UpdateValue(int _entryIndex)
         {
             Upgrade up = upgrList[_entryIndex];
-            PlayerController pc = GameManager.Instance.playerShip.GetComponent<PlayerController>();
             PlayerShip ship = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
             float value = up.value[up.lvl];
 
             switch (up.name)
             {
                 case "MaxHealth":
-                    ship.maxHealth = value;
+                    upgrData.maxHealth = value;
                     break;
 
                 case "Ammo":                
-                    ship.ammo = (int)value;
+                    ammo = (int)value;
                     break;
 
                 case "MaxShield":                
-                    ship.maxShields = value;
+                    upgrData.maxShields = value;
                     break;
 
                 case "Acc":                
-                    pc.acc = value;
+                    upgrData.acc = value;
                     break;
 
                 case "MaxSpeed":
-                    pc.maxSpeed = value;
+                    upgrData.maxSpeed = value;
                     break;
 
                 default:

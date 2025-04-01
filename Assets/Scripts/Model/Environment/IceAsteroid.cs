@@ -15,31 +15,31 @@ namespace Model.Environment {
                 blurEffect = blurObject.GetComponent<IceBlurEffect>();
 
                 if (blurEffect == null)
-                    Debug.LogError("IceBlurEffect script not found on 'BlurEffect' GameObject!");
+                    Debug.LogError("[IceAsteroid] IceBlurEffect script not found on 'BlurEffect' GameObject!");
             }
             else
             {
-                Debug.LogError("BlurEffect GameObject not found in the scene!");
+                Debug.LogError("[IceAsteroid] BlurEffect GameObject not found in the scene!");
             }
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player") || other.CompareTag("PlayerComponent"))
+            if (other.CompareTag("Player"))
             {
-                Debug.Log("Player entered the ice asteroid! Applying blur effect...");
+                Debug.Log("[IceAsteroid] Player entered the ice asteroid! Applying blur effect...");
                 if (blurEffect != null)
                 {
-                    blurEffect.ApplyBlur(4f); // Apply blur for 4 seconds
+                    blurEffect.ApplyBlur(1f);
                 }
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.CompareTag("Player") || other.CompareTag("PlayerComponent"))
+            if (other.CompareTag("Player"))
             {
-                Debug.Log("Player exited the ice asteroid! Removing blur effect...");
+                Debug.Log("[IceAsteroid] Player exited the ice asteroid! Removing blur effect...");
                 if (blurEffect != null)
                 {
                     blurEffect.RemoveBlur();

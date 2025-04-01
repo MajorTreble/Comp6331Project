@@ -69,7 +69,7 @@ namespace Model.Environment {
         {
             if (!canBreak || transform.localScale.x <= minSize)
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
                 return;
             }
 
@@ -100,7 +100,8 @@ namespace Model.Environment {
 
                 SpawnBreakEffect();
 
-                Destroy(gameObject);
+                gameObject.SetActive(false);
+                //Destroy(gameObject);
             }
         }
 

@@ -2,86 +2,85 @@ using UnityEngine;
 
 using Manager;
 using Model;
+using UnityEngine.UI;
 
 namespace Controller
 {
 
     public class PlayerController : MonoBehaviour
     {
-        public float acc;
+       
         public float currSpeed;
-        public float maxSpeed;        
-        public float turnSpeed;
+        public int throttle;
         public float mouseSensitivity;
-
-        bool isSpacePressed = false;
 
 
         Vector3 Velocity;
-
-        //GameObject playerShip;
-        Rigidbody playerShip;
+        Rigidbody playerShipRb;
+        PlayerShip playerShip;
 
         void Start()
         {
-            //GameObject playerShip = GameManager.Instance.playerShip;
-            playerShip = GameManager.Instance.playerShip.GetComponent<Rigidbody>();  
+            playerShipRb = GameManager.Instance.playerShip.GetComponent<Rigidbody>();  
+            playerShip = GameManager.Instance.playerShip.GetComponent<PlayerShip>();  
 
-            acc = acc == 0 ? 10 : acc;
-            maxSpeed = maxSpeed == 0 ? 50 : maxSpeed;
-            turnSpeed = turnSpeed == 0 ? 10 : turnSpeed;
             mouseSensitivity = mouseSensitivity == 0 ? 10 : mouseSensitivity;
-
         }
 
         void LateUpdate()
         {            
-            if (playerShip == null)
+            if(GameManager.Instance.onMenu)
+                return;
+
+            if (playerShipRb == null || playerShip == null)
             {
-                playerShip = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
+                playerShipRb = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
+                playerShip = GameManager.Instance.playerShip.GetComponent<PlayerShip>();  
                 return;
             }
 
-            //Some redundancies on the code, and mouse not working, 
             //Input 
             float vertical = Input.GetAxis("Vertical");
             float horizontal = Input.GetAxis("Horizontal");
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
 
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                throttle += 1;
+            if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+                throttle -= 1;
+
+            throttle = Mathf.Clamp(throttle, -1,3);
+            float desiredMov = playerShip.CurrMaxSpeed * throttle/3;
             //Mov
-            currSpeed = Mathf.Clamp(currSpeed + (vertical * acc * Time.deltaTime), 0, maxSpeed);
+            currSpeed = Mathf.Lerp(currSpeed, desiredMov, playerShip.CurrAcc * Time.deltaTime);
 
             //Rot
-            //playerShip.transform.Rotate(Vector3.left, mouseY * turnSpeed * Time.deltaTime);   //X    
-            //playerShip.transform.Rotate(Vector3.up, mouseX * turnSpeed * Time.deltaTime);   //Y
-            //playerShip.transform.Rotate(Vector3.forward, horizontal * turnSpeed * Time.deltaTime); //Z            
-            Vector3 rotation = new Vector3(-mouseY, mouseX, horizontal) * turnSpeed * Time.deltaTime * mouseSensitivity;
-            
-            //Transform based movement 
-            //playerShip.transform.Rotate(rotation);    
-            //playerShip.transform.position += (playerShip.transform.forward*currSpeed);
-
+            Vector3 rotation = new Vector3(-mouseY, mouseX, horizontal) *  playerShip.CurrTurnSpeed * Time.deltaTime * mouseSensitivity;
+        
             //RigidBody based movement
-            playerShip.MovePosition(playerShip.position + (playerShip.transform.forward * currSpeed * Time.deltaTime));
+            playerShipRb.MovePosition(playerShipRb.position + (playerShipRb.transform.forward * currSpeed * Time.deltaTime));
             Quaternion deltaRotation = Quaternion.Euler(rotation);
-            playerShip.MoveRotation(playerShip.rotation * deltaRotation);    
+            playerShipRb.MoveRotation(playerShipRb.rotation * deltaRotation);    
 
-            //Laser
-            bool laser = Input.GetKey(KeyCode.Space)||Input.GetKey(KeyCode.Mouse0);
-            playerShip.GetComponent<PlayerShip>().ShowLaser(laser);
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0))
+            {
+                playerShipRb.GetComponent<PlayerShip>().FireLaser();
+            }
 
-            if(Input.GetKey(KeyCode.E)) Stabilize();
+            if (Input.GetKey(KeyCode.E)) Stabilize();
+
+            CameraFollow.Inst.MoveCamera();
         }
 
 
         void Stabilize()
         {
-            currSpeed = currSpeed = Mathf.Clamp(currSpeed + (-acc * Time.deltaTime), 0, maxSpeed);
+            currSpeed = currSpeed = Mathf.Clamp(currSpeed + (- playerShip.CurrAcc * Time.deltaTime), 0, playerShip.CurrMaxSpeed);
 
-            playerShip.velocity = Vector3.Lerp(playerShip.velocity, Vector3.zero, Time.deltaTime);
-            playerShip.angularVelocity = Vector3.Lerp(playerShip.angularVelocity, Vector3.zero, Time.deltaTime);            
-            playerShip.rotation = Quaternion.Lerp(playerShip.rotation, Quaternion.identity, Time.deltaTime);
+            playerShipRb.velocity = Vector3.Lerp(playerShipRb.velocity, Vector3.zero, Time.deltaTime);
+            playerShipRb.angularVelocity = Vector3.Lerp(playerShipRb.angularVelocity, Vector3.zero, Time.deltaTime);            
+            playerShipRb.rotation = Quaternion.Lerp(playerShipRb.rotation, Quaternion.identity, Time.deltaTime);
         }
     }      
   

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Controller;
+using Manager;
 using Model;
 
 public enum JobStatus {NotSelected, InProgress, Failed, Concluded};
@@ -19,7 +20,6 @@ public class JobMenuController : MonoBehaviour
         if (Inst == null)
         {
             Inst = this;
-            //DontDestroyOnLoad(gameObject);
         }
         else Destroy(gameObject);
     }
@@ -27,7 +27,7 @@ public class JobMenuController : MonoBehaviour
 
     private void Start() 
     {
-        //DontDestroyOnLoad(this);       
+             
     }
 
     public void LoadJobs()
@@ -78,6 +78,15 @@ public class JobMenuController : MonoBehaviour
         jc.currJob = null;
         jc.jobStatus = JobStatus.NotSelected;
         jc.currJobQtd = 0;
+        UpgradeController.Inst.umc.UpdateCoins();
+        JobView.Inst.jobIndex = -1;
         JobView.Inst.ViewJob(null);
+
+    }
+
+    
+    public void BackToMenu()
+    {
+       GameManager.Instance.MenuScenario();  
     }
 }

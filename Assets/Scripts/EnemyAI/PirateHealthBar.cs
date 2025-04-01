@@ -27,7 +27,7 @@ public class PirateHealthBar : MonoBehaviour
 		if (pirateShip != null && healthSlider != null)
 		{
 			// Update the health bar value
-			healthSlider.value = pirateShip.health / pirateShip.maxHealth;
+			healthSlider.value = pirateShip.health / pirateShip.oriData.maxHealth;
 		}
 	}
 }

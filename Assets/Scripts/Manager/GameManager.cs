@@ -1,7 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Diagnostics;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 using Controller;
 using Model;
@@ -17,10 +17,21 @@ namespace Manager
         public GameObject playerPrefab;
         public GameObject playerShip;
 
+        public GameObject playerLaserPrefab;
+
         public Vector3 playerSpawnPosition;
         public Quaternion playerSpawnRotation;
 
         public bool isNewGame = true;
+        public bool hasPlayedTutorial = false;
+
+        public bool onMenu = false;
+
+        public Scenario tutorialScenario = null;
+        public Scenario quickPlayScenario = null;
+        public List<Scenario> scenarios = new List<Scenario>();
+
+        public Scenario currentScenario = null;
 
         void Awake()
         {
@@ -44,24 +55,33 @@ namespace Manager
         public void Load(GameData gameData)
 		{
             this.isNewGame = gameData.isNewGame;
-		}
+            this.hasPlayedTutorial = gameData.hasPlayedTutorial;
+        }
 
         // IDataPersistence
         public void Save(ref GameData gameData)
 		{
             gameData.isNewGame = this.isNewGame;
+            gameData.hasPlayedTutorial = this.hasPlayedTutorial;
         }
 
         public void Play()
 		{
-            PersistenceManager.Instance.LoadGame();
+            PersistenceManager.Instance.NewGame();
 
             if (isNewGame)
             {
                 isNewGame = false;
             }
 
-            SceneManager.LoadScene(1);
+            Job[] jobs = Resources.LoadAll<Job>("Scriptable/Tutorial");
+
+            JobController jc = JobController.Inst;
+            jc.currJob = jobs[0];
+            jc.jobStatus = JobStatus.InProgress;
+
+            currentScenario = tutorialScenario;
+            StartScenario();
         }
 
         public void Load()
@@ -78,17 +98,36 @@ namespace Manager
 
         public void QuickPlay()
         {
+            isNewGame = false;
+            hasPlayedTutorial = true;
+
             Job[] jobs = Resources.LoadAll<Job>("Scriptable/Jobs");
 
             JobController jc = JobController.Inst;
             jc.currJob = jobs[0];
             jc.jobStatus = JobStatus.InProgress;
+
+            currentScenario = quickPlayScenario;
             StartScenario();
+        }
+
+        public bool SelectScenario(JobType job, ScenarioDifficulty difficulty)
+        {
+            foreach(Scenario scenario in scenarios)
+			{
+                if (scenario.supportedJobType.Contains(job) && scenario.difficulty == difficulty)
+				{
+                    currentScenario = scenario;
+                    return true;
+				}
+			}
+
+            return false;
         }
 
         public void StartScenario()
         {
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene(currentScenario.sceneName);
         }
 
         public void StopScenario()
@@ -109,9 +148,13 @@ namespace Manager
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            onMenu = scene.name == "MainMenu";
+
             if (scene.name != "MainMenu" && scene.name != "Harbor")
 			{
+                SpawningManager.Instance.SpawnScenario(currentScenario);
                 SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+
                 UpgradeController.Inst.UpdateValues();
 
                 if(JobController.Inst.currJob == null)
