@@ -66,7 +66,7 @@ namespace Model.AI
 		private Transform currentTarget = null;  // The current enemy target this AIShip is engaging (could be player or another ship).
 		private bool isEngagingTarget = false;   // Whether currently in combat behavior (used for formation followers to copy leader).
 		public float currentHealth = 100f;
-
+		float maxHealth = 100;
 		private SteeringAgent steeringAgent;
 		private Wander wander;
 		private bool hostile;
