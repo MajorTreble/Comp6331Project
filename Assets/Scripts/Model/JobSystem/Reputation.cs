@@ -4,12 +4,13 @@ namespace Model
     [System.Serializable]
     public class Reputation
     {
-        public RepType type;
+        public Faction fac;
+        //public RepType type;
         public int value;
 
-        public Reputation(RepType _type, int _value)
+        public Reputation(Faction _fac, int _value)
         {
-            type = _type;
+            fac = _fac;
             value = _value;
         }
         public void ChangeValue(int _value)

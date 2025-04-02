@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2855395254434112155}
   - component: {fileID: 2855395254434112166}
   - component: {fileID: 2855395254434112165}
-  - component: {fileID: 7269846301437521088}
   m_Layer: 0
   m_Name: Game System
   m_TagString: Untagged
@@ -92,17 +91,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataDirPath: save
   dataFileName: savegame.txt
---- !u!114 &7269846301437521088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2855395254434112154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec30074b313bde147ad7b86980198c69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reputations: []
-  coins: 0

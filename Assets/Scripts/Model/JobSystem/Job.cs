@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum JobType{Hunt, Defend, Mine, Deliver};
 public enum JobTarget{Colonial, Earth, Pirate, Solo, Asteroid, Self};
-public enum RepType{Colonial, Earth, Pirate, Self};
+//public enum RepType{Colonial, Earth, Pirate, Self};
 
 
 
@@ -22,7 +22,7 @@ namespace Model
         public Scenario  scenario = null;
 
         public int rewardCoins = 1;
-        public RepType rewardType = RepType.Colonial; 
+        //public RepType rewardType = RepType.Colonial; 
         public int rewardRep = 1;
 
         public JobTarget jobTarget = JobTarget.Colonial;

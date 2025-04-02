@@ -24,7 +24,7 @@ public class UpgradeMenuController : MonoBehaviour
         upgradeList = GameObject.Find("UpgradeList").transform;
 
         txt_Coins = GameObject.Find("Txt_Coins").GetComponent<Text>();
-        txt_Coins.text = "Coins:" + GameManager.Instance.reputation;
+        //txt_Coins.text = "Coins: " + GameManager.Instance.reputation.coins;
     }
 
     void CreateUpgrades()
@@ -144,6 +144,7 @@ public class UpgradeMenuController : MonoBehaviour
 
     public void UpdateCoins()
     {
+        
         txt_Coins.text = "Coins:" + GameManager.Instance.reputation.coins;
     }
 }

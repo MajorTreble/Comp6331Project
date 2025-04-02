@@ -91,7 +91,7 @@ public class JobView : MonoBehaviour
         jobText += "Quantity: " + job.quantity + "\n";
 
         jobText += "Coins: " + job.rewardCoins + "\n";
-        jobText += "Reputation: " + job.rewardType + "\n";
+        jobText += "Reputation: " + job.allyFaction.title + "\n";
         jobText += "Rep Reward " + job.rewardRep + "\n";  
 
         if(JobController.Inst.jobStatus == JobStatus.Failed) 
@@ -133,7 +133,7 @@ public class JobView : MonoBehaviour
         GameObject go = template;
 
         //Debug.Log(PlayerReputation.Inst.reputations);        
-        for (int i = 0; i < PlayerReputation.Inst.reputations.Count; i++)
+        for (int i = 0; i < GameManager.Instance.reputation.reputations.Count; i++)
         {            
             if(i>0)
                 go = Instantiate(template, template.transform.parent);
@@ -145,7 +145,7 @@ public class JobView : MonoBehaviour
 
     void UpdateReputations()
     {
-        for (int i = 0; i < PlayerReputation.Inst.reputations.Count; i++)
+        for (int i = 0; i < GameManager.Instance.reputation.reputations.Count; i++)
         {
             UpdateReputation(i);            
         }
@@ -155,7 +155,7 @@ public class JobView : MonoBehaviour
     {
         reputationList = GameObject.Find("ReputationList").transform;
         Transform tr = reputationList.GetChild(_index);
-        Reputation rep = PlayerReputation.Inst.reputations[_index];
+        Reputation rep = GameManager.Instance.reputation.reputations[_index];
 
         Slider sld = Utils.FindChildByName(tr, "Sld_Value").GetComponent<Slider>();
         sld.maxValue = 1000;
@@ -172,7 +172,7 @@ public class JobView : MonoBehaviour
         } 
         
         Text txt = Utils.FindChildByName(tr, "Txt_Name").GetComponent<Text>();
-        txt.text = rep.type + " [" + rep.value + "]";
+        txt.text = rep.fac.title + " [" + rep.value + "]";
     }
 
 
