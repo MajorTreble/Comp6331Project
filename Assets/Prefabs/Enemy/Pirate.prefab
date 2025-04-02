@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
   - component: {fileID: 4882198248570157917}
+  - component: {fileID: 8959509692265794081}
   m_Layer: 7
   m_Name: Pirate
   m_TagString: PirateShip
@@ -209,12 +210,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   oriData: {fileID: 11400000, guid: a4c3c1d0ec94b3744a0fd33545dd2b3d, type: 2}
+
+  rb: {fileID: 0}
+  steering: {fileID: 0}
+
   ammo: 0
   health: 100
   shields: 0
-  playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
-  player: {fileID: 0}
-  rb: {fileID: 0}
+  faction: {fileID: 0}
   behavior: {fileID: 11400000, guid: 06a5235808ba81e4ba9f97e49cb8fda8, type: 2}
   detectionRadius: 25
   roamRadius: 150
@@ -229,10 +232,37 @@ MonoBehaviour:
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
   firePoint: {fileID: 6030673257891210850}
   currentState: 0
-  requestState: 1
+  requestedState: 2
   shipLayer:
     serializedVersion: 2
     m_Bits: 128
+  targetShip: {fileID: 0}
+  isInGroup: 0
+  isLeader: 0
+  groupLeader: {fileID: 0}
+--- !u!114 &8959509692265794081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277576965648325399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9eb2c34f4c31a42a919feb48813b2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 7277576965648325399}
+  rigidBody: {fileID: 0}
+  initialMaxSpeed: 15
+  maxSpeed: 15
+  rotationSpeed: 1
+  radius: 1
+  lockY: 0
+  debug: 0
+  behaviorType: 1
+  trackedTarget: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
 --- !u!1001 &3000934694986739847
 PrefabInstance:
   m_ObjectHideFlags: 0
