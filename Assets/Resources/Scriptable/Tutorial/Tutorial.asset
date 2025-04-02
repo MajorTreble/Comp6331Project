@@ -16,7 +16,8 @@ MonoBehaviour:
   sceneName: SkyBoxScene
   playerPosition: {x: 0, y: 0, z: 0}
   playerRotation: {x: 0, y: 0, z: 0, w: 1}
-  portalPosition: {x: 25, y: 25, z: 25}
+  portalPosition: {x: 0, y: 0, z: 100}
+  isPortalDisabled: 1
   difficulty: 0
   supportedJobType: 00000000
   unitGroups:

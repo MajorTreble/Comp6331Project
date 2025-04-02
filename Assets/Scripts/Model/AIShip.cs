@@ -150,19 +150,6 @@ namespace Model.AI
 			if (JobController.Inst.currJob != null)
 			{
 				Debug.Log($"[{name}] Current Mission: Target = {JobController.Inst.currJob.jobTarget}, Reward = {JobController.Inst.currJob.allyFaction.factionType}");
-
-				// If the mission targets our faction (we are being hunted), always attack.
-				if (AIHelper.IsMissionTargetFaction(JobController.Inst.currJob, faction))
-				{
-					Debug.Log($"[{name}] I am being hunted due to mission. Seeking Player.");
-					requestedState = AIState.Seek;
-				}
-				// If the mission rewards our faction, then even if reputation is normally hostile, remain neutral.
-				else if (AIHelper.IsMissionAllyFaction(JobController.Inst.currJob, faction))
-				{
-					Debug.Log($"[{name}] My faction is supported by this mission. Roaming instead of attacking.");
-					requestedState = AIState.Roam;
-				}
 			}
 			else
 			{
@@ -277,7 +264,7 @@ namespace Model.AI
 				if (attackerAI != null)
 				{
 					Debug.Log($"[{name}] was hit by [{attackerAI.name}] from faction {attackerAI.faction}");
-					if (AIHelper.IsHostile(faction, attackerAI.faction))
+					if (AIHelper.IsEnemy(faction, attackerAI.faction))
 					{
 						currentTarget = attacker.transform;
 						requestedState = AIState.Attack;
@@ -332,22 +319,6 @@ namespace Model.AI
 				return;
 			}
 
-			if (AIHelper.IsMissionTargetFaction(job, faction))
-			{
-				Debug.Log($"[{name}] I am a mission target. Looking for player to attack.");
-				currentTarget = player.transform;
-				requestedState = AIState.Seek;
-				return;
-			}
-
-			if (AIHelper.IsMissionAllyFaction(job, faction))
-			{
-				Debug.Log($"[{name}] My faction is allied in this mission. Roaming.");
-				currentTarget = null;
-				requestedState = AIState.Roam;
-				return;
-			}
-
 			// Fallback: Use reputation + fuzzy logic to decide about player
 			if (player != null && behavior != null && AIHelper.ShouldAttackPlayer(this, player, job))
 			{
@@ -390,8 +361,8 @@ namespace Model.AI
 				Job job = JobController.Inst.currJob;
 
 				hostile = AIHelper.IsMissionTarget(other) ||
-				AIHelper.IsHostileDuringMission(job, faction, other.faction) ||
-				(other.faction != this.faction && AIHelper.IsHostile(faction, other.faction));
+				AIHelper.IsEnemy(faction, other.faction) ||
+				(other.faction != this.faction && AIHelper.IsEnemy(faction, other.faction));
 
 
 				if (!hostile) continue;

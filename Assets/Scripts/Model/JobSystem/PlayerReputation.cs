@@ -25,9 +25,37 @@ public class PlayerReputation : ScriptableObject
     {
         return 0.0f;
     }
-    
+
+    public ReputationStatus GetReputationStatus(Faction factionA, Faction factionB)
+    {
+        if (factionA.factionType == Faction.FactionType.Pirates || factionB.factionType == Faction.FactionType.Pirates)
+        {
+            return ReputationStatus.Enemy;
+        }
+
+        if (factionA.factionType == Faction.FactionType.Solo || factionB.factionType == Faction.FactionType.Solo)
+        {
+            return ReputationStatus.Neutral;
+        }
+
+        Job job = JobController.Inst.currJob;
+        if ((job.targetFaction == factionA && job.allyFaction == factionB) || 
+            (job.targetFaction == factionB && job.allyFaction == factionA))
+        {
+            return ReputationStatus.Enemy;
+        }
+
+        return ReputationStatus.Neutral;
+    }
+
     public ReputationStatus GetReputationStatus(Faction faction)
     {
+        Job job = JobController.Inst.currJob;
+        if (job.allyFaction == faction)
+        {
+            return ReputationStatus.Friendly;
+        }
+
         return ReputationStatus.Neutral;
     }
 

@@ -40,7 +40,7 @@ public class Faction2Script : AIShip
 
 
 		// If mission benefits our faction, fight harder
-		if (AIHelper.IsMissionAlly(faction))
+		if (AIHelper.IsPlayerFriendly(faction))
 		{
 			switch (currentRole)
 			{

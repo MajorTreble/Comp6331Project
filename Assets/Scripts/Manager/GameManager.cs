@@ -17,8 +17,10 @@ namespace Manager
         public PlayerReputation reputation = null;
 
         public GameObject playerPrefab;
-        public GameObject playerShip;
         public GameObject blackHolePrefab;
+
+        public GameObject playerShip;
+        public GameObject portal;
 
         public GameObject playerLaserPrefab;
 
@@ -54,7 +56,8 @@ namespace Manager
 		private void Start()
 		{
             PersistenceManager.Instance.dataPersistence.Add(this);
-            
+
+            this.portal = GameObject.Find("HarborPortal");
         }
 
         // IDataPersistence
