@@ -66,7 +66,7 @@ namespace Manager
             if (portal != null)
             {
                 portal.transform.position = scenario.portalPosition;
-                portal.SetActive(false);
+                //portal.SetActive(false);
             }
 
             foreach (UnitGroup unitGroup in scenario.unitGroups)

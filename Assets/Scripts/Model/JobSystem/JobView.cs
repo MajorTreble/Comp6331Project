@@ -17,6 +17,7 @@ public class JobView : MonoBehaviour
 
     Transform jobOptions;
     GameObject jobTemplate;
+    Transform jobTarget;
     Text jobDescription;
     Text jobFeedback;
 
@@ -70,8 +71,6 @@ public class JobView : MonoBehaviour
         allJobType = (JobType[])System.Enum.GetValues(typeof(JobType));
         allScen = Resources.LoadAll<Scenario>("Scriptable/Scenario");
 
-
-
         Transform config = Utils.FindChildByName(jobConfigurations, "JobFaction").transform; 
         Dropdown dd = Utils.FindChildByName(config, "drop").GetComponent<Dropdown>();
         dd.ClearOptions();
@@ -90,18 +89,19 @@ public class JobView : MonoBehaviour
         }        
         dd.RefreshShownValue(); 
 
-
         config = Utils.FindChildByName(jobConfigurations, "JobType").transform; 
         dd = Utils.FindChildByName(config, "drop").GetComponent<Dropdown>();
+        dd.onValueChanged.AddListener(UpdateJobConfiguration);
         dd.ClearOptions();
         foreach (JobType type in allJobType)
         {
             dd.options.Add(new Dropdown.OptionData(type.ToString()));
         }
-
         dd.RefreshShownValue(); 
+        
 
         config = Utils.FindChildByName(jobConfigurations, "JobTarget").transform; 
+        jobTarget = config;
         dd = Utils.FindChildByName(config, "drop").GetComponent<Dropdown>();
         dd.ClearOptions();
         foreach (Faction faction in allFac)
@@ -119,9 +119,16 @@ public class JobView : MonoBehaviour
             dd.options.Add(new Dropdown.OptionData(scenario.mapName));
         }
         dd.RefreshShownValue(); 
-
-
     }
+
+    
+    void UpdateJobConfiguration(int value)
+    {
+        JobType type = allJobType[value];
+
+        jobTarget.gameObject.SetActive(type==JobType.Hunt || type==JobType.Defend);        
+    }
+
 
     public void LookForJobFeeback()
     {
@@ -225,9 +232,9 @@ public class JobView : MonoBehaviour
         }else 
             jobDescription.color = Color.white;
 
-        jobDescription.text = jobText;
-        
+        jobDescription.text = jobText;   
     }
+
 
     public void ListJobs()
     {
@@ -320,7 +327,37 @@ public class JobView : MonoBehaviour
                 JobController.Inst.customJob.targetFaction = allFac[GetOptionValue("JobTarget")];
                 JobController.Inst.customJob.scenario = allScen[GetOptionValue("JobScenario")];
 
-                Debug.Log("whem creating a custom job check the rewards and etc");
+                switch (JobController.Inst.customJob.dangerValue)
+                {
+                    case 1:
+                    JobController.Inst.customJob.rewardCoins = 100;
+                    JobController.Inst.customJob.rewardRep = 75;
+                    JobController.Inst.customJob.quantity = 1;
+                    if(JobController.Inst.customJob.jobType == JobType.Mine)
+                        JobController.Inst.customJob.quantity = 5;
+                    break;                    
+                    case 2:
+                    JobController.Inst.customJob.rewardCoins = 250;
+                    JobController.Inst.customJob.rewardRep = 17;
+                    JobController.Inst.customJob.quantity = 3;
+                    if(JobController.Inst.customJob.jobType == JobType.Mine)
+                        JobController.Inst.customJob.quantity = 10;
+                    break;
+                    case 3:
+                    JobController.Inst.customJob.rewardCoins = 625;
+                    JobController.Inst.customJob.rewardRep = 400;
+                    JobController.Inst.customJob.quantity = 5;//hunt or defend                    
+                    if(JobController.Inst.customJob.jobType == JobType.Mine)
+                        JobController.Inst.customJob.quantity = 15;
+                        
+                    break;
+                    default:
+                    Debug.LogWarning("Error on danger value");
+                    break;
+                }
+
+                if(JobController.Inst.customJob.jobType == JobType.Deliver)
+                    JobController.Inst.customJob.quantity = 1;
 
                 JobMenuController.Inst.AcceptJob(JobController.Inst.customJob);
             }

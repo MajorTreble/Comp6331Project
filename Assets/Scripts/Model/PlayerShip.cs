@@ -25,10 +25,6 @@ namespace Model
         public float CurrMaxSpeed { get { return oriData.maxSpeed + UpgradeController.Inst.upgrData.maxSpeed; } }
         public float CurrTurnSpeed { get { return oriData.turnSpeed + UpgradeController.Inst.upgrData.turnSpeed; } }
 
-
-        public float laserDist;
-        float laserDmg = 100;
-
         public void Awake()
         {
             this.faction = new Faction();

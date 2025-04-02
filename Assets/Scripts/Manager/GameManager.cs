@@ -38,7 +38,6 @@ namespace Manager
 
         public Scenario currentScenario = null;
 
-        public Vector3 portalPosition = new Vector3(25, 25, 25);
 
         void Awake()
         {
@@ -162,11 +161,7 @@ namespace Manager
             if (scene.name != "MainMenu" && scene.name != "Harbor")
             {
                 portal = GameObject.Find("HarborPortal");
-                if (portal)
-                {
-                    portalPosition = portal.transform.position;
-                }
-
+                
                 SpawningManager.Instance.SpawnScenario(currentScenario);
                 SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
 
