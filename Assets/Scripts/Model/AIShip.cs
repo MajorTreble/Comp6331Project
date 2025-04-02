@@ -326,6 +326,11 @@ namespace Model.AI
 		{
 			Job job = JobController.Inst.currJob;
 			GameObject player = GameObject.FindGameObjectWithTag("Player");
+			if(player == null)
+			{
+				Debug.LogWarning("Player null");
+				return;
+			}
 
 			if (AIHelper.IsMissionTargetFaction(job, faction))
 			{

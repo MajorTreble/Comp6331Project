@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reputations:
   - fac: {fileID: 11400000, guid: 053310607fcc97947b8d1d0346adc446, type: 2}
-    value: -499
+    value: -497
   - fac: {fileID: 11400000, guid: de1850f4399a47f4584c3700d852c6c2, type: 2}
     value: 150
   - fac: {fileID: 11400000, guid: 4dae286d20b610f4b849bdde4022d78f, type: 2}
     value: 600
   - fac: {fileID: 11400000, guid: f351217d9ace74f4eaab5deabbae09a6, type: 2}
     value: 1000
-  coins: 159
+  coins: 392
