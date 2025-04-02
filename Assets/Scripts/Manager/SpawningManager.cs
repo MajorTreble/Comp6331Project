@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement; // Debug only
 
 using Model;
 using Model.AI;
+using Controller;
 
 namespace Manager
 {
@@ -44,6 +45,20 @@ namespace Manager
 			AIShip aiShip = shipObject.GetComponent<AIShip>();
 			if (aiShip != null)
 			{
+				// Randomly choose between targetFaction and rewardFaction to patrol
+				Faction factionToPatrol = ChooseRandomFaction(JobController.Inst.currJob.targetFaction, JobController.Inst.currJob.allyFaction);
+				aiShip.shouldPatrol = (aiShip.faction == factionToPatrol);
+
+				// Assign patrol behavior to the randomly selected faction
+				if (aiShip.faction == factionToPatrol)
+				{
+					aiShip.AssignPatrolBehavior(true);  // Assign patrol behavior
+				}
+				else
+				{
+					aiShip.AssignPatrolBehavior(false); // Do not patrol
+				}
+
 				// Check if this faction already has a leader
 				AIShip designatedLeader = null;
 
@@ -63,7 +78,19 @@ namespace Manager
 		}
 
 
-        public void SpawnScenario(Scenario scenario)
+		private Faction ChooseRandomFaction(Faction targetFaction, Faction allyFaction)
+		{
+			if (targetFaction == null || allyFaction == null)
+			{
+				Debug.LogError("Missing faction reference in job!");
+				return null;
+			}
+
+			int randomIndex = Random.Range(0, 2);
+			return randomIndex == 0 ? targetFaction : allyFaction;
+		}
+
+		public void SpawnScenario(Scenario scenario)
         {
             foreach (UnitGroup unitGroup in scenario.unitGroups)
             {

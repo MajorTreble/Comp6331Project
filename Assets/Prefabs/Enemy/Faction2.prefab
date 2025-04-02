@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
   - component: {fileID: 5153531479487656165}
+  - component: {fileID: 1749051189450035031}
   m_Layer: 7
   m_Name: Faction2
   m_TagString: Faction2
@@ -156,9 +157,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da6997fa61c69f04c8c4561b657f181c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
-  player: {fileID: 0}
+  oriData: {fileID: 0}
   rb: {fileID: 0}
+  steeringAgent: {fileID: 0}
+  ammo: 0
+  health: 0
+  shields: 0
+  faction: {fileID: 0}
   behavior: {fileID: 11400000, guid: 10e8da4e7f6a5f3449c9fd9673c78a38, type: 2}
   detectionRadius: 25
   roamRadius: 150
@@ -172,6 +177,26 @@ MonoBehaviour:
   lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
   firePoint: {fileID: 4416928302594464331}
+  currentState: 1
+  requestedState: 2
   shipLayer:
     serializedVersion: 2
     m_Bits: 128
+  targetShip: {fileID: 0}
+  isInGroup: 0
+  isLeader: 0
+  groupLeader: {fileID: 0}
+--- !u!114 &1749051189450035031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277576965648325399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b412cd54dd42464699294b24e9a9710, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: {fileID: 1932369531840220230, guid: 221b7e496d6baae4486c9884a212f5b5, type: 3}
+  stoppingDistance: 1.5

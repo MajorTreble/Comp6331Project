@@ -11,6 +11,7 @@ TagManager:
   - PirateShip
   - PlayerComponent
   - SpaceshipComponent
+  - PathWaypoints
   layers:
   - Default
   - TransparentFX

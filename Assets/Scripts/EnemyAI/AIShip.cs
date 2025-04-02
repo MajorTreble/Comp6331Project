@@ -70,6 +70,7 @@ namespace Model.AI
 		private SteeringAgent steeringAgent;
 		private Wander wander;
 		private bool hostile;
+		public bool shouldPatrol = false; 
 
 		public virtual void Start()
 		{
@@ -92,6 +93,7 @@ namespace Model.AI
 
 			BT.aiShip = this;
 			BT.Initialize();
+			AssignPatrolBehavior(shouldPatrol);
 
 			currentState = AIState.Roaming;
 			requestedState = AIState.Roaming;
@@ -246,6 +248,22 @@ namespace Model.AI
 
 		private void Update()
 		{
+			Debug.Assert(faction != null && behavior != null);
+			if (!(faction != null && behavior != null))
+			{
+				enabled = false;
+				return;
+			}
+
+			UpdateDecision();
+			EvaluateCombatTarget();
+			UpdateStateMachine();
+
+			steeringAgent.Update();
+		}
+
+		protected virtual void UpdateDecision()
+		{
 			// Formation override: if in formation and not the leader, follow the leader.
 			if (behavior.groupMode == AIBehavior.GroupMode.Formation && isInGroup && groupLeader != null && groupLeader != this)
 			{
@@ -335,26 +353,80 @@ namespace Model.AI
 
 			return JobController.Inst.currJob.jobTarget switch
 			{
-				JobTarget.Colonial => other.factionType == FactionType.Colonial && other.factionType != this.factionType,
-				JobTarget.Earth => other.factionType == FactionType.Earth && other.factionType != this.factionType,
-				JobTarget.Pirate => other.factionType == FactionType.Pirates && other.factionType != this.factionType,
-				JobTarget.Solo => other.factionType == FactionType.Solo && other.factionType != this.factionType,
-				_ => false
-			};
-		}
+				switch (currentState)
+				{
+					case AIState.Idle:
+						ExitIdle();
+						break;
+					case AIState.Patrol:
+						ExitPatrol();
+						break;
+					case AIState.Roam:
+						ExitRoam();
+						break;
+					case AIState.Seek:
+						ExitSeek();
+						break;
+					case AIState.Flee:
+						ExitFlee();
+						break;
+					case AIState.AllyAssist:
+						ExitAllyAssist();
+						break;
+					case AIState.Attack:
+						ExitAttack();
+						break;
+				}
 
-		private bool IsShipMissionAlly(AIShip other)
-		{
-			if (JobController.Inst.currJob == null || other == null) return false;
+				switch (requestedState)
+				{
+					case AIState.Idle:
+						EnterIdle();
+						break;
+					case AIState.Patrol:
+						EnterPatrol();
+						break;
+					case AIState.Roam:
+						EnterRoam();
+						break;
+					case AIState.Seek:
+						EnterSeek();
+						break;
+					case AIState.Flee:
+						EnterSeek();
+						break;
+					case AIState.AllyAssist:
+						EnterAllyAssist();
+						break;
+					case AIState.Attack:
+						EnterAttack();
+						break;
+					
+				}
 
 			return JobController.Inst.currJob.rewardType switch
 			{
-				RepType.Colonial => other.factionType == FactionType.Colonial,
-				RepType.Earth => other.factionType == FactionType.Earth,
-				RepType.Pirate => other.factionType == FactionType.Pirates,
-				RepType.Self => other.factionType == FactionType.Solo,
-				_ => false
-			};
+				case AIState.Idle:
+					break;
+				case AIState.Patrol:
+					UpdatePatrol();
+					break;
+				case AIState.Roam:
+					UpdateRoam();
+					break;
+				case AIState.Seek:
+					UpdateSeek();
+					break;
+				case AIState.Flee:
+					UpdateFlee();
+					break;
+				case AIState.AllyAssist:
+					UpdateAllyAssist();
+					break;
+				case AIState.Attack:
+					UpdateAttack();
+					break;
+			}
 		}
 
 		public void TakeDamage(GameObject attacker)
@@ -875,7 +947,27 @@ namespace Model.AI
 
 		protected void EnterRoam()
 		{
-			SetNewRoamTarget();
+			AIWaypointNavigator navigator = GetComponent<AIWaypointNavigator>(); //ASK WHERE WE HAVE TO USE THE WAYPOINTS? IN SEEK OR ROAM OR BOTH?
+			if (navigator != null && navigator.path != null)
+			{
+				// Using waypoint navigator, no steering needed
+				return;
+			}
+
+			steeringAgent.movements.Add(new Wander());
+			steeringAgent.movements.Add(new LookWhereYouAreGoing());
+
+			CollisionAvoidance avoidance = new CollisionAvoidance();
+			avoidance.weight = 2.0f;
+			foreach (Ship ship in SpawningManager.Instance.shipList)
+			{
+				SteeringAgent agent = ship.steeringAgent;
+				if (agent != null)
+				{
+					avoidance.avoidList.Add(agent);
+				}
+			}
+			steeringAgent.movements.Add(avoidance);
 		}
 
 		protected void ExitRoam()
@@ -948,6 +1040,101 @@ namespace Model.AI
 		protected void ExitAllyAssist()
 		{
 
+		}
+
+		protected void UpdateAllyAssist()
+		{
+
+		}
+
+		// Attack //
+
+		protected void EnterAttack()
+		{
+
+		}
+
+		protected void ExitAttack()
+		{
+
+		}
+
+		protected virtual void UpdateAttack()
+		{
+			//if (player == null) return;
+			if (currentTarget == null || behavior == null) return;
+
+			//float dist = Vector3.Distance(transform.position, player.position);
+			float dist = Vector3.Distance(transform.position, currentTarget.position);
+			if (dist > behavior.attackRange)
+			{
+				requestedState = AIState.Seek;
+				return;
+			}
+
+			//Vector3 direction = (player.position - transform.position).normalized;
+			Vector3 direction = (currentTarget.position - transform.position).normalized;
+			RotateTowardTarget(direction, behavior.rotationSpeed);
+
+			if (Time.time >= lastAttackTime + behavior.attackCooldown)
+			{
+				Attack();
+				lastAttackTime = Time.time;
+			}
+		}
+
+
+		protected void EnterPatrol()
+		{
+
+			steeringAgent.movements.Clear();
+
+			AIWaypointNavigator nav = GetComponent<AIWaypointNavigator>();
+			if (nav != null && nav.path != null)
+			{
+				steeringAgent.movements.Add(new Seek());
+				steeringAgent.movements.Add(new LookWhereYouAreGoing());
+
+				CollisionAvoidance avoidance = new CollisionAvoidance();
+				avoidance.weight = 2.0f;
+				foreach (Ship ship in SpawningManager.Instance.shipList)
+				{
+					if (ship == this) continue;
+					SteeringAgent agent = ship.steeringAgent;
+					if (agent != null)
+						avoidance.avoidList.Add(agent);
+				}
+				steeringAgent.movements.Add(avoidance);
+			}
+			else
+			{
+				Debug.LogWarning($"[{name}] No valid waypoint path found for patrol!");
+				requestedState = AIState.Roam;
+			}
+
+		}
+
+		protected void ExitPatrol()
+		{
+			steeringAgent.movements.Clear();
+		}
+
+		protected void UpdatePatrol()
+		{
+			// WaypointNavigator already updates the TargetPosition for Seek, so nothing else needed here for now
+		}
+
+		public void AssignPatrolBehavior(bool shouldPatrol)
+		{
+			this.shouldPatrol = shouldPatrol;
+			if (shouldPatrol)
+			{
+				requestedState = AIState.Patrol;
+			}
+			else
+			{
+				requestedState = AIState.Roam; 
+			}
 		}
 
 	}

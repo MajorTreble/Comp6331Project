@@ -44,6 +44,8 @@ GameObject:
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
   - component: {fileID: 3661450571157287601}
+  - component: {fileID: 8252763875273912104}
+  - component: {fileID: -7953477675153341854}
   m_Layer: 7
   m_Name: SoloEnemy
   m_TagString: SoloShip
@@ -165,7 +167,12 @@ MonoBehaviour:
   playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
   player: {fileID: 0}
   rb: {fileID: 0}
-  behavior: {fileID: 11400000, guid: be96e15fc9d361242b62f2671c7852f7, type: 2}
+  steeringAgent: {fileID: 0}
+  ammo: 99
+  health: 100
+  shields: 100
+  faction: {fileID: 0}
+  behavior: {fileID: 0}
   detectionRadius: 25
   roamRadius: 150
   avoidanceForce: 5
@@ -183,8 +190,47 @@ MonoBehaviour:
   shipLayer:
     serializedVersion: 2
     m_Bits: 128
-  randomDecisionInterval: 3
-  aggressionProbability: 0.4
+  targetShip: {fileID: 0}
+  isInGroup: 0
+  isLeader: 0
+  groupLeader: {fileID: 0}
+--- !u!114 &8252763875273912104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277576965648325399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9eb2c34f4c31a42a919feb48813b2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 7277576965648325399}
+  rigidBody: {fileID: 0}
+  initialMaxSpeed: 15
+  maxSpeed: 15
+  rotationSpeed: 1
+  radius: 5
+  lockY: 0
+  debug: 0
+  behaviorType: 1
+  trackedTarget: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &-7953477675153341854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277576965648325399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b412cd54dd42464699294b24e9a9710, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: {fileID: 1932369531840220230, guid: 221b7e496d6baae4486c9884a212f5b5, type: 3}
+  stoppingDistance: 1.5
 --- !u!1001 &6542066700235273163
 PrefabInstance:
   m_ObjectHideFlags: 0
