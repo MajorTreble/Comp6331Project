@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1222553440681620970}
   - component: {fileID: 1222553440681620972}
   - component: {fileID: 1222553440681620975}
-  - component: {fileID: 1222553440681620973}
   - component: {fileID: 193701928804185309}
   m_Layer: 0
   m_Name: JobSystem
@@ -61,20 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f8e42e6834fdd45ae329b7c5bb4020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1222553440681620973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1222553440681620974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec30074b313bde147ad7b86980198c69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reputations: []
-  coins: 0
+  jobIndex: -1
 --- !u!114 &193701928804185309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,6 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99da50d990efbc74da4815b6f35cf533, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  umc: {fileID: 0}
   upgrData: {fileID: 11400000, guid: 62d729df1123fe94592beb8b97efc364, type: 2}
   ammo: 0
   upgrList: []

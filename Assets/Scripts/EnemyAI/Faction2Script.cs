@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using Model;
 using Model.AI;
 
 public class Faction2Script : AIShip
@@ -20,8 +21,6 @@ public class Faction2Script : AIShip
 
 		// Assign a random role to the ship
 		currentRole = (Role)Random.Range(0, 3); // Randomly assign one of the three roles
-
-		SetNewRoamTarget();
 	}
 
 	public override void UpdateSeek()
@@ -41,7 +40,7 @@ public class Faction2Script : AIShip
 
 
 		// If mission benefits our faction, fight harder
-		if (IsMissionAlly())
+		if (AIHelper.IsMissionAlly(faction))
 		{
 			switch (currentRole)
 			{
@@ -61,14 +60,10 @@ public class Faction2Script : AIShip
 
 	private void TankBehavior()
 	{
+		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+
 		// Tank: Stay in front of the player and absorb damage
 		Vector3 direction = (player.position - transform.position).normalized;
-		Vector3 avoidance = ComputeObstacleAvoidance(direction);
-		if (avoidance != Vector3.zero)
-		{
-			direction = (direction + avoidance).normalized;
-		}
-		RotateTowardTarget(direction, behavior.rotationSpeed);
 
 		// Move toward the player but maintain a safe distance
 		float distanceToPlayer = Vector3.Distance(transform.position, player.position);
@@ -84,16 +79,11 @@ public class Faction2Script : AIShip
 
 	private void FastShipBehavior()
 	{
+		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+
 		// Fast Ship: Flank the player and evade attacks
 		Vector3 flankDirection = (player.position - transform.position).normalized;
 		flankDirection = Quaternion.Euler(0, 90, 0) * flankDirection; // Flank to the side
-
-		Vector3 avoidance = ComputeObstacleAvoidance(flankDirection);
-		if (avoidance != Vector3.zero)
-		{
-			flankDirection = (flankDirection + avoidance).normalized;
-		}
-		RotateTowardTarget(flankDirection, behavior.rotationSpeed * 1.5f); // Faster rotation
 
 		// Move quickly to flank the player
 		rb.velocity = transform.forward * behavior.chaseSpeed * 1.5f; // Faster movement
@@ -101,14 +91,7 @@ public class Faction2Script : AIShip
 
 	private void AttackerBehavior()
 	{
-		// Attacker: Stay at a distance and deal damage
-		Vector3 direction = (player.position - transform.position).normalized;
-		Vector3 avoidance = ComputeObstacleAvoidance(direction);
-		if (avoidance != Vector3.zero)
-		{
-			direction = (direction + avoidance).normalized;
-		}
-		RotateTowardTarget(direction, behavior.rotationSpeed);
+		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
 
 		float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 

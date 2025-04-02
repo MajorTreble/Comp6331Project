@@ -44,6 +44,7 @@ namespace Manager
 				AIShip aiShip = ship.GetComponent<AIShip>();
 				if (aiShip != null)
 				{
+					aiShip.faction = faction;
 					aiShip.behavior = faction.behavior;
 				}
 			}

@@ -2,13 +2,15 @@ using Model.AI;
 using UnityEngine;
 using static Model.Faction;
 
+using Model;
+
 public class EnemyLaser : MonoBehaviour
 {
 	public float speed = 20f;
 	public float damage = 10f;
 	private int playerHitCount = 0;
 	public GameObject shooter;
-	public FactionType shooterFaction;
+	public Faction faction;
 
 	void Start()
 	{
@@ -38,7 +40,7 @@ public class EnemyLaser : MonoBehaviour
 		if (targetAI != null)
 		{
 			// Skip friendly fire
-			if (targetAI.factionType == shooterFaction) return;
+			if (targetAI.faction == faction) return;
 
 			Debug.Log($"Laser from [{shooter?.name}] hit [{targetAI.name}]");
 			targetAI.TakeDamage(shooter);

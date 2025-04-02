@@ -9,9 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7912857542ab7e24db922193398905cd, type: 3}
-  m_Name: PlayerReputation
+  m_Script: {fileID: 11500000, guid: ec30074b313bde147ad7b86980198c69, type: 3}
+  m_Name: Player Reputation
   m_EditorClassIdentifier: 
-  faction1Reputation: 50
-  faction2Reputation: 30
-  piratesReputation: 20
+  allyReputationThreshold: 70
+  reputations:
+  - type: 0
+    value: 0
+  - type: 1
+    value: 0
+  - type: 2
+    value: 0
+  - type: 3
+    value: 0
+  coins: 0

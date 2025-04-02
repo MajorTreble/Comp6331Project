@@ -4,15 +4,16 @@ using UnityEngine;
 
 namespace AI.Steering
 {
-    public class SteeringAgent
+    public class SteeringAgent : MonoBehaviour
     {
         public GameObject owner;
+        public Rigidbody rigidBody;
 
         public float initialMaxSpeed;
         public float maxSpeed = 15;
         public float rotationSpeed = 1.0f;
         public float radius = 1.0f;
-        public bool lockY = true;
+        public bool lockY = false;
         public bool debug = false;
 
         public enum EBehaviorType { Kinematic, Steering }
@@ -49,7 +50,7 @@ namespace AI.Steering
 
         public Vector3 Velocity { get; set; }
 
-        public Transform transform 
+        public Transform transform
         {
             get => owner.transform;
         }
@@ -64,17 +65,23 @@ namespace AI.Steering
             trackedTarget = null;
         }
 
-        public SteeringAgent(GameObject owner)
-		{
+        public SteeringAgent(GameObject owner, Rigidbody rigidBody)
+        {
             this.owner = owner;
+            this.rigidBody = rigidBody;
+        }
+
+		public void Awake()
+		{
+            movements = new List<Movement>();
         }
 
 		public void Update()
         {
             if (!owner)
-			{
+            {
                 return;
-			}
+            }
 
             if (debug)
             {
@@ -103,7 +110,14 @@ namespace AI.Steering
                 transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * rotation, rotationSpeed * Time.deltaTime);
             }
 
-            transform.position += Velocity * Time.deltaTime;
+            if (rigidBody)
+            {
+                rigidBody.transform.position += Velocity * Time.deltaTime;
+            }
+            else
+            {
+                transform.position += Velocity * Time.deltaTime;
+            }
         }
 
         private void GetKinematicAvg(out Vector3 kinematicAvg, out Quaternion rotation)
