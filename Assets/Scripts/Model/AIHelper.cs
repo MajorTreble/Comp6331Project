@@ -30,9 +30,9 @@ namespace Model
             return distanceToPlayer < detectionRadius;
         }
 
-        public static bool ShouldAllyWithPlayer(GameObject player, Faction faction)
+        public static bool IsPlayerFriendly(Faction faction)
         {
-            Debug.Assert(player != null && faction != null, $"{MethodBase.GetCurrentMethod().Name} {player} {faction}");
+            Debug.Assert(faction != null, $"{MethodBase.GetCurrentMethod().Name} {faction}");
 
             PlayerReputation reputation = GameManager.Instance.reputation;
             Debug.Assert(reputation != null);
@@ -40,84 +40,31 @@ namespace Model
             return reputation.GetReputationStatus(faction) == ReputationStatus.Friendly;
         }
 
-        public static bool IsMissionAllyFaction(Job job, Faction faction)
-        {
-            Debug.Assert(job != null && faction != null, $"{MethodBase.GetCurrentMethod().Name} {job} {faction}");
-
-            // Map our factionType to RepType. Colonial = Faction1, Earth = Faction2.
-            switch (faction.factionType)
-            {
-                case Faction.FactionType.Colonial:
-                    return job.allyFaction.factionType == Faction.FactionType.Colonial;
-                case Faction.FactionType.Earth:
-                    return job.allyFaction.factionType  == Faction.FactionType.Earth;
-                case Faction.FactionType.Pirates:
-                    return job.allyFaction.factionType  == Faction.FactionType.Pirates;
-                case Faction.FactionType.Solo:
-                    return job.allyFaction.factionType  == Faction.FactionType.Solo;
-                default:
-                    return false;
-            }
-        }
-
-        public static bool IsMissionTargetFaction(Job job, Faction faction)
-        {
-            Debug.Assert(job != null && faction != null, $"{MethodBase.GetCurrentMethod().Name} {job} {faction}");
-
-            // Map our factionType to JobTarget. Note: Colonial = Faction1, Earth = Faction2.
-            switch (faction.factionType)
-            {
-                case Faction.FactionType.Colonial:
-                    return job.jobTarget == JobTarget.Colonial;
-                case Faction.FactionType.Earth:
-                    return job.jobTarget == JobTarget.Earth;
-                case Faction.FactionType.Pirates:
-                    return job.jobTarget == JobTarget.Pirate;
-                case Faction.FactionType.Solo:
-                    return job.jobTarget == JobTarget.Solo;
-                default:
-                    return false;
-            }
-        }
-
-        public static bool IsHostile(Faction a, Faction b)
+        public static bool IsEnemy(Faction a, Faction b)
         {
             Debug.Assert(a != null && b != null, $"{MethodBase.GetCurrentMethod().Name} {a} {b}");
 
-            // Example logic:
-            if (a.factionType == Faction.FactionType.Pirates && b.factionType != Faction.FactionType.Pirates) return true;
-            if (b.factionType == Faction.FactionType.Pirates && a.factionType != Faction.FactionType.Pirates) return true;
-            if (a.factionType == Faction.FactionType.Solo || b.factionType == Faction.FactionType.Solo) return false;
+            PlayerReputation reputation = GameManager.Instance.reputation;
+            Debug.Assert(reputation != null);
 
-            // In your game, Colonial (faction) and Earth (faction) are friendly.
-            return false;
+            return reputation.GetReputationStatus(a, b) == ReputationStatus.Enemy;
         }
 
         private static bool IsPlayerEnemy(Faction faction)
         {
-            return GameManager.Instance.reputation.GetReputationStatus(faction) == ReputationStatus.Enemy;
-        }
+            Debug.Assert(faction != null, $"{MethodBase.GetCurrentMethod().Name} {faction}");
 
-        public static bool IsHostileDuringMission(Job job, Faction self, Faction other)
-        {
-            Debug.Assert(job != null && self != null && other != null, $"{MethodBase.GetCurrentMethod().Name} {job} {self} {other}");
+            PlayerReputation reputation = GameManager.Instance.reputation;
+            Debug.Assert(reputation != null);
 
-            // If I (self) am in the mission's target faction, anyone from the reward faction is hostile to me.
-            bool selfIsTarget = job.jobTarget.ToString() == self.ToString();
-            bool otherIsReward = job.allyFaction.factionType.ToString() == other.ToString();
-
-            return selfIsTarget && otherIsReward;
+            return reputation.GetReputationStatus(faction) == ReputationStatus.Enemy;
         }
 
         public static bool ShouldAttackPlayer(AIShip self, GameObject player, Job job)
         {
             Debug.Assert(self != null && player != null && job != null, $"{MethodBase.GetCurrentMethod().Name} {self} {player} {job}");
 
-            if (IsMissionTargetFaction(job, self.faction)) return true;
-            if (IsMissionAllyFaction(job, self.faction)) return false;
-
-            Relationship rel = EvaluateRelationship(self.faction);
-            return (rel == Relationship.Enemy);
+            return IsPlayerEnemy(self.faction);
         }
 
         public static bool IsMissionTarget(Ship ship)
@@ -125,16 +72,6 @@ namespace Model
             Debug.Assert(ship != null, $"{MethodBase.GetCurrentMethod().Name} {ship}");
 
             return ship.IsJobTarget();
-        }
-
-        public static bool IsMissionAlly(Faction faction)
-        {
-            Debug.Assert(faction != null, $"{MethodBase.GetCurrentMethod().Name} {faction}");
-
-            PlayerReputation reputation = GameManager.Instance.reputation;
-            Debug.Assert(reputation != null, $"{MethodBase.GetCurrentMethod().Name} {reputation}");
-
-            return reputation.GetReputationStatus(faction) == ReputationStatus.Friendly;
         }
 
         // Membership functions (linear, as suggested)
@@ -195,7 +132,7 @@ namespace Model
             foreach (AIShip other in SpawningManager.Instance.shipList)
             {
                 if (other == self) continue;
-                if (other.faction != self.faction && IsHostile(self.faction, other.faction))
+                if (other.faction != self.faction && IsEnemy(self.faction, other.faction))
                 {
                     float d = Vector3.Distance(self.transform.position, other.transform.position);
                     if (d <= distance) count++;
