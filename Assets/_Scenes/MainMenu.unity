@@ -1509,6 +1509,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Game System
       objectReference: {fileID: 0}
+    - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: blackHolePrefab
+      value: 
+      objectReference: {fileID: 6012756211718914440, guid: 394c7216ddcbf4f4faabafea3044a13b, type: 3}
+    - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: blackholeSpawnEffect
+      value: 
+      objectReference: {fileID: 3857395075229619743, guid: 11cffaf258ab655428e038b81908be7a, type: 3}
     - target: {fileID: 2855395254434112164, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
       propertyPath: m_RootOrder
       value: 3
