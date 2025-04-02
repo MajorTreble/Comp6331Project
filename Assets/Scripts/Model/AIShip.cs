@@ -149,7 +149,7 @@ namespace Model.AI
 			// Mission overrides:
 			if (JobController.Inst.currJob != null)
 			{
-				Debug.Log($"[{name}] Current Mission: Target = {JobController.Inst.currJob.jobTarget}, Reward = {JobController.Inst.currJob.rewardType}");
+				Debug.Log($"[{name}] Current Mission: Target = {JobController.Inst.currJob.jobTarget}, Reward = {JobController.Inst.currJob.allyFaction.factionType}");
 			}
 			else
 			{
