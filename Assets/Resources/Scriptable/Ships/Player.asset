@@ -17,5 +17,5 @@ MonoBehaviour:
   shieldRegen: 10
   acc: 1
   maxSpeed: 50
-  turnSpeed: 10
+  turnSpeed: 35
   attackCooldown: 3
