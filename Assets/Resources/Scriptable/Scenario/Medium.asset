@@ -16,6 +16,12 @@ MonoBehaviour:
   sceneName: SkyBoxScene
   playerPosition: {x: 0, y: 0, z: 0}
   playerRotation: {x: 0, y: 0, z: 0, w: 1}
-  difficulty: 0
+  portalPosition: {x: 25, y: 25, z: 25}
+  difficulty: 1
   supportedJobType: 00000000010000000200000003000000
-  unitGroups: []
+  unitGroups:
+  - {fileID: 11400000, guid: 53a91d70a3c6a074693acb4b43d43985, type: 2}
+  - {fileID: 11400000, guid: 5cc97f11ecd78e746942bae61b961283, type: 2}
+  - {fileID: 11400000, guid: ca58e3bdfc6f7c7408b22f36e54f5732, type: 2}
+  spaceObjectGroups:
+  - {fileID: 11400000, guid: 4ebe4b6a9d34bc945a09639d5394bf8c, type: 2}

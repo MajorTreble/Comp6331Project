@@ -26,7 +26,7 @@ namespace Manager
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            SceneManager.sceneLoaded += OnSceneLoaded; // Debug
+            
             SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
         }
 
@@ -65,6 +65,9 @@ namespace Manager
 
         public void SpawnScenario(Scenario scenario)
         {
+
+            GameObject.Find("HarborPortal").transform.position = scenario.portalPosition;
+
             foreach (UnitGroup unitGroup in scenario.unitGroups)
             {
                 GameObject orgFaction = new GameObject();
@@ -97,10 +100,6 @@ namespace Manager
             }
         }
 
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            Debug.Log("Check After Build");
-        }
 
         void OnSceneUnloaded(Scene scene)
         {

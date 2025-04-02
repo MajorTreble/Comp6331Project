@@ -28,5 +28,14 @@ public static class Utils
         }
 
     }
+
+    public static void DebugLog(string s)
+    {
+        bool debugOn = false;
+
+        if(debugOn == false) return;
+
+        Debug.Log(s);
+    }
     
 }

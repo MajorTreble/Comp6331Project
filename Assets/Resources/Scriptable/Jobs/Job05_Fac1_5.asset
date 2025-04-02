@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
-  m_Name: Job_03
+  m_Name: Job05_Fac1_5
   m_EditorClassIdentifier: 
-  jobName: Mine Job 01
-  jobDescription: Placeholder Description
+  jobName: Mine Asteroid
+  jobDescription: Faction1 wants you to Mine 15 Asteroid
   jobType: 2
-  scenario: {fileID: 11400000, guid: 0fc47e1f6dfed0b43987330f77350826, type: 2}
-  rewardCoins: 350
-  rewardType: 3
-  rewardRep: 150
+  scenario: {fileID: 11400000, guid: 25107e128c8d4b44aae9e282179587ba, type: 2}
+  rewardCoins: 625
+  rewardType: 0
+  rewardRep: 400
   jobTarget: 4
-  quantity: 10
-  dangerValue: 0
+  quantity: 15
+  dangerValue: 3

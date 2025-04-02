@@ -49,6 +49,7 @@ public class TargetController : MonoBehaviour
         showPortal = false;
 
         GameObject template = GameObject.Find("TargetTemplate");
+        
         if (template == null)
 		{
             return;
