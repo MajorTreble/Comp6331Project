@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
   m_Name: Job06_Fac2_1
   m_EditorClassIdentifier: 
-  jobName: Deliver Faction2
-  jobDescription: Deliver 1 Self
+  jobName: Deliver Self
+  jobDescription: Faction2 wants you to Deliver 1 Self
   jobType: 3
   scenario: {fileID: 11400000, guid: 96251ac8dc2c5c24e94c35d1e2b7d06d, type: 2}
   rewardCoins: 100

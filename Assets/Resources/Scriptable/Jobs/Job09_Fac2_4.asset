@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Job09_Fac2_4
   m_EditorClassIdentifier: 
   jobName: Defend Faction2
-  jobDescription: Defend 3 Faction2
+  jobDescription: Faction2 wants you to Defend 3 Faction2
   jobType: 1
   scenario: {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
   rewardCoins: 250

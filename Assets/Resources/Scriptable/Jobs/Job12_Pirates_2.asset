@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Job12_Pirates_2
   m_EditorClassIdentifier: 
   jobName: Hunt Pirate
-  jobDescription: Hunt 1 Pirate
+  jobDescription: Pirate wants you to Hunt 1 Pirate
   jobType: 0
   scenario: {fileID: 11400000, guid: 10f49a4a1bc257f4893cbba1a3563944, type: 2}
   rewardCoins: 100

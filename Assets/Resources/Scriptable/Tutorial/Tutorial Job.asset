@@ -17,8 +17,8 @@ MonoBehaviour:
   jobType: 0
   scenario: {fileID: 11400000, guid: 14d8742131d858c4691c5442129473c0, type: 2}
   rewardCoins: 0
-  rewardType: 0
+  rewardType: 3
   rewardRep: 0
-  jobTarget: 0
-  quantity: 2
+  jobTarget: 2
+  quantity: 1
   dangerValue: 0

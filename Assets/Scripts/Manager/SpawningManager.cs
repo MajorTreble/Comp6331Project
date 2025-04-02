@@ -44,6 +44,9 @@ namespace Manager
 
         public void SpawnScenario(Scenario scenario)
         {
+
+            GameObject.Find("HarborPortal").transform.position = scenario.portalPosition;
+
             foreach (UnitGroup unitGroup in scenario.unitGroups)
             {
                 GameObject orgFaction = new GameObject();

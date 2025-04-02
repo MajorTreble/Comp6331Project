@@ -6,7 +6,8 @@ using System.IO;
 using UnityEditor;
 using Model;
 
-//[CustomEditor(typeof(Job))]
+/*
+[CustomEditor(typeof(Job))]
 public class JobEditor : Editor
 {
     public override void OnInspectorGUI()
@@ -31,8 +32,8 @@ public class JobEditor : Editor
 
             if (job != null)
             {
-                job.jobName = $"{job.jobType} {job.rewardType}";
-                job.jobDescription = $"{job.jobType} {job.quantity} {job.jobTarget}";
+                job.jobName = $"{job.jobType} {job.jobTarget}";
+                job.jobDescription = $"{job.rewardType} wants you to {job.jobType} {job.quantity} {job.jobTarget}";
 
                 EditorUtility.SetDirty(job);
             }
@@ -43,3 +44,4 @@ public class JobEditor : Editor
     }
 
 }
+//*/

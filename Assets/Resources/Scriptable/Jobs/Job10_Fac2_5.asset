@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
   m_Name: Job10_Fac2_5
   m_EditorClassIdentifier: 
-  jobName: Hunt Faction2
-  jobDescription: Hunt 5 Pirate
+  jobName: Hunt Pirate
+  jobDescription: Faction2 wants you to Hunt 5 Pirate
   jobType: 0
   scenario: {fileID: 11400000, guid: 25107e128c8d4b44aae9e282179587ba, type: 2}
   rewardCoins: 625

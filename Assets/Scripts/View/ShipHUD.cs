@@ -55,7 +55,17 @@ public class ShipHUD : MonoBehaviour
 			ammoText.text = ship.ammo.ToString();
 			healthImage.fillAmount = ship.health / ship.CurrMaxHealth;
 			shieldsImage.fillAmount = ship.shields / ship.CurrMaxShields;
-			sld_Speed.value = pc.currSpeed/ship.CurrMaxSpeed;
+			sld_Speed.value = Mathf.Abs(pc.currSpeed)/ship.CurrMaxSpeed;
+
+			if(pc.currSpeed > 0)
+			{
+				Utils.FindChildByName(sld_Speed.transform, "Fill").GetComponent<Image>().color = Color.green;
+				sld_Speed.direction = Slider.Direction.BottomToTop;
+			}else
+			{
+				Utils.FindChildByName(sld_Speed.transform, "Fill").GetComponent<Image>().color = Color.red;
+				sld_Speed.direction = Slider.Direction.TopToBottom;
+			} 
 		}
 	}
 

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
   m_Name: Job02_Fac1_2
   m_EditorClassIdentifier: 
-  jobName: Mine Faction1
-  jobDescription: Mine 5 Asteroid
+  jobName: Mine Asteroid
+  jobDescription: Faction1 wants you to Mine 5 Asteroid
   jobType: 2
   scenario: {fileID: 11400000, guid: 10f49a4a1bc257f4893cbba1a3563944, type: 2}
   rewardCoins: 100

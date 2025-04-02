@@ -62,13 +62,13 @@ public class JobMenuController : MonoBehaviour
                 switch (job.dangerValue)
                 {
                     case 1:
-                        if(playerReputation >= -500 && playerReputation <= 150) factionJobs.Add(job);
+                        if(playerReputation > -500 && playerReputation < 150) factionJobs.Add(job);
                         break;
                     case 2:
-                        if(playerReputation >= 0 && playerReputation <= 600) factionJobs.Add(job);
+                        if(playerReputation > 0 && playerReputation < 600) factionJobs.Add(job);
                         break;
                     case 3:
-                        if(playerReputation >= 400 && playerReputation <= 2000) factionJobs.Add(job);
+                        if(playerReputation > 400 && playerReputation < 2000) factionJobs.Add(job);
                         break;
                     default:
                         Debug.Log("ERROR - PlayerRep" + playerReputation + "  |  Danger Value " + job.dangerValue);
@@ -94,6 +94,9 @@ public class JobMenuController : MonoBehaviour
         jc.currJob = jobs[_index];
         jc.jobStatus = JobStatus.InProgress;
         JobView.Inst.UpdateJob();
+
+
+        GameManager.Instance.currentScenario = jc.currJob.scenario;
 
 
 
@@ -137,6 +140,7 @@ public class JobMenuController : MonoBehaviour
     
     public void BackToMenu()
     {
-       GameManager.Instance.MenuScenario();  
+        FinishJob();
+        GameManager.Instance.MenuScenario();  
     }
 }

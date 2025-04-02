@@ -51,6 +51,7 @@ namespace Manager
 		private void Start()
 		{
             PersistenceManager.Instance.dataPersistence.Add(this);
+            
         }
 
         // IDataPersistence

@@ -31,7 +31,7 @@ public static class Utils
 
     public static void DebugLog(string s)
     {
-        bool debugOn = true;
+        bool debugOn = false;
 
         if(debugOn == false) return;
 

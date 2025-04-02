@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
   m_Name: Job05_Fac1_5
   m_EditorClassIdentifier: 
-  jobName: Hunt Pirate
-  jobDescription: Hunt 15 Asteroid
-  jobType: 0
+  jobName: Mine Asteroid
+  jobDescription: Faction1 wants you to Mine 15 Asteroid
+  jobType: 2
   scenario: {fileID: 11400000, guid: 25107e128c8d4b44aae9e282179587ba, type: 2}
   rewardCoins: 625
-  rewardType: 2
+  rewardType: 0
   rewardRep: 400
   jobTarget: 4
   quantity: 15

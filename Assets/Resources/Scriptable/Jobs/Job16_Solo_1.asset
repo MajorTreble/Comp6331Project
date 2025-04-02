@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
   m_Name: Job16_Solo_1
   m_EditorClassIdentifier: 
-  jobName: Defend Self
-  jobDescription: Defend 1 Faction1
+  jobName: Defend Faction1
+  jobDescription: Self wants you to Defend 1 Faction1
   jobType: 1
   scenario: {fileID: 11400000, guid: 96251ac8dc2c5c24e94c35d1e2b7d06d, type: 2}
   rewardCoins: 100

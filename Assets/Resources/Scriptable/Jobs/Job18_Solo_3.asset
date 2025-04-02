@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Job18_Solo_3
   m_EditorClassIdentifier: 
   jobName: Deliver Self
-  jobDescription: Deliver 1 Self
+  jobDescription: Self wants you to Deliver 1 Self
   jobType: 3
   scenario: {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
   rewardCoins: 250

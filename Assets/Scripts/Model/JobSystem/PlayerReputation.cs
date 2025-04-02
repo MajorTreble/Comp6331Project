@@ -23,7 +23,8 @@ public class PlayerReputation : MonoBehaviour
 
         foreach (RepType rep in System.Enum.GetValues(typeof(RepType)))
         {
-            reputations.Add(new Reputation (rep, 0));
+            Debug.LogWarning("ForTests - Change back to 0");
+            reputations.Add(new Reputation (rep, 1000));
         }
 
         /*
