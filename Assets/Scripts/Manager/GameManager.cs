@@ -14,6 +14,8 @@ namespace Manager
     {
         public static GameManager Instance { get; private set; }
 
+        public PlayerReputation reputation = null;
+
         public GameObject playerPrefab;
         public GameObject playerShip;
 
@@ -59,6 +61,7 @@ namespace Manager
 		{
             this.isNewGame = gameData.isNewGame;
             this.hasPlayedTutorial = gameData.hasPlayedTutorial;
+            this.reputation = gameData.reputation;
         }
 
         // IDataPersistence
@@ -66,6 +69,7 @@ namespace Manager
 		{
             gameData.isNewGame = this.isNewGame;
             gameData.hasPlayedTutorial = this.hasPlayedTutorial;
+            gameData.reputation = this.reputation;
         }
 
         public void Play()
