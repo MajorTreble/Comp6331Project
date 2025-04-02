@@ -149,7 +149,7 @@ namespace Model.AI
 			// Mission overrides:
 			if (JobController.Inst.currJob != null)
 			{
-				Debug.Log($"[{name}] Current Mission: Target = {JobController.Inst.currJob.jobTarget}, Reward = {JobController.Inst.currJob.rewardType}");
+				Debug.Log($"[{name}] Current Mission: Target = {JobController.Inst.currJob.jobTarget}, Reward = {JobController.Inst.currJob.allyFaction.factionType}");
 
 				// If the mission targets our faction (we are being hunted), always attack.
 				if (AIHelper.IsMissionTargetFaction(JobController.Inst.currJob, faction))
@@ -537,7 +537,7 @@ namespace Model.AI
 		{
 			if (GameManager.Instance.reputation != null)
 			{
-				var repEntry = GameManager.Instance.reputation.reputations.Find(r => r.type.ToString() == faction.ToString());
+				var repEntry = GameManager.Instance.reputation.reputations.Find(r => r.fac.factionType.ToString() == faction.ToString());
 				if (repEntry != null)
 					return repEntry.value;
 			}

@@ -7,31 +7,33 @@ using Controller;
 using Model;
 
 public enum ReputationStatus
-    {
-        Neutral,
-        Friendly,
-        Enemy
-    }
+{
+    Neutral,
+    Friendly,
+    Enemy
+}
 
-public class PlayerReputation : MonoBehaviour
+
+[CreateAssetMenu(fileName = "PlayerReputation", menuName = "ScriptableObjects/PlayerReputation", order = 0)]
+public class PlayerReputation : ScriptableObject
 {   
-        
+    
     public List<Reputation> reputations = new List<Reputation>();
     public int coins;
 
-    public static PlayerReputation Inst { get; private set; } //Singleton
+    //public static PlayerReputation Inst { get; private set; } //Singleton
     private void Awake()
     {
-        if (Inst == null)
+        Faction[] allFac = Resources.LoadAll<Faction>("Scriptable/Faction");
+        if (allFac == null || allFac.Length == 0)
         {
-            Inst = this;
-            DontDestroyOnLoad(gameObject);
+            Debug.LogError("No faction found in the specified path.");
+            return;
         }
-
-        foreach (RepType rep in System.Enum.GetValues(typeof(RepType)))
+        foreach (Faction fac in allFac)
         {
             Debug.LogWarning("ForTests - Change back to 0");
-            reputations.Add(new Reputation (rep, 1000));
+            reputations.Add(new Reputation (fac, 789));
         }
     }
     
@@ -45,12 +47,12 @@ public class PlayerReputation : MonoBehaviour
         return ReputationStatus.Neutral;
     }
 
-    public void ChangeReputation(RepType _type, int _value)
+    public void ChangeReputation(Faction _fac, int _value)
     {
-        Reputation rep = reputations.Find(i => i.type == _type);
+        Reputation rep = reputations.Find(i => i.fac == _fac);
         if (rep != null)
             rep.ChangeValue(_value);
         else
-            Debug.LogWarning($"Item of type {_type} not found.");
+            Debug.LogWarning($"Item of faction {_fac} not found.");
     }
 }

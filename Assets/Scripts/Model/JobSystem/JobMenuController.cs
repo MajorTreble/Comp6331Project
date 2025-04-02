@@ -43,18 +43,18 @@ public class JobMenuController : MonoBehaviour
         jobs = new Job[4];
 
         
-
+        Faction[] allFac = Resources.LoadAll<Faction>("Scriptable/Faction");
         for (int i = 0; i < 4; i++)
         {
                  
             List<Job> factionJobs = new List<Job>();
             
-            int playerReputation = PlayerReputation.Inst.reputations[i].value;
+            int playerReputation = GameManager.Instance.reputation.reputations[i].value;
 
             
             foreach (Job job in allJobs)
             {
-                if(job.rewardType  != (RepType)i) continue;
+                if(job.allyFaction  != allFac[i]) continue;
 
                 
                 switch (job.dangerValue)
@@ -77,7 +77,10 @@ public class JobMenuController : MonoBehaviour
             {
                 Job randomJob = factionJobs[Random.Range(0, factionJobs.Count)];
                 jobs[i] = randomJob;
-            }                 
+            }else
+            {
+                Debug.LogError("factionJobs Count = 0");
+            }     
         }
     }
 
@@ -112,11 +115,11 @@ public class JobMenuController : MonoBehaviour
         {
             case JobStatus.Concluded:
                 player.coins += jc.currJob.rewardCoins;
-                player.ChangeReputation(jc.currJob.rewardType, jc.currJob.rewardRep);
+                player.ChangeReputation(jc.currJob.allyFaction, jc.currJob.rewardRep);
 
             break;
             case JobStatus.Failed:
-                player.ChangeReputation(jc.currJob.rewardType, -jc.currJob.rewardRep/2);//Looses half reputation on a failed attempt
+                player.ChangeReputation(jc.currJob.allyFaction, -jc.currJob.rewardRep/2);//Looses half reputation on a failed attempt
             break;            
             default:
                 jc.FailJob();

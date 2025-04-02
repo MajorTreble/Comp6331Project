@@ -48,13 +48,13 @@ namespace Model
             switch (faction.factionType)
             {
                 case Faction.FactionType.Colonial:
-                    return job.rewardType == RepType.Colonial;
+                    return job.allyFaction.factionType == Faction.FactionType.Colonial;
                 case Faction.FactionType.Earth:
-                    return job.rewardType == RepType.Earth;
+                    return job.allyFaction.factionType  == Faction.FactionType.Earth;
                 case Faction.FactionType.Pirates:
-                    return job.rewardType == RepType.Pirate;
+                    return job.allyFaction.factionType  == Faction.FactionType.Pirates;
                 case Faction.FactionType.Solo:
-                    return job.rewardType == RepType.Self;
+                    return job.allyFaction.factionType  == Faction.FactionType.Solo;
                 default:
                     return false;
             }
@@ -104,7 +104,7 @@ namespace Model
 
             // If I (self) am in the mission's target faction, anyone from the reward faction is hostile to me.
             bool selfIsTarget = job.jobTarget.ToString() == self.ToString();
-            bool otherIsReward = job.rewardType.ToString() == other.ToString();
+            bool otherIsReward = job.allyFaction.factionType.ToString() == other.ToString();
 
             return selfIsTarget && otherIsReward;
         }

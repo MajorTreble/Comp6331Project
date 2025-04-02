@@ -17,8 +17,9 @@ MonoBehaviour:
   jobType: 1
   scenario: {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
   rewardCoins: 250
-  rewardType: 1
   rewardRep: 170
   jobTarget: 1
   quantity: 3
+  targetFaction: {fileID: 11400000, guid: de1850f4399a47f4584c3700d852c6c2, type: 2}
+  allyFaction: {fileID: 11400000, guid: de1850f4399a47f4584c3700d852c6c2, type: 2}
   dangerValue: 2
