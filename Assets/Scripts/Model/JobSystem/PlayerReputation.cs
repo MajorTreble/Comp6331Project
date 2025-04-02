@@ -35,10 +35,7 @@ public class PlayerReputation : MonoBehaviour
         reputations.Add(new Reputation (RepType.Self, 0)); 
         */
     }
-    
-   
-
-        public float GetReputation(Faction faction)
+    public float GetReputation(Faction faction)
         {
             return 0.0f;
         }
@@ -47,6 +44,10 @@ public class PlayerReputation : MonoBehaviour
         {
             return ReputationStatus.Neutral;
         }
+    
+   
+
+        
 
 
     public void ChangeReputation(RepType _type, int _value)
