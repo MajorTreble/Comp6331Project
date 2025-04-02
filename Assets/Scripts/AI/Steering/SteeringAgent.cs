@@ -9,7 +9,7 @@ namespace AI.Steering
         public GameObject owner;
 
         public float initialMaxSpeed;
-        public float maxSpeed;
+        public float maxSpeed = 15;
         public float rotationSpeed = 1.0f;
         public float radius = 1.0f;
         public bool lockY = true;
@@ -27,7 +27,8 @@ namespace AI.Steering
         public Vector3 TargetPosition
         {
             get => trackedTarget != null ? trackedTarget.transform.position : targetPosition;
-        }
+			set => targetPosition = value;
+		}
         public Vector3 TargetForward
         {
             get => trackedTarget != null ? trackedTarget.transform.forward : Vector3.forward;

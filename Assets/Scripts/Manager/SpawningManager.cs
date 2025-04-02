@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement; // Debug only
 
 using Model;
+using Model.AI;
 
 namespace Manager
 {
@@ -12,11 +13,10 @@ namespace Manager
     {
         public static SpawningManager Instance { get; private set; }
 
-        public Vector3 portalPosition = new Vector3(25, 25, 25);
-
         public List<Ship> shipList = new List<Ship>();
+		private Dictionary<Faction.FactionType, AIShip> factionLeaders = new Dictionary<Faction.FactionType, AIShip>();
 
-        void Awake()
+		void Awake()
         {
             if (Instance != null)
             {
@@ -26,27 +26,42 @@ namespace Manager
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-
             SceneManager.sceneLoaded += OnSceneLoaded; // Debug
             SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
-
-            portalPosition = GameObject.Find("HarborPortal").transform.position;
-
         }
 
-        public GameObject Spawn(SpawnParams spawnParams)
-        {
-            GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
-            spawnParams.Setup(shipObject);
+		public GameObject Spawn(SpawnParams spawnParams)
+		{
+			GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
+			spawnParams.Setup(shipObject);
 
-            Ship ship = shipObject.GetComponent<Ship>();
-            if (ship != null)
-            {
-                shipList.Add(ship);
-            }
+			Ship ship = shipObject.GetComponent<Ship>();
+			if (ship != null)
+			{
+				shipList.Add(ship);
+			}
 
-            return shipObject;
-        }
+			AIShip aiShip = shipObject.GetComponent<AIShip>();
+			if (aiShip != null)
+			{
+				// Check if this faction already has a leader
+				AIShip designatedLeader = null;
+
+				if (aiShip.behavior != null && aiShip.behavior.groupMode == AIBehavior.GroupMode.Formation)
+				{
+					if (!factionLeaders.TryGetValue(aiShip.faction.factionType, out designatedLeader))
+					{
+						// Assign as leader
+						factionLeaders[aiShip.faction.factionType] = aiShip;
+					}
+				}
+
+				aiShip.InitializeShip(designatedLeader);
+			}
+
+			return shipObject;
+		}
+
 
         public void SpawnScenario(Scenario scenario)
         {

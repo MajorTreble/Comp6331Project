@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1792d9a2b2051f49b944fbcc4497dfe, type: 3}
+  m_Name: AI Behavior
+  m_EditorClassIdentifier: 
+  faction: 0
+  aggressionLevel: 0
+  reputationThreshold: 0
+  allyReputationThreshold: 70
+  allyAssistRange: 20
+  missionResponseAggression: 1
+  detectionRadius: 25
+  roamSpeed: 0
+  chaseSpeed: 0
+  rotationSpeed: 0
+  attackRange: 0
+  attackCooldown: 0
+  groupMode: 0
+  aggressionCalmValue: 1
+  aggressionAverageValue: 4
+  aggressionAggressiveValue: 10

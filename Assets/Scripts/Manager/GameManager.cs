@@ -14,6 +14,8 @@ namespace Manager
     {
         public static GameManager Instance { get; private set; }
 
+        public PlayerReputation reputation = null;
+
         public GameObject playerPrefab;
         public GameObject playerShip;
 
@@ -32,6 +34,8 @@ namespace Manager
         public List<Scenario> scenarios = new List<Scenario>();
 
         public Scenario currentScenario = null;
+
+        public Vector3 portalPosition = new Vector3(25, 25, 25);
 
         void Awake()
         {
@@ -56,6 +60,7 @@ namespace Manager
 		{
             this.isNewGame = gameData.isNewGame;
             this.hasPlayedTutorial = gameData.hasPlayedTutorial;
+            this.reputation = gameData.reputation;
         }
 
         // IDataPersistence
@@ -63,6 +68,7 @@ namespace Manager
 		{
             gameData.isNewGame = this.isNewGame;
             gameData.hasPlayedTutorial = this.hasPlayedTutorial;
+            gameData.reputation = this.reputation;
         }
 
         public void Play()
@@ -154,6 +160,12 @@ namespace Manager
 			{
                 SpawningManager.Instance.SpawnScenario(currentScenario);
                 SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+
+                GameObject portal = GameObject.Find("HarborPortal");
+                if (portal)
+                {
+                    portalPosition = portal.transform.position;
+                }
 
                 UpgradeController.Inst.UpdateValues();
 
