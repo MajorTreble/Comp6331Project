@@ -4,12 +4,15 @@ using UnityEngine;
 using Model.Environment;
 using Controller;
 
-namespace Model {
+namespace Model
+{
     public class PlayerLaserProjectile : MonoBehaviour
     {
         public float speed = 100f;
         public float lifeTime = 3f;
         public float damage = 100f;
+
+        private float playerSpeed = 0;
 
         private void Start()
         {
@@ -18,7 +21,8 @@ namespace Model {
 
         void Update()
         {
-            transform.position += transform.forward * speed * Time.deltaTime;
+            float finalSpeed = speed + playerSpeed;
+            transform.position += transform.forward * finalSpeed * Time.deltaTime;
         }
 
         void OnTriggerEnter(Collider other)
@@ -48,6 +52,11 @@ namespace Model {
 
             // Just destroy if hit anything else
             Destroy(gameObject);
+        }
+
+        public void setPlayerSpeed(float playerSpeed)
+        {
+            this.playerSpeed = playerSpeed;
         }
     }
 
