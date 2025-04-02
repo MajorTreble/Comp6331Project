@@ -36,10 +36,18 @@ public class PlayerReputation : MonoBehaviour
         */
     }
     
-    public void Start()
-    {
+   
 
-    }
+        public float GetReputation(Faction faction)
+        {
+            return 0.0f;
+        }
+        
+        public ReputationStatus GetReputationStatus(Faction faction)
+        {
+            return ReputationStatus.Neutral;
+        }
+
 
     public void ChangeReputation(RepType _type, int _value)
     {
