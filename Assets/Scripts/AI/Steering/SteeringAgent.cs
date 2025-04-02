@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AI.Steering
 {
-    public class SteeringAgent
+    public class SteeringAgent : MonoBehaviour
     {
         public GameObject owner;
         public Rigidbody rigidBody;
@@ -13,7 +13,7 @@ namespace AI.Steering
         public float maxSpeed = 15;
         public float rotationSpeed = 1.0f;
         public float radius = 1.0f;
-        public bool lockY = true;
+        public bool lockY = false;
         public bool debug = false;
 
         public enum EBehaviorType { Kinematic, Steering }
@@ -71,7 +71,12 @@ namespace AI.Steering
             this.rigidBody = rigidBody;
         }
 
-        public void Update()
+		public void Awake()
+		{
+            movements = new List<Movement>();
+        }
+
+		public void Update()
         {
             if (!owner)
             {

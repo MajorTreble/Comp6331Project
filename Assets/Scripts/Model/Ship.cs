@@ -10,7 +10,7 @@ namespace Model
     {
         public ShipData oriData;
         public Rigidbody rb;
-        public SteeringAgent steering = null;
+        public SteeringAgent steeringAgent = null;
 
         public int ammo;
         public float health;
@@ -19,7 +19,8 @@ namespace Model
         public virtual void Start()
         {
             this.rb = GetComponent<Rigidbody>();
-            this.steering = new SteeringAgent(gameObject, rb);
+            this.steeringAgent = GetComponent<SteeringAgent>();
+            this.steeringAgent.rigidBody = rb;
         }
 
         public virtual void SetStats()
