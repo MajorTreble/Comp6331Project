@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
-  m_Name: Job_01
+  m_Name: Job15_Pirates_5
   m_EditorClassIdentifier: 
-  jobName: Defend Job 01
-  jobDescription: Placeholder Description
+  jobName: Hunt Faction2
+  jobDescription: Pirate wants you to Hunt 5 Faction2
   jobType: 0
-  scenario: {fileID: 11400000, guid: 0fc47e1f6dfed0b43987330f77350826, type: 2}
-  rewardCoins: 50
-  rewardType: 0
-  rewardRep: 100
-  jobTarget: 2
-  quantity: 2
-  dangerValue: 0
+  scenario: {fileID: 11400000, guid: 25107e128c8d4b44aae9e282179587ba, type: 2}
+  rewardCoins: 625
+  rewardType: 2
+  rewardRep: 400
+  jobTarget: 1
+  quantity: 5
+  dangerValue: 3

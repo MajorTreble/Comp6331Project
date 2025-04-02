@@ -15,7 +15,6 @@ namespace Model.AI
 
 	public class AIShip : Ship
 	{
-		public Rigidbody rb;
 		protected Vector3 roamTarget;
 		protected Transform target;
 
@@ -59,32 +58,17 @@ namespace Model.AI
 		private Vector3 formationOffset;
 		private Transform currentTarget = null;  // The current enemy target this AIShip is engaging (could be player or another ship).
 		private bool isEngagingTarget = false;   // Whether currently in combat behavior (used for formation followers to copy leader).
-		private SteeringAgent steeringAgent;
-		private Wander wander;
 		private bool hostile;
 
-		public virtual void Start()
+		public override void Start()
 		{
-			rb = GetComponent<Rigidbody>();
-
-			if (wander == null)
-				wander = new Wander();
-			//lookWhereGoing = GetComponent<LookWhereYouAreGoing>();
-			//if (lookWhereGoing == null)
-			//	lookWhereGoing = new LookWhereYouAreGoing();
-			if (steeringAgent == null)
-				steeringAgent = new SteeringAgent(gameObject);
-
-			steeringAgent.movements.Clear(); // Optional safety
-			steeringAgent.movements.Add(wander);
+			base.Start();
 
 			BT.aiShip = this;
 			BT.Initialize();
 
 			currentState = AIState.Idle;
 			requestedState = AIState.Roam;
-
-			SetNewRoamTarget();
 
 			if (laserPrefab != null && laserPrefab.GetComponent<LaserProjectile>() == null)
 			{
@@ -133,8 +117,10 @@ namespace Model.AI
 
 			UpdateDecision();
 			EvaluateCombatTarget();
+			requestedState = AIState.Seek;
 			UpdateStateMachine();
-			steeringAgent?.Update();
+
+			steeringAgent.Update();
 		}
 
 		protected virtual void UpdateDecision()
@@ -417,27 +403,6 @@ namespace Model.AI
 			return nearest;
 		}
 
-		protected virtual void UpdateFlee()
-		{
-			GameObject player = GameObject.FindGameObjectWithTag("Player");
-			if (player == null || steeringAgent == null) return;
-
-			Job job = JobController.Inst.currJob;
-
-			if (!AIHelper.ShouldAttackPlayer(this, player, job))
-			{
-				requestedState = AIState.Roam;
-				return;
-			}
-
-			steeringAgent.UnTrackTarget();
-			steeringAgent.targetPosition = player.transform.position;
-
-			Flee flee = new Flee();
-			var steering = flee.GetSteering(steeringAgent);
-			rb.velocity += steering.linear * Time.deltaTime;
-		}
-
 		public void SetBehavior(AIBehavior newBehavior)
 		{
 			behavior = newBehavior; // Set the behavior
@@ -600,67 +565,46 @@ namespace Model.AI
 
 		protected void EnterRoam()
 		{
-			SetNewRoamTarget();
+			steeringAgent.movements.Add(new Wander());
+			steeringAgent.movements.Add(new LookWhereYouAreGoing());
+
+			CollisionAvoidance avoidance = new CollisionAvoidance();
+			avoidance.weight = 2.0f;
+			foreach (Ship ship in SpawningManager.Instance.shipList)
+			{
+				SteeringAgent agent = ship.steeringAgent;
+				if (agent != null)
+				{
+					avoidance.avoidList.Add(agent);
+				}
+			}
+			steeringAgent.movements.Add(avoidance);
 		}
 
 		protected void ExitRoam()
 		{
-
+			steeringAgent.movements.Clear();
 		}
 
 		protected void UpdateRoam()
 		{
-			if (roamTarget == null)
-			{
-				return;
-			}
-
-			Vector3 direction = (roamTarget - transform.position).normalized;
-			Vector3 avoidance = ComputeObstacleAvoidance(direction);
-
-			if (avoidance != Vector3.zero)
-			{
-				direction = (direction + avoidance).normalized;
-			}
-
-			if (wander != null && steeringAgent != null)
-			{
-				var steer = wander.GetSteering(steeringAgent);
-				rb.velocity += steer.linear * Time.deltaTime;
-			}
-
-			RotateTowardTarget(direction);
-			if (Vector3.Distance(transform.position, roamTarget) < 5f)
-			{
-				SetNewRoamTarget();
-			}
 		}
 
 		// Seek //
 
 		protected void EnterSeek()
 		{
-
+			steeringAgent.movements.Add(new Pursue());
+			steeringAgent.movements.Add(new LookWhereYouAreGoing());
 		}
 
 		protected void ExitSeek()
 		{
-
+			steeringAgent.movements.Clear();
 		}
 
 		public virtual void UpdateSeek()
 		{
-			if (currentTarget == null || steeringAgent == null) return;
-
-			GameObject player = GameObject.FindGameObjectWithTag("Player");
-			Job job = JobController.Inst.currJob;
-
-			if (!AIHelper.ShouldAttackPlayer(this, player, job))
-			{
-				requestedState = AIState.Roam;
-				return;
-			}
-
 			float dist = Vector3.Distance(transform.position, currentTarget.position);
 			if (dist <= behavior.attackRange)
 			{
@@ -672,38 +616,23 @@ namespace Model.AI
 				requestedState = AIState.Roam;
 				return;
 			}
-
-			steeringAgent.UnTrackTarget();
-			steeringAgent.targetPosition = currentTarget.position;
-			Vector3 direction = (currentTarget.position - transform.position).normalized;
-			Vector3 avoidance = ComputeObstacleAvoidance(direction);
-			if (avoidance != Vector3.zero)
-			{
-				direction = (direction + avoidance).normalized;
-			}
-
-			Debug.Log($"[{name}] Seeking target: {currentTarget.name}");
-
-			Seek seek = new Seek();
-			var steering = seek.GetSteering(steeringAgent);
-			//rb.velocity += steering.linear * Time.deltaTime;
-			rb.velocity += (steering.linear + avoidance) * Time.deltaTime;
-
-			RotateTowardTarget(direction, behavior.rotationSpeed);
-
 		}
-
 
 		// Flee //
 
 		protected void EnterFlee()
 		{
-
+			steeringAgent.movements.Add(new FaceAway());
+			steeringAgent.movements.Add(new Evade());
 		}
 
 		protected void ExitFlee()
 		{
+			steeringAgent.movements.Clear();
+		}
 
+		protected virtual void UpdateFlee()
+		{
 		}
 
 		// Ally Assist //

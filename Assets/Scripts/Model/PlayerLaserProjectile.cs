@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Model.Environment;
+using Controller;
 
 namespace Model
 {
@@ -26,9 +27,10 @@ namespace Model
 
         void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player") || other.CompareTag("SpaceshipComponent")) return; // Don't hit self
-
-            Debug.Log($"[PlayerLaserProjectile] hit by {other.tag}");
+            if (other.CompareTag("Player") || other.CompareTag("PlayerComponent") || other.transform == this.transform) return; // Don't hit self
+            
+            Utils.DebugLog($"[PlayerLaserProjectile] hit by {other.tag}" + other.transform.name);
+            //Debug.Log($"[PlayerLaserProjectile] hit by {other.tag}");
             // Damage Ship
             Ship ship = other.GetComponent<Ship>();
             if (ship != null)
@@ -43,6 +45,7 @@ namespace Model
             if (asteroid != null)
             {
                 asteroid.ReceiveDamage(damage);
+
                 Destroy(gameObject);
                 return;
             }

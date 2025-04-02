@@ -41,7 +41,7 @@ namespace Model.Environment {
             if (collision.gameObject.tag != "Asteroid" && canBreak && transform.localScale.x > minSize)
             {
                 //Debug.Log("Asteroid is breaking..");
-                BreakAsteroid();
+                //BreakAsteroid();
             }
         }
 
@@ -58,7 +58,6 @@ namespace Model.Environment {
 			if(health > 0)
 				return false;
 
-            JobController.Inst.OnObjDestroyed(transform.tag);
 			BreakAsteroid();
 
 			return true;	
@@ -67,6 +66,7 @@ namespace Model.Environment {
 
         private void BreakAsteroid()
         {
+            JobController.Inst.OnObjDestroyed(transform.tag);
             if (!canBreak || transform.localScale.x <= minSize)
             {
                 gameObject.SetActive(false);
@@ -79,6 +79,7 @@ namespace Model.Environment {
                 {
                     Vector3 randomOffset = Random.insideUnitSphere * 0.3f;
                     GameObject fragment = Instantiate(gameObject, transform.position + randomOffset, Random.rotation, transform.parent);
+                    fragment.tag = "Asteroid_Debri";
 
                     float newSize = transform.localScale.x * 0.5f;
                     fragment.transform.localScale = new Vector3(newSize, newSize, newSize);
@@ -108,7 +109,7 @@ namespace Model.Environment {
 
         private void SpawnBreakEffect()
         {
-            Debug.Log("Spawn Break Effect [Animation and Sound]");
+            Utils.DebugLog("Spawn Break Effect [Animation and Sound]");
         }
 
         public void SetSize(float newSize)

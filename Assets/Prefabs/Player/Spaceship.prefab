@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -6639418880188792714}
   - component: {fileID: -2124949118174447166}
   - component: {fileID: 4568182390670334844}
+  - component: {fileID: 7450351474904936078}
   m_Layer: 0
   m_Name: Spaceship
   m_TagString: Player
@@ -83,6 +84,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   oriData: {fileID: 11400000, guid: 7b13e89c0221e3e4eb992ba4d86f3b22, type: 2}
+  rb: {fileID: 0}
+  steering: {fileID: 0}
   ammo: 0
   health: 100
   shields: 100
@@ -118,6 +121,29 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 12.446079, y: 1.6461797, z: 11.417653}
   m_Center: {x: 1.4500303, y: 0.32308984, z: -1.2186646}
+--- !u!114 &7450351474904936078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2462193850337484257}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9eb2c34f4c31a42a919feb48813b2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 2462193850337484257}
+  rigidBody: {fileID: 0}
+  initialMaxSpeed: 0
+  maxSpeed: 0
+  rotationSpeed: 0
+  radius: 0
+  lockY: 0
+  debug: 0
+  behaviorType: 1
+  trackedTarget: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &5692264513234847176
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +155,7 @@ GameObject:
   - component: {fileID: 8116351982368032752}
   m_Layer: 0
   m_Name: Weapon1
-  m_TagString: Untagged
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -155,13 +181,289 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1013986575072684, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1017576715294374, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1037055224290210, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1069603725134158, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1072200920100400, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1084657107169850, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1098385968435352, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1111103821061344, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1142884884712948, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1160076271026490, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168394374627820, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1168450754309862, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
       propertyPath: m_Name
       value: Cockpit3_WithInterior
       objectReference: {fileID: 0}
     - target: {fileID: 1168450754309862, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173266449836490, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184447347210110, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1192740203084828, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205894175047900, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1237131925010974, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1239295117654712, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1244928253050104, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1254115263499000, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1308726373762724, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1312314941756628, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1331410884666426, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333593203885146, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1347898868842504, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1350031909469762, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1358794444735162, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1367871687056184, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1412403527189412, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1415473733803048, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1419078004907126, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425557840447360, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1455347135552580, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463706651349024, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1464787261840710, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1466316065527910, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1476175444296818, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1480270916926866, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506196927802040, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527365657584238, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1544629848752064, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1591242232735596, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1603716859341902, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1622021648026532, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1631378091120736, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638191747702078, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1656869893400650, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1700603644631456, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719174227881730, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1731339177588124, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746510758905526, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746930763178324, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756053164346478, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1763636467555970, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1791632528168832, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793729247790070, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1833182583675616, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1838459809671750, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1856734915530114, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1888846929154768, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1904669629141470, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1908610922848544, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1910383053424790, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928404662976262, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1931364860011442, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943752253440136, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1945190834885512, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1968491674338212, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1971305322074638, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1981627507653096, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4633844506500618, guid: 54e1b562c3fea284f8a0ec8cdc70057c, type: 3}
       propertyPath: m_RootOrder
@@ -239,13 +541,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 6860448571287218936, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 6860482863502905482, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_Name
       value: Wing2_Mirrored
       objectReference: {fileID: 0}
     - target: {fileID: 6860482863502905482, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 6860919335147633864, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 6862420380326820344, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_RootOrder
@@ -335,13 +645,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1224338565635394, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1308823675597282, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
       propertyPath: m_Name
       value: Big_Launcher
       objectReference: {fileID: 0}
     - target: {fileID: 1308823675597282, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1341712623725502, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4299018308365020, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
       propertyPath: m_RootOrder
@@ -419,13 +737,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1172389105539836, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454388774245278, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1718390857548102, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
       propertyPath: m_Name
       value: Blaster
       objectReference: {fileID: 0}
     - target: {fileID: 1718390857548102, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
       propertyPath: m_RootOrder
@@ -473,14 +799,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
---- !u!4 &597755827319545917 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
-  m_PrefabInstance: {fileID: 602002784692363703}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &602537362165342449 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1718390857548102, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+  m_PrefabInstance: {fileID: 602002784692363703}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &597755827319545917 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
   m_PrefabInstance: {fileID: 602002784692363703}
   m_PrefabAsset: {fileID: 0}
 --- !u!65 &2463156675679193862
@@ -503,13 +829,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1172389105539836, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454388774245278, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1718390857548102, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
       propertyPath: m_Name
       value: Blaster
       objectReference: {fileID: 0}
     - target: {fileID: 1718390857548102, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4813205879603594, guid: b6362f50ca5d7b145ba56bc6c23080ee, type: 3}
       propertyPath: m_RootOrder
@@ -587,13 +921,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1006380850631462, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1276700133170578, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1564688329278174, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1758563075571458, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
       propertyPath: m_Name
       value: Engine1
       objectReference: {fileID: 0}
     - target: {fileID: 1758563075571458, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4211523380435964, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
       propertyPath: m_RootOrder
@@ -641,14 +987,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
---- !u!1 &683283111603375358 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1758563075571458, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
-  m_PrefabInstance: {fileID: 683910775022793724}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &680970854020311040 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4211523380435964, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
+  m_PrefabInstance: {fileID: 683910775022793724}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &683283111603375358 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1758563075571458, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
   m_PrefabInstance: {fileID: 683910775022793724}
   m_PrefabAsset: {fileID: 0}
 --- !u!65 &2463156675679193974
@@ -671,13 +1017,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1542202250231952, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1881228797040288, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1917032075865298, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_Name
       value: Wing2
       objectReference: {fileID: 0}
     - target: {fileID: 1917032075865298, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4413083218773408, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_RootOrder
@@ -755,13 +1109,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1006380850631462, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1276700133170578, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1564688329278174, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1758563075571458, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
       propertyPath: m_Name
       value: Engine1
       objectReference: {fileID: 0}
     - target: {fileID: 1758563075571458, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4211523380435964, guid: 46b44d60b1f0369449bf47d8ef9e2fc3, type: 3}
       propertyPath: m_RootOrder
@@ -839,13 +1205,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1542202250231952, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1881228797040288, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1917032075865298, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_Name
       value: Wing2
       objectReference: {fileID: 0}
     - target: {fileID: 1917032075865298, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4413083218773408, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_RootOrder
@@ -935,13 +1309,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1224338565635394, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1308823675597282, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
       propertyPath: m_Name
       value: Big_Launcher
       objectReference: {fileID: 0}
     - target: {fileID: 1308823675597282, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1341712623725502, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4299018308365020, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
       propertyPath: m_RootOrder
@@ -989,14 +1371,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
---- !u!1 &2296472125075998206 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1308823675597282, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
-  m_PrefabInstance: {fileID: 2295168285718361116}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2293834737847574208 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4299018308365020, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
+  m_PrefabInstance: {fileID: 2295168285718361116}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2296472125075998206 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1308823675597282, guid: f90b6d79d3a03de42a5c6e13911b860e, type: 3}
   m_PrefabInstance: {fileID: 2295168285718361116}
   m_PrefabAsset: {fileID: 0}
 --- !u!65 &2463156675679193979
@@ -1019,13 +1401,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1355362353458808, guid: 6b60ceeabc86a6e43a7a918dbbcab26b, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1561084872953996, guid: 6b60ceeabc86a6e43a7a918dbbcab26b, type: 3}
       propertyPath: m_Name
       value: Wing6
       objectReference: {fileID: 0}
     - target: {fileID: 1561084872953996, guid: 6b60ceeabc86a6e43a7a918dbbcab26b, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1976993582343610, guid: 6b60ceeabc86a6e43a7a918dbbcab26b, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4587214507403490, guid: 6b60ceeabc86a6e43a7a918dbbcab26b, type: 3}
       propertyPath: m_RootOrder
@@ -1103,13 +1493,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1606341335890348, guid: 16db349a6a34d1842aa7dae341465efe, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1805482198879016, guid: 16db349a6a34d1842aa7dae341465efe, type: 3}
       propertyPath: m_Name
       value: MainBody13
       objectReference: {fileID: 0}
     - target: {fileID: 1805482198879016, guid: 16db349a6a34d1842aa7dae341465efe, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1813422271736068, guid: 16db349a6a34d1842aa7dae341465efe, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1994357183515672, guid: 16db349a6a34d1842aa7dae341465efe, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4427908452834520, guid: 16db349a6a34d1842aa7dae341465efe, type: 3}
       propertyPath: m_RootOrder
@@ -1187,13 +1589,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 6860448571287218936, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 6860482863502905482, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_Name
       value: Wing2_Mirrored
       objectReference: {fileID: 0}
     - target: {fileID: 6860482863502905482, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 6860919335147633864, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 6862420380326820344, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_RootOrder
@@ -1245,14 +1655,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
---- !u!1 &1657069060096651451 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6860482863502905482, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
-  m_PrefabInstance: {fileID: 5317136351909847089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1654639299416611273 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6862420380326820344, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
+  m_PrefabInstance: {fileID: 5317136351909847089}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1657069060096651451 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6860482863502905482, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
   m_PrefabInstance: {fileID: 5317136351909847089}
   m_PrefabAsset: {fileID: 0}
 --- !u!65 &2463156675679193982
@@ -1275,13 +1685,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1542202250231952, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1881228797040288, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1917032075865298, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_Name
       value: Wing2
       objectReference: {fileID: 0}
     - target: {fileID: 1917032075865298, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4413083218773408, guid: ebec0dbd42c377149abd20c9507cb70f, type: 3}
       propertyPath: m_RootOrder
@@ -1359,13 +1777,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 1138709782481762, guid: 1202b1e73ba4e0d468ce4000e6509541, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 1411094145064986, guid: 1202b1e73ba4e0d468ce4000e6509541, type: 3}
       propertyPath: m_Name
       value: MainBody2
       objectReference: {fileID: 0}
     - target: {fileID: 1411094145064986, guid: 1202b1e73ba4e0d468ce4000e6509541, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913306734541696, guid: 1202b1e73ba4e0d468ce4000e6509541, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 4300762526349960, guid: 1202b1e73ba4e0d468ce4000e6509541, type: 3}
       propertyPath: m_RootOrder
@@ -1491,24 +1917,32 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4653455202179922056, guid: 7295c3dc82e51b94d851c7608de0fe8c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 4653695765559838332, guid: 7295c3dc82e51b94d851c7608de0fe8c, type: 3}
       propertyPath: m_Name
       value: Wing6_Mirrored
       objectReference: {fileID: 0}
     - target: {fileID: 4653695765559838332, guid: 7295c3dc82e51b94d851c7608de0fe8c, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 4654384971120440138, guid: 7295c3dc82e51b94d851c7608de0fe8c, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7295c3dc82e51b94d851c7608de0fe8c, type: 3}
---- !u!4 &2778303694585015100 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4647987923969834514, guid: 7295c3dc82e51b94d851c7608de0fe8c, type: 3}
-  m_PrefabInstance: {fileID: 7353951690260993326}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2781891673985962834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4653695765559838332, guid: 7295c3dc82e51b94d851c7608de0fe8c, type: 3}
+  m_PrefabInstance: {fileID: 7353951690260993326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2778303694585015100 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4647987923969834514, guid: 7295c3dc82e51b94d851c7608de0fe8c, type: 3}
   m_PrefabInstance: {fileID: 7353951690260993326}
   m_PrefabAsset: {fileID: 0}
 --- !u!65 &2463156675679193978
@@ -1579,13 +2013,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8108914546563857864, guid: ae8be24f5c456934ab1808e9cec2c8ef, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 8109302871874570364, guid: ae8be24f5c456934ab1808e9cec2c8ef, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 8109684852590947680, guid: ae8be24f5c456934ab1808e9cec2c8ef, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 8109707735324806988, guid: ae8be24f5c456934ab1808e9cec2c8ef, type: 3}
       propertyPath: m_Name
       value: MainBody13_Mirrored
       objectReference: {fileID: 0}
     - target: {fileID: 8109707735324806988, guid: ae8be24f5c456934ab1808e9cec2c8ef, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae8be24f5c456934ab1808e9cec2c8ef, type: 3}
@@ -1619,13 +2065,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2459338492817421401}
     m_Modifications:
+    - target: {fileID: 6860448571287218936, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
+      objectReference: {fileID: 0}
     - target: {fileID: 6860482863502905482, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_Name
       value: Wing2_Mirrored
       objectReference: {fileID: 0}
     - target: {fileID: 6860482863502905482, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_TagString
-      value: SpaceshipComponent
+      value: PlayerComponent
+      objectReference: {fileID: 0}
+    - target: {fileID: 6860919335147633864, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
+      propertyPath: m_TagString
+      value: PlayerComponent
       objectReference: {fileID: 0}
     - target: {fileID: 6862420380326820344, guid: 7fe074f22a922d346abeef0a74266e0d, type: 3}
       propertyPath: m_RootOrder

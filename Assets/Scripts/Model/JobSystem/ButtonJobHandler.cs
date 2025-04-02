@@ -24,8 +24,8 @@ public class ButtonJobHandler : MonoBehaviour
         index = _index;
         string text = "";
 
-        text += _name + "\t\t\t";
-        text += _type;
+        text += _name;// + "\t\t\t";
+        //text += _type;
 
         button.GetComponentInChildren<Text>().text = text;
     }

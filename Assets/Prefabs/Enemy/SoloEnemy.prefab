@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 8879186219295727692}
   - component: {fileID: 5175624525873238366}
   - component: {fileID: 3661450571157287601}
+  - component: {fileID: 8252763875273912104}
   m_Layer: 7
   m_Name: SoloEnemy
   m_TagString: SoloShip
@@ -154,18 +155,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 7277576965648325399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2116bf4ce6951c94cad72af4bb4e090c, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c01cddc9d311ca41ac08a433c183545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   oriData: {fileID: 11400000, guid: a4c3c1d0ec94b3744a0fd33545dd2b3d, type: 2}
-  upgrData: {fileID: 0}
-  ammo: 0
-  health: 0
-  shields: 0
-  playerReputation: {fileID: 11400000, guid: 543504c76073f534d82684d1a06aa77d, type: 2}
-  player: {fileID: 0}
   rb: {fileID: 0}
-  behavior: {fileID: 11400000, guid: be96e15fc9d361242b62f2671c7852f7, type: 2}
+  steering: {fileID: 0}
+  ammo: 99
+  health: 100
+  shields: 100
+  faction: {fileID: 0}
+  behavior: {fileID: 0}
   detectionRadius: 25
   roamRadius: 150
   avoidanceForce: 5
@@ -174,17 +174,42 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   obstacleAvoidanceWeight: 5
-  attackCooldown: 1
+  attackCooldown: 2
   lastAttackTime: 0
   laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
-  firePoint: {fileID: 3217806063069641899}
-  currentState: 0
-  requestState: 1
+  firePoint: {fileID: 0}
+  currentState: 1
+  requestedState: 2
   shipLayer:
     serializedVersion: 2
     m_Bits: 128
-  randomDecisionInterval: 3
-  aggressionProbability: 0.4
+  targetShip: {fileID: 0}
+  isInGroup: 0
+  isLeader: 0
+  groupLeader: {fileID: 0}
+--- !u!114 &8252763875273912104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277576965648325399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9eb2c34f4c31a42a919feb48813b2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 7277576965648325399}
+  rigidBody: {fileID: 0}
+  initialMaxSpeed: 15
+  maxSpeed: 15
+  rotationSpeed: 1
+  radius: 5
+  lockY: 0
+  debug: 0
+  behaviorType: 1
+  trackedTarget: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
 --- !u!1001 &6542066700235273163
 PrefabInstance:
   m_ObjectHideFlags: 0
