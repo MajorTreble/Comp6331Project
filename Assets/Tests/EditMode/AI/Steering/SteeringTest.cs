@@ -12,7 +12,11 @@ public class SteeringTest
     public void TestSteering()
     {
         GameObject gameObject = new GameObject();
-        SteeringAgent agent = new SteeringAgent(gameObject, null);
+        gameObject.AddComponent<SteeringAgent>();
+        SteeringAgent agent = gameObject.GetComponent<SteeringAgent>();
+        agent.owner = gameObject;
+
+        agent.Awake();
 
         agent.maxSpeed = 1.0f;
         agent.targetPosition = new Vector3(10.0f, 0.0f, 0.0f);
