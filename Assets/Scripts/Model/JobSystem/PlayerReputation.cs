@@ -2,50 +2,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Controller;
 
-namespace Model
-{
-    public enum ReputationStatus
+using Controller;
+using Model;
+
+public enum ReputationStatus
     {
         Neutral,
         Friendly,
         Enemy
     }
 
-    [CreateAssetMenu(fileName = "Player Reputation", menuName = "ScriptableObjects/Player Reputation", order = 0)]
-    public class PlayerReputation : ScriptableObject
+public class PlayerReputation : MonoBehaviour
+{   
+        
+    public List<Reputation> reputations = new List<Reputation>();
+    public int coins;
+
+    public static PlayerReputation Inst { get; private set; } //Singleton
+    private void Awake()
     {
-        public float allyReputationThreshold = 70f; // Reputation level required to ally with the player
-
-        public List<Reputation> reputations = new List<Reputation>();
-        public int coins;
-
-        public void Start()
+        if (Inst == null)
         {
-            reputations.Add(new Reputation (RepType.Colonial, 0));
-            reputations.Add(new Reputation (RepType.Earth, 0));
-            reputations.Add(new Reputation (RepType.Pirate, 0));
-            reputations.Add(new Reputation (RepType.Self, 0));     
+            Inst = this;
+            DontDestroyOnLoad(gameObject);
         }
 
         public float GetReputation(Faction faction)
         {
             return 0.0f;
         }
-
+        
         public ReputationStatus GetReputationStatus(Faction faction)
         {
             return ReputationStatus.Neutral;
         }
+    
+   
 
-        public void ChangeReputation(RepType _type, int _value)
-        {
-            Reputation rep = reputations.Find(i => i.type == _type);
-            if (rep != null)
-                rep.ChangeValue(_value);
-            else
-                Debug.LogWarning($"Item of type {_type} not found.");
-        }
+        
+
+
+    public void ChangeReputation(RepType _type, int _value)
+    {
+        Reputation rep = reputations.Find(i => i.type == _type);
+        if (rep != null)
+            rep.ChangeValue(_value);
+        else
+            Debug.LogWarning($"Item of type {_type} not found.");
     }
 }

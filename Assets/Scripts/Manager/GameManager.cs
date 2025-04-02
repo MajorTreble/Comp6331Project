@@ -18,6 +18,7 @@ namespace Manager
 
         public GameObject playerPrefab;
         public GameObject playerShip;
+        public GameObject blackHolePrefab;
 
         public GameObject playerLaserPrefab;
 

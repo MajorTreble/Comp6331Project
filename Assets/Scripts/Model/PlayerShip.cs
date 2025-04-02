@@ -23,26 +23,27 @@ namespace Model
 		public float CurrShieldRegen { get { return oriData.shieldRegen + UpgradeController.Inst.upgrData.shieldRegen; } }
 		public float CurrAcc { get { return oriData.acc + UpgradeController.Inst.upgrData.acc; } }
 		public float CurrMaxSpeed { get { return oriData.maxSpeed + UpgradeController.Inst.upgrData.maxSpeed; } }
-		public float CurrTurnSpeed { get { return oriData.turnSpeed + UpgradeController.Inst.upgrData.turnSpeed; } } 
+		public float CurrTurnSpeed { get { return oriData.turnSpeed + UpgradeController.Inst.upgrData.turnSpeed; } }
 
-		
+
 		public float laserDist;
 		float laserDmg = 100;
 
-      	public void Awake()
+		public void Awake()
 		{
 			GetWeapon();
-            laserPrefab = GameManager.Instance.playerLaserPrefab;
+			laserPrefab = GameManager.Instance.playerLaserPrefab;
 
-            if (laserPrefab == null) {
-                Debug.LogError("[PlayerShip] Player laser prefab is null.");
-            }
+			if (laserPrefab == null)
+			{
+				Debug.LogError("[PlayerShip] Player laser prefab is null.");
+			}
 		}
 
-        public void Update()
-        {
-            ShieldRecover();
-        }
+		public void Update()
+		{
+			ShieldRecover();
+		}
 
 		public override void SetStats()
 		{
@@ -56,11 +57,11 @@ namespace Model
 			shields = Mathf.Clamp(shields, 0, CurrMaxShields);
 		}
 
-        void GetWeapon()
+		void GetWeapon()
 		{
 			weapon_1 = Utils.FindChildByName(this.transform, "Weapon1");
 
-			if(weapon_1 == null)
+			if (weapon_1 == null)
 			{
 				Debug.Log("weapon not found, again");
 				Invoke("GetWeapon", 0.3f);
@@ -68,19 +69,21 @@ namespace Model
 			}
 
 		}
-        public void FireLaser()
-        {
-            if (Time.time < fireCooldown) return;
+		public void FireLaser(float playerSpeed = 0)
+		{
+			if (Time.time < fireCooldown) return;
 
-            if (laserPrefab != null && weapon_1 != null)
-            {
-                GameObject laser = Instantiate(laserPrefab, weapon_1.position, weapon_1.rotation);
-            }
+			if (laserPrefab != null && weapon_1 != null)
+			{
+				GameObject laser = Instantiate(laserPrefab, weapon_1.position, weapon_1.rotation);
+				PlayerLaserProjectile playerLaserProjectile = laser.GetComponent<PlayerLaserProjectile>();
+				playerLaserProjectile.setPlayerSpeed(playerSpeed);
+			}
 
-            fireCooldown = Time.time + fireRate;
-        }
+			fireCooldown = Time.time + fireRate;
+		}
 
-        public override bool TakeDamage(float damageAmount)
+		public override bool TakeDamage(float damageAmount)
 		{
 			bool destroyed = base.TakeDamage(damageAmount); // Use base ship behavior
 
@@ -92,7 +95,7 @@ namespace Model
 
 		public override void Leave()
 		{
-			base.Leave(); 
+			base.Leave();
 			JobController.Inst.LeaveMap();
 		}
 	}

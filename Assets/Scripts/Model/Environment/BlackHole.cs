@@ -14,7 +14,7 @@ namespace Model.Environment {
 
             foreach (Collider col in colliders)
             {
-                if (col.CompareTag("Player") || col.CompareTag("Asteroid"))
+                if (col.CompareTag("Player") || col.CompareTag("Asteroid") || col.CompareTag("IceAsteroid"))
                 {
                     Rigidbody rb = col.GetComponent<Rigidbody>();
 
