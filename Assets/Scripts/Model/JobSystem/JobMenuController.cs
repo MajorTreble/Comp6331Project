@@ -40,15 +40,13 @@ public class JobMenuController : MonoBehaviour
             Debug.LogError("No jobs found in the specified path.");
             return;
         }
-
         jobs = new Job[4];
 
+        
 
         for (int i = 0; i < 4; i++)
         {
-        
-           
-
+                 
             List<Job> factionJobs = new List<Job>();
             
             int playerReputation = PlayerReputation.Inst.reputations[i].value;
@@ -75,13 +73,11 @@ public class JobMenuController : MonoBehaviour
                         break;
                 }
             }
-
             if (factionJobs.Count > 0)
             {
                 Job randomJob = factionJobs[Random.Range(0, factionJobs.Count)];
                 jobs[i] = randomJob;
-            }
-                 
+            }                 
         }
     }
 

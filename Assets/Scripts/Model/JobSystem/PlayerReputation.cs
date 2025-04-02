@@ -28,20 +28,22 @@ public class PlayerReputation : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-        public float GetReputation(Faction faction)
+        foreach (RepType rep in System.Enum.GetValues(typeof(RepType)))
         {
-            return 0.0f;
+            Debug.LogWarning("ForTests - Change back to 0");
+            reputations.Add(new Reputation (rep, 1000));
         }
-        
-        public ReputationStatus GetReputationStatus(Faction faction)
-        {
-            return ReputationStatus.Neutral;
-        }
+    }
     
-   
-
-        
-
+    public float GetReputation(Faction faction)
+    {
+        return 0.0f;
+    }
+    
+    public ReputationStatus GetReputationStatus(Faction faction)
+    {
+        return ReputationStatus.Neutral;
+    }
 
     public void ChangeReputation(RepType _type, int _value)
     {
