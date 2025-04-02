@@ -33,6 +33,15 @@ public class PlayerReputation : MonoBehaviour
         reputations.Add(new Reputation (RepType.Self, 0)); 
         */
     }
+    
+    public void ChangeReputation(RepType _type, int _value)
+    {
+        Reputation rep = reputations.Find(i => i.type == _type);
+        if (rep != null)
+            rep.ChangeValue(_value);
+        else
+            Debug.LogWarning($"Item of type {_type} not found.");
+    }
 }
 
 /*
