@@ -17,3 +17,4 @@ MonoBehaviour:
   radius: 10
   faction: {fileID: 11400000, guid: 4dae286d20b610f4b849bdde4022d78f, type: 2}
   shipTypes: 000000000000000000000000
+  groupMode: 1

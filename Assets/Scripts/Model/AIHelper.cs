@@ -112,7 +112,7 @@ namespace Model
             Debug.Assert(self != null, $"{MethodBase.GetCurrentMethod().Name} {self}");
 
             int count = 0;
-            foreach (AIShip other in SpawningManager.Instance.shipList)
+            foreach (Ship other in SpawningManager.Instance.shipList)
             {
                 if (other == self) continue;
                 if (other.faction == self.faction)
@@ -129,7 +129,7 @@ namespace Model
             Debug.Assert(self != null, $"{MethodBase.GetCurrentMethod().Name} {self}");
 
             int count = 0;
-            foreach (AIShip other in SpawningManager.Instance.shipList)
+            foreach (Ship other in SpawningManager.Instance.shipList)
             {
                 if (other == self) continue;
                 if (other.faction != self.faction && IsEnemy(self.faction, other.faction))
