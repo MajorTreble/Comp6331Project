@@ -4,6 +4,7 @@ using UnityEngine;
 
 
 using Controller;
+using Model;
 public class PlayerReputation : MonoBehaviour
 {   
         
