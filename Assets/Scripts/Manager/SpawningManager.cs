@@ -65,8 +65,12 @@ namespace Manager
 
         public void SpawnScenario(Scenario scenario)
         {
-
-            GameObject.Find("HarborPortal").transform.position = scenario.portalPosition;
+            GameObject portal = GameManager.Instance.portal;
+            if (portal != null)
+            {
+                portal.transform.position = scenario.portalPosition;
+                //portal.active = false;
+            }
 
             foreach (UnitGroup unitGroup in scenario.unitGroups)
             {

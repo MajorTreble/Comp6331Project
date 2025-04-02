@@ -16,6 +16,7 @@ namespace Model
 		public Quaternion playerRotation = Quaternion.identity;
 
 		public Vector3 portalPosition = Vector3.zero;
+		public bool isPortalDisabled = false;
 
 		public ScenarioDifficulty difficulty = ScenarioDifficulty.Easy;
 		public List<JobType> supportedJobType = new List<JobType>();
