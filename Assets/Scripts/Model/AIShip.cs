@@ -230,6 +230,11 @@ namespace Model.AI
 		{
 			Job job = JobController.Inst.currJob;
 			GameObject player = GameObject.FindGameObjectWithTag("Player");
+			if(player == null)
+			{
+				Debug.LogWarning("Player null");
+				return;
+			}
 
 			// Fallback: Use reputation + fuzzy logic to decide about player
 			if (player != null && behavior != null && AIHelper.ShouldAttackPlayer(this, player, job))

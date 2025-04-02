@@ -4,7 +4,6 @@ using UnityEngine;
 
 public enum JobType{Hunt, Defend, Mine, Deliver};
 public enum JobTarget{Colonial, Earth, Pirate, Solo, Asteroid, Self};
-//public enum RepType{Colonial, Earth, Pirate, Self};
 
 
 
