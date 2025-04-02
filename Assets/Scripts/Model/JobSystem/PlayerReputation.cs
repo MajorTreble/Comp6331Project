@@ -5,6 +5,14 @@ using UnityEngine;
 
 using Controller;
 using Model;
+
+public enum ReputationStatus
+    {
+        Neutral,
+        Friendly,
+        Enemy
+    }
+
 public class PlayerReputation : MonoBehaviour
 {   
         
