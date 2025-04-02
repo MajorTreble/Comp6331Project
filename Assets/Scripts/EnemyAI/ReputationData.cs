@@ -11,9 +11,9 @@ public class ReputationData : ScriptableObject
 	{
 		switch (faction)
 		{
-			case AIBehavior.Faction.Faction1:
+			case AIBehavior.Faction.Colonial:
 				return faction1Reputation;
-			case AIBehavior.Faction.Faction2:
+			case AIBehavior.Faction.Earth:
 				return faction2Reputation;
 			case AIBehavior.Faction.Pirates:
 				return piratesReputation;
@@ -26,10 +26,10 @@ public class ReputationData : ScriptableObject
 	{
 		switch (faction)
 		{
-			case AIBehavior.Faction.Faction1:
+			case AIBehavior.Faction.Colonial:
 				faction1Reputation += amount;
 				break;
-			case AIBehavior.Faction.Faction2:
+			case AIBehavior.Faction.Earth:
 				faction2Reputation += amount;
 				break;
 			case AIBehavior.Faction.Pirates:

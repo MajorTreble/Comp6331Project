@@ -3,15 +3,16 @@ using UnityEngine;
 using AI.BehaviorTree;
 using Controller; // remove this
 using Model.AI.BehaviorTree;
+using static UnityEngine.GraphicsBuffer;
+using System.Collections.Generic;
+using static AIBehavior;
+using Manager;
+using static Model.Faction;
+using AI.Steering;
 
 namespace Model.AI
 {
-	//LIMITATIONS! Some things are not yet implemented
-	/*
-	 * Single-Target Focus: Only tracks player as potential ally
-		No Ship-to-Ship Relations: Doesn't check if ships should attack each other
-		Limited Mission Awareness: Only knows about direct player relations 
-	 */
+	public enum Relationship { Enemy, Neutral }
 
 	public class AIShip : Ship
 	{
@@ -19,6 +20,7 @@ namespace Model.AI
 		public Transform player;
 		public Rigidbody rb;
 		protected Vector3 roamTarget;
+		protected Transform target;
 
 		public AIBehavior behavior;
 
@@ -36,37 +38,496 @@ namespace Model.AI
 		public float lastAttackTime; // Time of the last attack
 		public GameObject laserPrefab; // Laser prefab for attacks
 		public GameObject firePoint; // Point from which lasers are fired
+		public FactionType factionType;
 
-		public AIState currentState = AIState.None;
-		public AIState requestState = AIState.Idle;
+
+		//private LookWhereYouAreGoing lookWhereGoing;
+
+
+		// Define AI states for finite state machine
+		public enum AIState { Roaming, Seek, Attack, Flee }
+		public AIState currentState = AIState.Roaming;
+		public AIState requestedState = AIState.Roaming;
 
 		[Header("Layer Masks")]
 		public LayerMask shipLayer;
 
 		protected AIShipBehaviorTree BT = new AIShipBehaviorTree();
 
+		// ---------- New fields for fuzzy logic and group behavior ----------
+		protected Relationship relationship = Relationship.Neutral;
+
+		// For group behavior:
+		public bool isInGroup = false;     // flag to indicate this ship is part of a formation
+		public bool isLeader = false;      // flag indicating if this ship is the leader
+		public AIShip groupLeader = null;
+		private List<AIShip> groupFollowers = new List<AIShip>(); // Followers if this ship is a leader.
+		private Vector3 formationOffset;
+		private Transform currentTarget = null;  // The current enemy target this AIShip is engaging (could be player or another ship).
+		private bool isEngagingTarget = false;   // Whether currently in combat behavior (used for formation followers to copy leader).
+		public float currentHealth = 100f;
+		float maxHealth = 100;
+		private SteeringAgent steeringAgent;
+		private Wander wander;
+		private bool hostile;
+
 		public virtual void Start()
 		{
-			this.player = GameObject.FindGameObjectWithTag("Player").transform;
-			this.rb = GetComponent<Rigidbody>();
+			rb = GetComponent<Rigidbody>();
+
+			GameObject playerObj = GameObject.FindWithTag("Player");
+			if (playerObj != null)
+				player = playerObj.transform;
+
+			if (wander == null)
+				wander = new Wander();
+			//lookWhereGoing = GetComponent<LookWhereYouAreGoing>();
+			//if (lookWhereGoing == null)
+			//	lookWhereGoing = new LookWhereYouAreGoing();
+			if (steeringAgent == null)
+				steeringAgent = new SteeringAgent(gameObject);
+
+			steeringAgent.movements.Clear(); // Optional safety
+			steeringAgent.movements.Add(wander);
 
 			BT.aiShip = this;
 			BT.Initialize();
+
+			currentState = AIState.Roaming;
+			requestedState = AIState.Roaming;
+
+			SetNewRoamTarget();
+
 			if (laserPrefab != null && laserPrefab.GetComponent<LaserProjectile>() == null)
 			{
 				laserPrefab.AddComponent<LaserProjectile>();
 			}
 		}
 
-		protected virtual void Update()
+		public void InitializeShip(AIBehavior behaviorAsset, Faction.FactionType factionData, AIShip designatedLeader = null)
 		{
-			if (player == null || rb == null)
+			behavior = behaviorAsset;
+			factionType = factionData;
+
+			// Find player reference (assuming player tagged "Player").
+			GameObject playerObj = GameObject.FindWithTag("Player");
+			if (playerObj != null) player = playerObj.transform;
+
+			if (behavior.groupMode == AIBehavior.GroupMode.Formation)
 			{
+				isInGroup = true;
+				if (designatedLeader == null)
+				{
+					// This ship is the leader.
+					groupLeader = this;
+					isLeader = true;
+					groupFollowers = new List<AIShip>();
+				}
+				else
+				{
+					// This ship is a follower. Its leader is provided.
+					groupLeader = designatedLeader;
+					isLeader = false;
+					// Compute a simple formation offset (e.g., based on count of followers).
+					float offsetDistance = 10f;
+					int followerIndex = designatedLeader.groupFollowers.Count + 1;
+					formationOffset = new Vector3(offsetDistance * followerIndex, 0, -offsetDistance * followerIndex);
+					designatedLeader.groupFollowers.Add(this);
+				}
+			}
+			else
+			{
+				isInGroup = false;
+			}
+
+			Start(); // Optionally call Start() logic if not automatically done.
+		}
+
+
+		// Membership functions (linear, as suggested)
+		protected float LeftShoulderMembership(float value, float x, float y)
+		{
+			if (value <= x) return 1f;
+			if (value >= y) return 0f;
+			return (y - value) / (y - x);
+		}
+
+		protected float RightShoulderMembership(float value, float x, float y)
+		{
+			if (value <= x) return 0f;
+			if (value >= y) return 1f;
+			return (value - x) / (y - x);
+		}
+
+		protected Relationship EvaluateRelationship()
+		{
+			float rep = playerReputation.GetReputation(behavior.faction); // 0 to 100
+			float enemyThresholdLow = 30f;
+			float enemyThresholdHigh = 50f;
+			float friendlyThresholdLow = 50f;
+			float friendlyThresholdHigh = 70f;
+
+			float enemyMembership = LeftShoulderMembership(rep, enemyThresholdLow, enemyThresholdHigh);
+			float friendlyMembership = RightShoulderMembership(rep, friendlyThresholdLow, friendlyThresholdHigh);
+
+			if (enemyMembership > 0.5f)
+				return Relationship.Enemy;
+			else
+				return Relationship.Neutral; // You could expand this to include Friendly later
+		}
+
+
+		private float EvaluateAggressionLevel()
+		{
+			int friendlyCount = CountNearbyFriendlies();
+			int enemyCount = CountNearbyEnemies();
+			float selfStrength = currentHealth / maxHealth;
+
+			// Define thresholds for counts (these can be tuned)
+			float friendHighThreshold = 5f;
+			float enemyHighThreshold = 5f;
+			float friendlyHigh = Mathf.Clamp01(friendlyCount / friendHighThreshold);
+			float enemyHigh = Mathf.Clamp01(enemyCount / enemyHighThreshold);
+
+			// Fuzzy rules:
+			// If many enemies and few friendlies, be aggressive.
+			float ruleAggressive = Mathf.Min(1f - friendlyHigh, enemyHigh);
+			// Otherwise, if many friendlies and few enemies, be calm.
+			float ruleCalm = Mathf.Min(friendlyHigh, 1f - enemyHigh);
+			// Average in other cases.
+			float ruleAverage = 1f - Mathf.Abs(enemyHigh - friendlyHigh);
+
+			float calmValue = behavior.aggressionCalmValue;
+			float avgValue = behavior.aggressionAverageValue;
+			float aggressiveValue = behavior.aggressionAggressiveValue;
+
+			float weightedSum = ruleCalm * calmValue + ruleAverage * avgValue + ruleAggressive * aggressiveValue;
+			float totalWeight = ruleCalm + ruleAverage + ruleAggressive;
+			float aggression = (totalWeight > 0f) ? weightedSum / totalWeight : avgValue;
+			return aggression;
+		}
+
+		private int CountNearbyFriendlies()
+		{
+			int count = 0;
+			float radius = 100f;
+			foreach (AIShip other in SpawningManager.Instance.shipList)
+			{
+				if (other == this) continue;
+				if (other.factionType == this.factionType)
+				{
+					float d = Vector3.Distance(transform.position, other.transform.position);
+					if (d <= radius) count++;
+				}
+			}
+			return count;
+		}
+
+		private int CountNearbyEnemies()
+		{
+			int count = 0;
+			float radius = 100f;
+			foreach (AIShip other in SpawningManager.Instance.shipList)
+			{
+				if (other == this) continue;
+				if (other.factionType != this.factionType && IsHostile(factionType, other.factionType))
+				{
+					float d = Vector3.Distance(transform.position, other.transform.position);
+					if (d <= radius) count++;
+				}
+			}
+			if (player != null && IsPlayerEnemy())
+			{
+				float d = Vector3.Distance(transform.position, player.position);
+				if (d <= radius) count++;
+			}
+			return count;
+		}
+
+		private void Update()
+		{
+			// Formation override: if in formation and not the leader, follow the leader.
+			if (behavior.groupMode == AIBehavior.GroupMode.Formation && isInGroup && groupLeader != null && groupLeader != this)
+			{
+				FollowFormationLeader();
+				// Also mirror leader's combat if engaged.
+				if (groupLeader.isEngagingTarget && groupLeader.currentTarget != null)
+				{
+					currentTarget = groupLeader.currentTarget;
+					EngageTarget();
+				}
+				else
+				{
+					currentTarget = null;
+					isEngagingTarget = false;
+				}
+				return; // Skip independent behavior if following formation.
+			}
+
+			// Otherwise, use the behavior tree to decide actions.
+			BT.Evaluate();
+
+			// Mission overrides:
+			if (JobController.Inst.currJob != null)
+			{
+				Debug.Log($"[{name}] Current Mission: Target = {JobController.Inst.currJob.jobTarget}, Reward = {JobController.Inst.currJob.rewardType}");
+
+				// If the mission targets our faction (we are being hunted), always attack.
+				if (IsMissionTargetFaction())
+				{
+					Debug.Log($"[{name}] I am being hunted due to mission. Seeking Player.");
+					requestedState = AIState.Seek;
+				}
+				// If the mission rewards our faction, then even if reputation is normally hostile, remain neutral.
+				else if (IsMissionAllyFaction())
+				{
+					Debug.Log($"[{name}] My faction is supported by this mission. Roaming instead of attacking.");
+					requestedState = AIState.Roaming;
+				}
+			}
+			else
+			{
+				// No mission override: use fuzzy logic.
+				Relationship rel = EvaluateRelationship();
+				float aggressionLevel = EvaluateAggressionLevel();
+
+				if (rel == Relationship.Enemy)
+				{
+					if (aggressionLevel > 0.7f)
+						requestedState = AIState.Seek;
+					else if (aggressionLevel < 0.3f)
+						requestedState = AIState.Flee;
+					else
+						requestedState = AIState.Roaming;
+				}
+				else
+				{
+					requestedState = AIState.Roaming;
+				}
+
+			}
+			EvaluateCombatTarget();
+			UpdateStateMachine();
+			steeringAgent?.Update();
+
+		}
+
+
+		public static bool IsHostile(Faction.FactionType a, Faction.FactionType b)
+		{
+			// Example logic:
+			if (a == Faction.FactionType.Pirates && b != Faction.FactionType.Pirates) return true;
+			if (b == Faction.FactionType.Pirates && a != Faction.FactionType.Pirates) return true;
+			if (a == Faction.FactionType.Solo || b == Faction.FactionType.Solo) return false;
+			// In your game, Colonial (faction) and Earth (faction) are friendly.
+			return false;
+		}
+
+		private bool IsPlayerEnemy()
+		{
+			// For now, we assume if player's reputation with this faction is low, the player is enemy.
+			return GetPlayerReputation(behavior.faction) < behavior.reputationThreshold;
+		}
+
+		private bool IsShipMissionTarget(AIShip other)
+		{
+			if (JobController.Inst.currJob == null || other == null) return false;
+
+			return JobController.Inst.currJob.jobTarget switch
+			{
+				JobTarget.Colonial => other.factionType == FactionType.Colonial && other.factionType != this.factionType,
+				JobTarget.Earth => other.factionType == FactionType.Earth && other.factionType != this.factionType,
+				JobTarget.Pirate => other.factionType == FactionType.Pirates && other.factionType != this.factionType,
+				JobTarget.Solo => other.factionType == FactionType.Solo && other.factionType != this.factionType,
+				_ => false
+			};
+		}
+
+		private bool IsShipMissionAlly(AIShip other)
+		{
+			if (JobController.Inst.currJob == null || other == null) return false;
+
+			return JobController.Inst.currJob.rewardType switch
+			{
+				RepType.Colonial => other.factionType == FactionType.Colonial,
+				RepType.Earth => other.factionType == FactionType.Earth,
+				RepType.Pirate => other.factionType == FactionType.Pirates,
+				RepType.Self => other.factionType == FactionType.Solo,
+				_ => false
+			};
+		}
+
+		public void TakeDamage(GameObject attacker)
+		{
+			Debug.Log($"[{name}] was hit by {attacker.name}");
+
+			if (attacker.CompareTag("Player"))
+			{
+				currentTarget = attacker.transform;
+				requestedState = AIState.Attack;
+			}
+			else
+			{
+				AIShip attackerAI = attacker.GetComponent<AIShip>();
+				if (attackerAI != null)
+				{
+					Debug.Log($"[{name}] was hit by [{attackerAI.name}] from faction {attackerAI.factionType}");
+					if (IsHostile(this.factionType, attackerAI.factionType))
+					{
+						currentTarget = attacker.transform;
+						requestedState = AIState.Attack;
+					}
+				}
+			}
+		}
+
+		private void FollowFormationLeader()
+		{
+			if (groupLeader == null) return;
+			Vector3 desiredPos = groupLeader.transform.position + groupLeader.transform.TransformVector(formationOffset);
+			Vector3 moveDir = (desiredPos - transform.position).normalized;
+			RotateTowardTarget(moveDir, behavior.rotationSpeed);
+			// Simple movement: directly interpolate position (for smooth formation movement, use proper steering).
+			transform.position = Vector3.Lerp(transform.position, desiredPos, Time.deltaTime);
+		}
+
+		private void EngageTarget()
+		{
+			if (currentTarget == null) return;
+			isEngagingTarget = true;
+			Debug.Log($"[{name}] Seeking target: {player.name}");
+
+			float d = Vector3.Distance(transform.position, currentTarget.position);
+			if (d > behavior.attackRange)
+			{
+				Vector3 dir = (currentTarget.position - transform.position).normalized;
+				transform.position += dir * behavior.chaseSpeed * Time.deltaTime;
+				Quaternion targetRot = Quaternion.LookRotation(dir);
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, behavior.rotationSpeed * Time.deltaTime);
+			}
+			else
+			{
+				AttackTarget();
+			}
+		}
+
+		private void AttackTarget()
+		{
+			// Placeholder for actual attack behavior.
+			Attack();
+		}
+
+		private void EvaluateCombatTarget()
+		{
+			if (IsMissionTargetFaction())
+			{
+				Debug.Log($"[{name}] I am a mission target. Looking for player to attack.");
+				currentTarget = player;
+				requestedState = AIState.Seek;
 				return;
 			}
 
-			UpdateDecision();
-			UpdateState();
+			if (IsMissionAllyFaction())
+			{
+				Debug.Log($"[{name}] My faction is allied in this mission. Roaming.");
+				currentTarget = null;
+				requestedState = AIState.Roaming;
+				return;
+			}
+
+			// Fallback: Use reputation + fuzzy logic to decide about player
+			if (player != null && ShouldAttackPlayer())
+			{
+				float dist = Vector3.Distance(transform.position, player.position);
+				if (dist <= behavior.detectionRadius)
+				{
+					Debug.Log($"[{name}] Player is enemy. Engaging.");
+					currentTarget = player;
+					requestedState = AIState.Seek;
+					return;
+				}
+			}
+
+			// Look for other hostile AI ships
+			AIShip enemyShip = FindNearestHostile();
+			if (enemyShip != null)
+			{
+				Debug.Log($"[{name}] Found hostile target: {enemyShip.name}");
+				currentTarget = enemyShip.transform;
+				requestedState = AIState.Seek;
+				return;
+			}
+
+			currentTarget = null;
+			requestedState = AIState.Roaming;
+		}
+		public static bool IsHostileDuringMission(FactionType self, FactionType other)
+		{
+			var job = JobController.Inst.currJob;
+			if (job == null) return false;
+
+			// If I (self) am in the mission's target faction, anyone from the reward faction is hostile to me.
+			bool selfIsTarget = job.jobTarget.ToString() == self.ToString();
+			bool otherIsReward = job.rewardType.ToString() == other.ToString();
+
+			return selfIsTarget && otherIsReward;
+		}
+
+		private AIShip FindNearestHostile()
+		{
+			AIShip nearest = null;
+			float nearestDist = float.MaxValue;
+
+			foreach (Ship ship in SpawningManager.Instance.shipList)
+			{
+				if (ship == this) continue;
+
+				AIShip other = ship as AIShip;
+				if (other == null) continue;
+
+				hostile = IsShipMissionTarget(other) ||
+				IsHostileDuringMission(this.factionType, other.factionType) ||
+				(other.factionType != this.factionType && IsHostile(factionType, other.factionType));
+
+
+				if (!hostile) continue;
+				if (hostile)
+					Debug.Log($"[{name}] Found hostile: {other.name} due to mission logic.");
+
+				float d = Vector3.Distance(transform.position, other.transform.position);
+				if (d < nearestDist)
+				{
+					nearestDist = d;
+					nearest = other;
+				}
+			}
+
+			return nearest;
+		}
+
+
+		private void UpdateStateMachine()
+		{
+			if (requestedState != currentState)
+			{
+				currentState = requestedState;
+			}
+
+			switch (currentState)
+			{
+				case AIState.Roaming:
+					UpdateRoam();
+					break;
+				case AIState.Seek:
+					UpdateSeek();
+					break;
+				case AIState.Attack:
+					UpdateAttack();
+					break;
+				case AIState.Flee:
+					UpdateFlee();
+					break;
+			}
 		}
 
 		protected virtual void UpdateDecision()
@@ -78,19 +539,11 @@ namespace Model.AI
 			{
 				if (IsMissionTarget() && currentState != AIState.Flee)
 				{
-					requestState = AIState.Flee;
+					//requestState = AIState.Flee;
 				}
-				else if (IsMissionAlly() && currentState != AIState.AllyAssist)
-				{
-					requestState = AIState.AllyAssist;
-				}
+				
 			}
-
-			// Existing decision logic
-			if (ShouldAllyWithPlayer())
-			{
-				requestState = AIState.AllyAssist;
-			}
+			
 		}
 
 		protected bool IsMissionTarget()
@@ -99,8 +552,8 @@ namespace Model.AI
 
 			return behavior.faction switch
 			{
-				AIBehavior.Faction.Faction1 when JobController.Inst.currJob.jobTarget == JobTarget.Faction1 => true,
-				AIBehavior.Faction.Faction2 when JobController.Inst.currJob.jobTarget == JobTarget.Faction2 => true,
+				AIBehavior.Faction.Colonial when JobController.Inst.currJob.jobTarget == JobTarget.Colonial => true,
+				AIBehavior.Faction.Earth when JobController.Inst.currJob.jobTarget == JobTarget.Earth => true,
 				AIBehavior.Faction.Pirates when JobController.Inst.currJob.jobTarget == JobTarget.Pirate => true,
 				_ => false
 			};
@@ -112,77 +565,97 @@ namespace Model.AI
 
 			return behavior.faction switch
 			{
-				AIBehavior.Faction.Faction1 when JobController.Inst.currJob.rewardType == RepType.Faction1 => true,
-				AIBehavior.Faction.Faction2 when JobController.Inst.currJob.rewardType == RepType.Faction2 => true,
+				AIBehavior.Faction.Colonial when JobController.Inst.currJob.rewardType == RepType.Colonial => true,
+				AIBehavior.Faction.Earth when JobController.Inst.currJob.rewardType == RepType.Earth => true,
 				AIBehavior.Faction.Pirates when JobController.Inst.currJob.rewardType == RepType.Pirate => true,
 				_ => false
 			};
 		}
 
-		protected void UpdateState()
+
+		public virtual void UpdateSeek()
 		{
+			if (currentTarget == null || steeringAgent == null) return;
 
-			if (requestState != currentState)
+			if (!ShouldAttackPlayer())
 			{
-				switch (currentState)
-				{
-					case AIState.Idle:
-						ExitIdle();
-						break;
-					case AIState.Roam:
-						ExitRoam();
-						break;
-					case AIState.Seek:
-						ExitSeek();
-						break;
-					case AIState.Flee:
-						ExitFlee();
-						break;
-					case AIState.AllyAssist:
-						ExitAllyAssist();
-						break;
-				}
-
-				switch (requestState)
-				{
-					case AIState.Idle:
-						EnterIdle();
-						break;
-					case AIState.Roam:
-						EnterRoam();
-						break;
-					case AIState.Seek:
-						EnterSeek();
-						break;
-					case AIState.Flee:
-						EnterSeek();
-						break;
-					case AIState.AllyAssist:
-						EnterAllyAssist();
-						break;
-				}
-
-				currentState = requestState;
+				requestedState = AIState.Roaming;
+				return;
 			}
 
-			// Execute behavior
-			switch (currentState)
+			float dist = Vector3.Distance(transform.position, currentTarget.position);
+			if (dist <= behavior.attackRange)
 			{
-				case AIState.Idle:
-					break;
-				case AIState.Roam:
-					UpdateRoam();
-					break;
-				case AIState.Seek:
-					UpdateSeek();
-					break;
-				case AIState.Flee:
-					UpdateFlee();
-					break;
-				case AIState.AllyAssist:
-					UpdateAllyAssist();
-					break;
+				requestedState = AIState.Attack;
+				return;
 			}
+			if (dist > behavior.detectionRadius * 1.5f)
+			{
+				requestedState = AIState.Roaming;
+				return;
+			}
+
+			steeringAgent.UnTrackTarget();
+			steeringAgent.targetPosition = currentTarget.position;
+			Vector3 direction = (currentTarget.position - transform.position).normalized;
+			Vector3 avoidance = ComputeObstacleAvoidance(direction);
+			if (avoidance != Vector3.zero)
+			{
+				direction = (direction + avoidance).normalized;
+			}
+
+			Debug.Log($"[{name}] Seeking target: {currentTarget.name}");
+
+			Seek seek = new Seek();
+			var steering = seek.GetSteering(steeringAgent);
+			//rb.velocity += steering.linear * Time.deltaTime;
+			rb.velocity += (steering.linear + avoidance) * Time.deltaTime;
+
+			RotateTowardTarget(direction, behavior.rotationSpeed);
+
+		}
+
+
+		protected virtual void UpdateAttack()
+		{
+			//if (player == null) return;
+			if (currentTarget == null || behavior == null) return;
+
+			//float dist = Vector3.Distance(transform.position, player.position);
+			float dist = Vector3.Distance(transform.position, currentTarget.position);
+			if (dist > behavior.attackRange)
+			{
+				requestedState = AIState.Seek;
+				return;
+			}
+
+			//Vector3 direction = (player.position - transform.position).normalized;
+			Vector3 direction = (currentTarget.position - transform.position).normalized;
+			RotateTowardTarget(direction, behavior.rotationSpeed);
+
+			if (Time.time >= lastAttackTime + behavior.attackCooldown)
+			{
+				Attack();
+				lastAttackTime = Time.time;
+			}
+		}
+
+		protected virtual void UpdateFlee()
+		{
+			if (player == null || steeringAgent == null) return;
+
+			if (!ShouldAttackPlayer())
+			{
+				requestedState = AIState.Roaming;
+				return;
+			}
+
+			steeringAgent.UnTrackTarget();
+			steeringAgent.targetPosition = player.position;
+
+			Flee flee = new Flee();
+			var steering = flee.GetSteering(steeringAgent);
+			rb.velocity += steering.linear * Time.deltaTime;
 		}
 
 		public void SetBehavior(AIBehavior newBehavior)
@@ -190,57 +663,53 @@ namespace Model.AI
 			behavior = newBehavior; // Set the behavior
 		}
 
-		public virtual bool ShouldAttackPlayer()
+		public bool ShouldAttackPlayer()
 		{
-			if (behavior == null || playerReputation == null) return false;
+			if (player == null || behavior == null) return false;
 
-			// Always prioritize ally status
-			if (ShouldAllyWithPlayer()) return false;
+			if (IsMissionTargetFaction()) return true;
+			if (IsMissionAllyFaction()) return false;
 
-			// Get current job context
-			Job currentJob = JobController.Inst.currJob;
-			bool isMissionTarget = IsMissionTarget();
-			bool isMissionAlly = IsMissionAlly();
+			Relationship rel = EvaluateRelationship();
+			return (rel == Relationship.Enemy);
+		}
 
-			// Mission-based behavior
-			if (currentJob != null)
+		protected bool IsMissionTargetFaction()
+		{
+			if (JobController.Inst.currJob == null) return false;
+			// Map our factionType to JobTarget. Note: Colonial = Faction1, Earth = Faction2.
+			switch (factionType)
 			{
-				// Strategic responses based on job type
-				switch (currentJob.jobType)
-				{
-					case JobType.Hunt when isMissionTarget:
-						// If we're the hunt target, become aggressive
-						return true;
-
-					case JobType.Defend when isMissionTarget:
-						// If we're the defend target, protect ourselves
-						return playerReputation.GetReputation(behavior.faction) < behavior.allyReputationThreshold;
-
-					case JobType.Mine when behavior.faction == AIBehavior.Faction.Pirates:
-						// Pirates attack mining operations
-						return true;
-
-					case JobType.Deliver when isMissionTarget:
-						// Intercept delivery missions targeting our faction
-						return true;
-				}
-
-				// Faction response to mission alignment
-				if (isMissionAlly)
-				{
-					// Support player if we're the rewarded faction
+				case Faction.FactionType.Colonial:
+					return JobController.Inst.currJob.jobTarget == JobTarget.Colonial;
+				case Faction.FactionType.Earth:
+					return JobController.Inst.currJob.jobTarget == JobTarget.Earth;
+				case Faction.FactionType.Pirates:
+					return JobController.Inst.currJob.jobTarget == JobTarget.Pirate;
+				case Faction.FactionType.Solo:
+					return JobController.Inst.currJob.jobTarget == JobTarget.Solo;
+				default:
 					return false;
-				}
-
-				if (currentJob.rewardType == RepType.Pirate && behavior.faction == AIBehavior.Faction.Pirates)
-				{
-					// Pirates support player if mission benefits them
-					return false;
-				}
 			}
+		}
 
-			// Default reputation-based behavior
-			return playerReputation.GetReputation(behavior.faction) <= behavior.reputationThreshold;
+		protected bool IsMissionAllyFaction()
+		{
+			if (JobController.Inst.currJob == null) return false;
+			// Map our factionType to RepType. Colonial = Faction1, Earth = Faction2.
+			switch (factionType)
+			{
+				case Faction.FactionType.Colonial:
+					return JobController.Inst.currJob.rewardType == RepType.Colonial;
+				case Faction.FactionType.Earth:
+					return JobController.Inst.currJob.rewardType == RepType.Earth;
+				case Faction.FactionType.Pirates:
+					return JobController.Inst.currJob.rewardType == RepType.Pirate;
+				case Faction.FactionType.Solo:
+					return JobController.Inst.currJob.rewardType == RepType.Self;
+				default:
+					return false;
+			}
 		}
 
 		protected void RotateTowardTarget(Vector3 direction, float rotationSpeed = 5f)
@@ -258,9 +727,8 @@ namespace Model.AI
 
 		protected void SetNewRoamTarget()
 		{
-			// Set a random target within the roam radius
 			roamTarget = transform.position + Random.insideUnitSphere * roamRadius;
-			roamTarget.y = 0; // Keep the target on the same horizontal plane
+			roamTarget.y = 0; 
 		}
 
 		public bool IsPlayerInRange()
@@ -270,10 +738,26 @@ namespace Model.AI
 			return distanceToPlayer < detectionRadius;
 		}
 
-		protected bool ShouldAllyWithPlayer()
+
+		protected virtual void UpdateGroupBehavior()
 		{
-			if (behavior == null || playerReputation == null) return false;
-			return playerReputation.GetReputation(behavior.faction) >= behavior.allyReputationThreshold;
+			if (!isLeader && groupLeader != null)
+			{
+				// For simplicity, have followers move toward a position offset from the leader.
+				Vector3 desiredOffset = (transform.position - groupLeader.transform.position).normalized * 10f;
+				Vector3 formationTarget = groupLeader.transform.position + desiredOffset;
+				Vector3 direction = (formationTarget - transform.position).normalized;
+				Vector3 avoidance = ComputeObstacleAvoidance(direction);
+				if (avoidance != Vector3.zero)
+					direction = (direction + avoidance).normalized;
+				RotateTowardTarget(direction, behavior.rotationSpeed);
+				rb.velocity = direction * behavior.roamSpeed;
+			}
+		}
+
+		protected virtual void SetTarget(Transform newTarget)
+		{
+			target = newTarget;
 		}
 
 
@@ -329,42 +813,47 @@ namespace Model.AI
 
 		public virtual void Attack()
 		{
-			// 1.Cooldown check(unchanged)
 
 			if (Time.time < lastAttackTime + behavior.attackCooldown) return;
-			//Debug.Log($"{gameObject.name} attacking at {Time.time}");
+			if (laserPrefab == null || firePoint == null) return;
 
-			// 2. Prefab validation (unchanged)
-			if (laserPrefab == null || firePoint == null)
+			// Ensure laserPrefab has EnemyLaser script
+			GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation);
+
+			Debug.Log($"[{name}] Engaging target: {currentTarget?.name ?? "None"}");
+
+			EnemyLaser laserScript = laser.GetComponent<EnemyLaser>();
+			if (laserScript != null)
 			{
-				Debug.LogError("Laser prefab or fire point is not assigned!");
-				return;
+				laserScript.shooter = gameObject;
+				laserScript.shooterFaction = factionType;
 			}
 
-			// 3. Projectile creation with additional safety checks
-			GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation); //Currently the laser rotation is wrong, I will fix it later
-			//GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, Quaternion.Euler(-90, firePoint.transform.rotation.eulerAngles.y, firePoint.transform.rotation.eulerAngles.z));
-
-
-			// 4. Enhanced physics setup
+			// Just move the laser forward using physics or custom code
 			Rigidbody laserRb = laser.GetComponent<Rigidbody>();
 			if (laserRb == null)
 			{
-				laserRb = laser.AddComponent<Rigidbody>(); // Auto-add if missing
-				Debug.LogWarning("Added Rigidbody to laser prefab at runtime");
+				laserRb = laser.AddComponent<Rigidbody>();
 			}
 			laserRb.velocity = firePoint.transform.forward * 30f;
 
-		
 			lastAttackTime = Time.time;
 		}
 
 
-		//public void TakeDamage(float damage)
-		//{
-		//	health -= damage;
-		//	health = Mathf.Clamp(health, 0, maxHealth); // Ensure health doesn't go below 0 or above maxHealth
-		//}
+
+		protected float GetPlayerReputation(AIBehavior.Faction faction)
+		{
+			if (PlayerReputation.Inst != null)
+			{
+				var repEntry = PlayerReputation.Inst.reputations.Find(r => r.type.ToString() == faction.ToString());
+				if (repEntry != null)
+					return repEntry.value;
+			}
+			return 0f;
+		}
+
+	
 
 		// Idle //
 
@@ -401,7 +890,6 @@ namespace Model.AI
 				return;
 			}
 
-			// Move toward the roam target
 			Vector3 direction = (roamTarget - transform.position).normalized;
 			Vector3 avoidance = ComputeObstacleAvoidance(direction);
 
@@ -410,12 +898,13 @@ namespace Model.AI
 				direction = (direction + avoidance).normalized;
 			}
 
-			rb.velocity = direction * behavior.roamSpeed;
+			if (wander != null && steeringAgent != null)
+			{
+				var steer = wander.GetSteering(steeringAgent);
+				rb.velocity += steer.linear * Time.deltaTime;
+			}
 
-			// Rotate toward roam target
 			RotateTowardTarget(direction);
-
-			// If close to the target, set a new one
 			if (Vector3.Distance(transform.position, roamTarget) < 5f)
 			{
 				SetNewRoamTarget();
@@ -434,42 +923,6 @@ namespace Model.AI
 
 		}
 
-		public virtual void UpdateSeek()
-		{
-			Vector3 direction = (player.position - transform.position).normalized;
-
-			// If we're a faction ship on defense mission, maintain distance
-			if (JobController.Inst.currJob?.jobType == JobType.Defend &&
-				IsMissionAlly() &&
-				Vector3.Distance(transform.position, player.position) < behavior.attackRange)
-			{
-				direction = -direction; // Back away
-			}
-
-			Vector3 avoidance = ComputeObstacleAvoidance(direction);
-			if (avoidance != Vector3.zero)
-			{
-				direction = (direction + avoidance).normalized;
-			}
-
-			RotateTowardTarget(direction, behavior.rotationSpeed);
-
-			float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-			if (distanceToPlayer > behavior.attackRange)
-			{
-				rb.velocity = transform.forward * behavior.chaseSpeed;
-			}
-			else
-			{
-				rb.velocity = Vector3.zero; // Stop moving when close to attack range
-			}
-
-			if (distanceToPlayer < behavior.attackRange && Time.time > lastAttackTime + attackCooldown)
-			{
-				Attack();
-			}
-		}
 
 		// Flee //
 
@@ -483,18 +936,7 @@ namespace Model.AI
 
 		}
 
-		protected void UpdateFlee()
-		{
-			Vector3 fleeDirection = (transform.position - player.position).normalized;
-			Vector3 avoidance = ComputeObstacleAvoidance(fleeDirection);
-			if (avoidance != Vector3.zero)
-			{
-				fleeDirection = (fleeDirection + avoidance).normalized;
-			}
-
-			RotateTowardTarget(fleeDirection, behavior.rotationSpeed * 1.5f); // Faster rotation while fleeing
-			rb.velocity = transform.forward * behavior.chaseSpeed * 1.5f; // Faster movement while fleeing
-		}
+		
 
 		// Flee //
 
@@ -508,49 +950,5 @@ namespace Model.AI
 
 		}
 
-		protected void UpdateAllyAssist()
-		{
-			// Move toward the player to assist
-			//Vector3 direction = (player.position - transform.position).normalized;
-			//Vector3 avoidance = ComputeObstacleAvoidance(direction);
-
-			//if (avoidance != Vector3.zero)
-			//{
-			//	direction = (direction + avoidance).normalized;
-			//}
-
-			//RotateTowardTarget(direction, behavior.rotationSpeed);
-			//rb.velocity = direction * behavior.chaseSpeed;
-
-			// Attack enemies near the player
-			//AttackEnemiesNearPlayer();
-
-			// Maintain distance from player
-			float desiredDistance = 15f;
-			Vector3 playerDirection = (player.position - transform.position).normalized;
-			Vector3 targetPosition = player.position - playerDirection * desiredDistance;
-
-			// Smooth movement
-			Vector3 direction = (targetPosition - transform.position).normalized;
-			direction = Vector3.Lerp(transform.forward, direction, 0.1f);
-			Vector3 avoidance = ComputeObstacleAvoidance(direction);
-
-			if (avoidance != Vector3.zero)
-			{
-				direction = (direction + avoidance).normalized;
-			}
-
-			// Smooth rotation
-			RotateTowardTarget(direction, behavior.rotationSpeed * 0.8f);
-
-			// Use physics-based movement
-			rb.AddForce(direction * behavior.chaseSpeed * Time.deltaTime, ForceMode.VelocityChange);
-
-			// Attack enemies near player
-			AttackEnemiesNearPlayer();
-
-
-
-		}
 	}
 }
