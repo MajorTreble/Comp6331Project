@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2855395254434112155}
   - component: {fileID: 2855395254434112166}
   - component: {fileID: 2855395254434112165}
+  - component: {fileID: 7269846301437521088}
   m_Layer: 0
   m_Name: Game System
   m_TagString: Untagged
@@ -48,6 +49,7 @@ MonoBehaviour:
   reputation: {fileID: 11400000, guid: 8ea7d138f1c905945908b28ebbbb7648, type: 2}
   playerPrefab: {fileID: 2462193850337484257, guid: 270f7328ee227ae44aaac2aa921cf183, type: 3}
   playerShip: {fileID: 0}
+  blackHolePrefab: {fileID: 6012756211718914440, guid: 394c7216ddcbf4f4faabafea3044a13b, type: 3}
   playerLaserPrefab: {fileID: 8220181580064264272, guid: b06f1a81083ec7c42a0a43e177b3654f, type: 3}
   playerSpawnPosition: {x: 0, y: 0, z: 0}
   playerSpawnRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -61,9 +63,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 10f49a4a1bc257f4893cbba1a3563944, type: 2}
   - {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
   - {fileID: 11400000, guid: 25107e128c8d4b44aae9e282179587ba, type: 2}
-
-  currentScenario: {fileID: 11400000, guid: e371798ec0652a54f8c19df950343949, type: 2}
-
+  currentScenario: {fileID: 0}
   portalPosition: {x: 25, y: 25, z: 25}
 --- !u!114 &2855395254434112166
 MonoBehaviour:
@@ -92,3 +92,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataDirPath: save
   dataFileName: savegame.txt
+--- !u!114 &7269846301437521088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2855395254434112154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec30074b313bde147ad7b86980198c69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reputations: []
+  coins: 0

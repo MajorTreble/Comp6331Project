@@ -8,6 +8,7 @@ using Controller;
 using Manager;
 using Model.AI.BehaviorTree;
 using static Model.Faction;
+using UnityEngine.Assertions.Must;
 
 namespace Model.AI
 {
@@ -605,6 +606,12 @@ namespace Model.AI
 
 		public virtual void UpdateSeek()
 		{
+			if(currentTarget == null)
+			{
+				Debug.LogWarning("Current target is null, need to be checked");
+				return;
+			}
+
 			float dist = Vector3.Distance(transform.position, currentTarget.position);
 			if (dist <= behavior.attackRange)
 			{
