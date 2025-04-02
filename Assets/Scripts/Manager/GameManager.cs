@@ -53,16 +53,14 @@ namespace Manager
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-		private void Start()
-		{
+        private void Start()
+        {
             PersistenceManager.Instance.dataPersistence.Add(this);
-
-            this.portal = GameObject.Find("HarborPortal");
         }
 
         // IDataPersistence
         public void Load(GameData gameData)
-		{
+        {
             this.isNewGame = gameData.isNewGame;
             this.hasPlayedTutorial = gameData.hasPlayedTutorial;
             this.reputation = gameData.reputation;
@@ -70,14 +68,14 @@ namespace Manager
 
         // IDataPersistence
         public void Save(ref GameData gameData)
-		{
+        {
             gameData.isNewGame = this.isNewGame;
             gameData.hasPlayedTutorial = this.hasPlayedTutorial;
             gameData.reputation = this.reputation;
         }
 
         public void Play()
-		{
+        {
             PersistenceManager.Instance.NewGame();
 
             if (isNewGame)
@@ -124,14 +122,14 @@ namespace Manager
 
         public bool SelectScenario(JobType job, ScenarioDifficulty difficulty)
         {
-            foreach(Scenario scenario in scenarios)
-			{
+            foreach (Scenario scenario in scenarios)
+            {
                 if (scenario.supportedJobType.Contains(job) && scenario.difficulty == difficulty)
-				{
+                {
                     currentScenario = scenario;
                     return true;
-				}
-			}
+                }
+            }
 
             return false;
         }
@@ -162,31 +160,31 @@ namespace Manager
             onMenu = scene.name == "MainMenu";
 
             if (scene.name != "MainMenu" && scene.name != "Harbor")
-			{
-                SpawningManager.Instance.SpawnScenario(currentScenario);
-                SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
-
-                GameObject portal = GameObject.Find("HarborPortal");
+            {
+                portal = GameObject.Find("HarborPortal");
                 if (portal)
                 {
                     portalPosition = portal.transform.position;
                 }
 
+                SpawningManager.Instance.SpawnScenario(currentScenario);
+                SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+
                 UpgradeController.Inst.UpdateValues();
 
-                if(JobController.Inst.currJob == null)
+                if (JobController.Inst.currJob == null)
                 {
                     QuickPlay();
                 }
             }
 
 
-            if(scene.name == "Harbor")
+            if (scene.name == "Harbor")
             {
                 JobStatus jobStatus = JobController.Inst.jobStatus;
                 JobView.Inst.ListJobs();
                 JobView.Inst.ListReputations();
-                if(jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
+                if (jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
                     JobView.Inst.ViewJob(JobController.Inst.currJob);
             }
 

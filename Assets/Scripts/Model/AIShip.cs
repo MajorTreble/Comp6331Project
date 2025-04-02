@@ -19,7 +19,6 @@ namespace Model.AI
 		protected Vector3 roamTarget;
 		protected Transform target;
 
-		public Faction faction = null;
 		public AIBehavior behavior;
 
 		public float detectionRadius = 25f;
@@ -52,13 +51,9 @@ namespace Model.AI
 		protected Relationship relationship = Relationship.Neutral;
 
 		// For group behavior:
-		public bool isInGroup = false;     // flag to indicate this ship is part of a formation
-		public bool isLeader = false;      // flag indicating if this ship is the leader
-		public AIShip groupLeader = null;
-		private List<AIShip> groupFollowers = new List<AIShip>(); // Followers if this ship is a leader.
-		private Vector3 formationOffset;
+		public AIGroup group = null;
+
 		private Transform currentTarget = null;  // The current enemy target this AIShip is engaging (could be player or another ship).
-		private bool isEngagingTarget = false;   // Whether currently in combat behavior (used for formation followers to copy leader).
 		private bool hostile;
 
 		public override void Start()
@@ -77,36 +72,6 @@ namespace Model.AI
 			}
 		}
 
-		public void InitializeShip(AIShip designatedLeader = null)
-		{
-			if (behavior.groupMode == AIBehavior.GroupMode.Formation)
-			{
-				isInGroup = true;
-				if (designatedLeader == null)
-				{
-					// This ship is the leader.
-					groupLeader = this;
-					isLeader = true;
-					groupFollowers = new List<AIShip>();
-				}
-				else
-				{
-					// This ship is a follower. Its leader is provided.
-					groupLeader = designatedLeader;
-					isLeader = false;
-					// Compute a simple formation offset (e.g., based on count of followers).
-					float offsetDistance = 10f;
-					int followerIndex = designatedLeader.groupFollowers.Count + 1;
-					formationOffset = new Vector3(offsetDistance * followerIndex, 0, -offsetDistance * followerIndex);
-					designatedLeader.groupFollowers.Add(this);
-				}
-			}
-			else
-			{
-				isInGroup = false;
-			}
-		}
-
 		private void Update()
 		{
 			Debug.Assert(faction != null && behavior != null);
@@ -118,7 +83,6 @@ namespace Model.AI
 
 			UpdateDecision();
 			EvaluateCombatTarget();
-			requestedState = AIState.Seek;
 			UpdateStateMachine();
 
 			steeringAgent.Update();
@@ -126,52 +90,7 @@ namespace Model.AI
 
 		protected virtual void UpdateDecision()
 		{
-			// Formation override: if in formation and not the leader, follow the leader.
-			if (behavior.groupMode == AIBehavior.GroupMode.Formation && isInGroup && groupLeader != null && groupLeader != this)
-			{
-				FollowFormationLeader();
-				// Also mirror leader's combat if engaged.
-				if (groupLeader.isEngagingTarget && groupLeader.currentTarget != null)
-				{
-					currentTarget = groupLeader.currentTarget;
-					EngageTarget();
-				}
-				else
-				{
-					currentTarget = null;
-					isEngagingTarget = false;
-				}
-				return; // Skip independent behavior if following formation.
-			}
-
 			BT.Evaluate();
-
-			// Mission overrides:
-			if (JobController.Inst.currJob != null)
-			{
-				Debug.Log($"[{name}] Current Mission: Target = {JobController.Inst.currJob.jobTarget}, Reward = {JobController.Inst.currJob.allyFaction.factionType}");
-			}
-			else
-			{
-				// No mission override: use fuzzy logic.
-				Relationship rel = AIHelper.EvaluateRelationship(faction);
-				float aggressionLevel = AIHelper.EvaluateAggressionLevel(this);
-
-				if (rel == Relationship.Enemy)
-				{
-					if (aggressionLevel > 0.7f)
-						requestedState = AIState.Seek;
-					else if (aggressionLevel < 0.3f)
-						requestedState = AIState.Flee;
-					else
-						requestedState = AIState.Roam;
-				}
-				else
-				{
-					requestedState = AIState.Roam;
-				}
-
-			}
 		}
 
 		protected void UpdateStateMachine()
@@ -199,6 +118,9 @@ namespace Model.AI
 					case AIState.Attack:
 						ExitAttack();
 						break;
+					case AIState.Formation:
+						ExitFormation();
+						break;
 				}
 
 				switch (requestedState)
@@ -220,6 +142,9 @@ namespace Model.AI
 						break;
 					case AIState.Attack:
 						EnterAttack();
+						break;
+					case AIState.Formation:
+						EnterFormation();
 						break;
 				}
 
@@ -245,6 +170,9 @@ namespace Model.AI
 					break;
 				case AIState.Attack:
 					UpdateAttack();
+					break;
+				case AIState.Formation:
+					UpdateFormation();
 					break;
 			}
 		}
@@ -273,20 +201,9 @@ namespace Model.AI
 			}
 		}
 
-		private void FollowFormationLeader()
-		{
-			if (groupLeader == null) return;
-			Vector3 desiredPos = groupLeader.transform.position + groupLeader.transform.TransformVector(formationOffset);
-			Vector3 moveDir = (desiredPos - transform.position).normalized;
-			RotateTowardTarget(moveDir, behavior.rotationSpeed);
-			// Simple movement: directly interpolate position (for smooth formation movement, use proper steering).
-			transform.position = Vector3.Lerp(transform.position, desiredPos, Time.deltaTime);
-		}
-
 		private void EngageTarget()
 		{
 			if (currentTarget == null) return;
-			isEngagingTarget = true;
 			Debug.Log($"[{name}] Seeking target: {currentTarget.name}");
 
 			float d = Vector3.Distance(transform.position, currentTarget.position);
@@ -338,7 +255,6 @@ namespace Model.AI
 			}
 
 			currentTarget = null;
-			requestedState = AIState.Roam;
 		}
 
 		private AIShip FindNearestHostile()
@@ -352,8 +268,6 @@ namespace Model.AI
 
 				AIShip other = ship as AIShip;
 				if (other == null) continue;
-
-				Job job = JobController.Inst.currJob;
 
 				hostile = AIHelper.IsMissionTarget(other) ||
 				AIHelper.IsEnemy(faction, other.faction) ||
@@ -399,27 +313,10 @@ namespace Model.AI
 			roamTarget.y = 0; 
 		}
 
-		protected virtual void UpdateGroupBehavior()
-		{
-			if (!isLeader && groupLeader != null)
-			{
-				// For simplicity, have followers move toward a position offset from the leader.
-				Vector3 desiredOffset = (transform.position - groupLeader.transform.position).normalized * 10f;
-				Vector3 formationTarget = groupLeader.transform.position + desiredOffset;
-				Vector3 direction = (formationTarget - transform.position).normalized;
-				Vector3 avoidance = ComputeObstacleAvoidance(direction);
-				if (avoidance != Vector3.zero)
-					direction = (direction + avoidance).normalized;
-				RotateTowardTarget(direction, behavior.rotationSpeed);
-				rb.velocity = direction * behavior.roamSpeed;
-			}
-		}
-
 		protected virtual void SetTarget(Transform newTarget)
 		{
 			target = newTarget;
 		}
-
 
 		protected virtual void AttackEnemiesNearPlayer(GameObject player)
 		{
@@ -502,20 +399,21 @@ namespace Model.AI
 			lastAttackTime = Time.time;
 		}
 
+		public void Fuzzy()
+        {
 
+			// No mission override: use fuzzy logic.
+			Relationship rel = AIHelper.EvaluateRelationship(faction);
+			float aggressionLevel = AIHelper.EvaluateAggressionLevel(this);
 
-		protected float GetPlayerReputation(AIBehavior.Faction faction)
-		{
-			if (GameManager.Instance.reputation != null)
+			if (rel == Relationship.Enemy)
 			{
-				var repEntry = GameManager.Instance.reputation.reputations.Find(r => r.fac.factionType.ToString() == faction.ToString());
-				if (repEntry != null)
-					return repEntry.value;
+				if (aggressionLevel > 0.7f)
+					requestedState = AIState.Seek;
+				else if (aggressionLevel < 0.3f)
+					requestedState = AIState.Flee;
 			}
-			return 0f;
 		}
-
-	
 
 		// Idle //
 
@@ -664,6 +562,23 @@ namespace Model.AI
 				Attack();
 				lastAttackTime = Time.time;
 			}
+		}
+
+		// Formation //
+
+		protected void EnterFormation()
+		{
+			steeringAgent.movements.Add(new Seek());
+			steeringAgent.movements.Add(new LookWhereYouAreGoing());
+		}
+
+		protected void ExitFormation()
+		{
+			steeringAgent.movements.Clear();
+		}
+
+		protected void UpdateFormation()
+		{
 		}
 
 	}
