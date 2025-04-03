@@ -160,10 +160,7 @@ namespace Manager
 
             if (scene.name != "MainMenu" && scene.name != "Harbor")
             {
-                portal = GameObject.Find("HarborPortal");
-                
-                SpawningManager.Instance.SpawnScenario(currentScenario);
-                SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+                SetupScenario();
 
                 UpgradeController.Inst.UpdateValues();
 
@@ -188,6 +185,20 @@ namespace Manager
             JobView.Inst.LookForJobFeeback();
             JobView.Inst.UpdateJob();
 
+        }
+
+        public void SetupScenario()
+        {
+            portal = GameObject.Find("HarborPortal");
+
+            SpawningManager.Instance.SpawnScenario(currentScenario);
+            SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+
+            if (currentScenario.name == "Tutorial")
+            {
+                GameObject.Find("Canvas").transform.Find("Tutorial").gameObject.SetActive(true);
+                Time.timeScale = 0;
+            }
         }
     }
 }
