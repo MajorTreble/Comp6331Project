@@ -58,11 +58,6 @@ namespace Manager
             PersistenceManager.Instance.dataPersistence.Add(this);
         }
 
-        protected void Update()
-        {
-            UpdateTutorial();
-        }
-
         // IDataPersistence
         public void Load(GameData gameData)
         {
