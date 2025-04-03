@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 using Controller;
 using Model;
+using Model.AI;
 using Model.Data;
 
 namespace Manager
@@ -52,9 +53,14 @@ namespace Manager
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void Start()
+        protected void Start()
         {
             PersistenceManager.Instance.dataPersistence.Add(this);
+        }
+
+        protected void Update()
+        {
+            UpdateTutorial();
         }
 
         // IDataPersistence
@@ -196,6 +202,17 @@ namespace Manager
 
             if (currentScenario.name == "Tutorial")
             {
+                foreach(Ship ship in SpawningManager.Instance.shipList)
+                {
+                    AIShip aiShip = ship.GetComponent<AIShip>();
+                    if (aiShip == null)
+                    {
+                        continue;
+                    }
+
+                    aiShip.SetHostile(playerShip.GetComponent<Ship>());
+                }
+
                 GameObject.Find("Canvas").transform.Find("Tutorial").gameObject.SetActive(true);
                 Time.timeScale = 0;
             }

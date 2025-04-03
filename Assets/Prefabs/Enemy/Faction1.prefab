@@ -287,13 +287,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oriData: {fileID: 11400000, guid: a4c3c1d0ec94b3744a0fd33545dd2b3d, type: 2}
   rb: {fileID: 0}
-  steering: {fileID: 0}
+  steeringAgent: {fileID: 0}
   ammo: 99
   health: 100
   shields: 100
   faction: {fileID: 0}
   behavior: {fileID: 0}
-  detectionRadius: 25
+  detectionRadius: 100
   roamRadius: 150
   avoidanceForce: 5
   obstacleAvoidanceRange: 10
@@ -311,9 +311,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   targetShip: {fileID: 0}
-  isInGroup: 0
-  isLeader: 0
-  groupLeader: {fileID: 0}
+  hostileShips: []
+  target: {fileID: 0}
 --- !u!114 &3710040109125176244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,6 +336,7 @@ MonoBehaviour:
   behaviorType: 1
   trackedTarget: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  targetOffset: {x: 0, y: 0, z: 0}
 --- !u!1001 &4542059429034557949
 PrefabInstance:
   m_ObjectHideFlags: 0

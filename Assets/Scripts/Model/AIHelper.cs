@@ -10,6 +10,15 @@ namespace Model
 {
     public class AIHelper
     {
+        public static bool IsHostile(AIShip ship, Ship target)
+        {
+            Debug.Assert(ship != null && target != null, $"{MethodBase.GetCurrentMethod().Name} {ship} {target}");
+
+            return IsEnemy(ship.faction, target.faction) ||
+                ship.hostileShips.Contains(target) ||
+                (ship.group != null && ship.group.hostileShips.Contains(target));
+        }
+
         public static bool IsTargetInRange(AIShip ship)
         {
             Debug.Assert(ship != null);
