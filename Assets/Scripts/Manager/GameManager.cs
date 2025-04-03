@@ -30,7 +30,6 @@ namespace Manager
 
         public bool isNewGame = true;
         public bool hasPlayedTutorial = false;
-        public bool triggerTutorialEnemy = false;
 
         public bool onMenu = false;
 
@@ -57,11 +56,6 @@ namespace Manager
         protected void Start()
         {
             PersistenceManager.Instance.dataPersistence.Add(this);
-        }
-
-        protected void Update()
-        {
-            UpdateTutorial();
         }
 
         // IDataPersistence
@@ -167,17 +161,9 @@ namespace Manager
 
             if (scene.name != "MainMenu" && scene.name != "Harbor")
             {
-                portal = GameObject.Find("HarborPortal");
-                
-                SpawningManager.Instance.SpawnScenario(currentScenario);
-                SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+                SetupScenario();
 
                 UpgradeController.Inst.UpdateValues();
-
-                if (!hasPlayedTutorial && currentScenario.name == "Tutorial")
-                {
-                    triggerTutorialEnemy = true;
-                }
 
                 if (JobController.Inst.currJob == null)
                 {
@@ -202,14 +188,14 @@ namespace Manager
 
         }
 
-        protected void UpdateTutorial()
+        public void SetupScenario()
         {
-            if (hasPlayedTutorial)
-            {
-                return;
-            }
+            portal = GameObject.Find("HarborPortal");
 
-            if (triggerTutorialEnemy)
+            SpawningManager.Instance.SpawnScenario(currentScenario);
+            SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+
+            if (currentScenario.name == "Tutorial")
             {
                 foreach(Ship ship in SpawningManager.Instance.shipList)
                 {
@@ -221,7 +207,9 @@ namespace Manager
 
                     aiShip.SetHostile(playerShip.GetComponent<Ship>());
                 }
-                triggerTutorialEnemy = false;
+
+                GameObject.Find("Canvas").transform.Find("Tutorial").gameObject.SetActive(true);
+                Time.timeScale = 0;
             }
         }
     }
