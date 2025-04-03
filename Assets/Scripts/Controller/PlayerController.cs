@@ -42,8 +42,9 @@ namespace Controller
             //Input 
             float vertical = Input.GetAxis("Vertical");
             float horizontal = Input.GetAxis("Horizontal");
-            float mouseX = Input.GetAxis("Mouse X");
-            float mouseY = Input.GetAxis("Mouse Y");
+
+            //float mouseX = Input.GetAxis("Mouse X");
+            //float mouseY = Input.GetAxis("Mouse Y");
 
             if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Alpha1))
                 throttle += 1;
@@ -56,8 +57,8 @@ namespace Controller
             currSpeed = Mathf.Lerp(currSpeed, desiredMov, playerShip.CurrAcc * Time.deltaTime);
 
             //Rot
-            //Vector3 rotation = new Vector3(-mouseY, mouseX, horizontal) * playerShip.CurrTurnSpeed * Time.deltaTime * mouseSensitivity;
-            Vector3 rotation = new Vector3(vertical, horizontal, 0) * playerShip.CurrTurnSpeed * Time.deltaTime;
+            Vector3 rotation = new Vector3(-vertical, horizontal, 0) * playerShip.CurrTurnSpeed * Time.deltaTime;
+            //Vector3 rotation = new Vector3(-mouseX, mouseY, 0) * playerShip.CurrTurnSpeed * Time.deltaTime;
 
             //RigidBody based movement
             playerShipRb.MovePosition(playerShipRb.position + (playerShipRb.transform.forward * currSpeed * Time.deltaTime));

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2091ee695cdcd40bed3c95519fb76b, type: 3}
   m_Name: Tutorial UnitGroup
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0, z: 100}
+  position: {x: 0, y: 0, z: -100}
   rotation: {x: 0, y: 0, z: 0, w: 1}
   radius: 10
   faction: {fileID: 11400000, guid: f351217d9ace74f4eaab5deabbae09a6, type: 2}
