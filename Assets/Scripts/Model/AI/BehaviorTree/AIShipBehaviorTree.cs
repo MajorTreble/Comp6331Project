@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using AI.BehaviorTree;
+using Model.AI;
 
 namespace Model.AI.BehaviorTree
 {
@@ -17,7 +18,8 @@ namespace Model.AI.BehaviorTree
                 new Sequence(new List<Node>
                 {
                     new Condition( () => aiShip.currentState != AIState.Seek ),
-                    new Condition( () => AIHelper.IsTargetInRange(aiShip) ),
+                    new Condition( () => aiShip.currentLKP != null && aiShip.currentLKP.visibility == LKPVisibility.Seen ),
+                    new Condition( () => aiShip.target != null ),
 
                     new SetAIStateNode(aiShip, AIState.Seek)
                 }),

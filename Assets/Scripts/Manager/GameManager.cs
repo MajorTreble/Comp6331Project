@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 using Controller;
 using Model;
+using Model.AI;
 using Model.Data;
 
 namespace Manager
@@ -29,6 +30,7 @@ namespace Manager
 
         public bool isNewGame = true;
         public bool hasPlayedTutorial = false;
+        public bool triggerTutorialEnemy = false;
 
         public bool onMenu = false;
 
@@ -52,9 +54,14 @@ namespace Manager
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void Start()
+        protected void Start()
         {
             PersistenceManager.Instance.dataPersistence.Add(this);
+        }
+
+        protected void Update()
+        {
+            UpdateTutorial();
         }
 
         // IDataPersistence
@@ -167,6 +174,11 @@ namespace Manager
 
                 UpgradeController.Inst.UpdateValues();
 
+                if (!hasPlayedTutorial && currentScenario.name == "Tutorial")
+                {
+                    triggerTutorialEnemy = true;
+                }
+
                 if (JobController.Inst.currJob == null)
                 {
                     QuickPlay();
@@ -188,6 +200,29 @@ namespace Manager
             JobView.Inst.LookForJobFeeback();
             JobView.Inst.UpdateJob();
 
+        }
+
+        protected void UpdateTutorial()
+        {
+            if (hasPlayedTutorial)
+            {
+                return;
+            }
+
+            if (triggerTutorialEnemy)
+            {
+                foreach(Ship ship in SpawningManager.Instance.shipList)
+                {
+                    AIShip aiShip = ship.GetComponent<AIShip>();
+                    if (aiShip == null)
+                    {
+                        continue;
+                    }
+
+                    aiShip.SetHostile(playerShip.GetComponent<Ship>());
+                }
+                triggerTutorialEnemy = false;
+            }
         }
     }
 }

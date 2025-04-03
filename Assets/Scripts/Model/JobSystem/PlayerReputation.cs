@@ -28,7 +28,8 @@ public class PlayerReputation : ScriptableObject
 
     public ReputationStatus GetReputationStatus(Faction factionA, Faction factionB)
     {
-        if (factionA.factionType == Faction.FactionType.Pirates || factionB.factionType == Faction.FactionType.Pirates)
+        if ((factionA.factionType == Faction.FactionType.Pirates && factionB.factionType != Faction.FactionType.Pirates)
+            || (factionB.factionType == Faction.FactionType.Pirates && factionA.factionType != Faction.FactionType.Pirates))
         {
             return ReputationStatus.Enemy;
         }
