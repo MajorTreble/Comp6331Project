@@ -127,8 +127,6 @@ namespace Manager
 
             foreach (UnitGroup unitGroup in scenario.unitGroups)
             {
-				// Reset positions before spawning this group
-				unitGroup.ResetSpawnPositions();
 
 				GameObject orgFaction = new GameObject();
                 orgFaction.transform.name = "Org_" + unitGroup.faction.name;
