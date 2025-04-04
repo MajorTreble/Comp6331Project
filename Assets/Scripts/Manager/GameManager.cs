@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 using Controller;
 using Model;
+using Model.AI;
 using Model.Data;
 
 namespace Manager
@@ -38,7 +39,6 @@ namespace Manager
 
         public Scenario currentScenario = null;
 
-        public Vector3 portalPosition = new Vector3(25, 25, 25);
 
         void Awake()
         {
@@ -53,16 +53,14 @@ namespace Manager
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-		private void Start()
-		{
+        protected void Start()
+        {
             PersistenceManager.Instance.dataPersistence.Add(this);
-
-            this.portal = GameObject.Find("HarborPortal");
         }
 
         // IDataPersistence
         public void Load(GameData gameData)
-		{
+        {
             this.isNewGame = gameData.isNewGame;
             this.hasPlayedTutorial = gameData.hasPlayedTutorial;
             this.reputation = gameData.reputation;
@@ -70,14 +68,14 @@ namespace Manager
 
         // IDataPersistence
         public void Save(ref GameData gameData)
-		{
+        {
             gameData.isNewGame = this.isNewGame;
             gameData.hasPlayedTutorial = this.hasPlayedTutorial;
             gameData.reputation = this.reputation;
         }
 
         public void Play()
-		{
+        {
             PersistenceManager.Instance.NewGame();
 
             if (isNewGame)
@@ -124,14 +122,14 @@ namespace Manager
 
         public bool SelectScenario(JobType job, ScenarioDifficulty difficulty)
         {
-            foreach(Scenario scenario in scenarios)
-			{
+            foreach (Scenario scenario in scenarios)
+            {
                 if (scenario.supportedJobType.Contains(job) && scenario.difficulty == difficulty)
-				{
+                {
                     currentScenario = scenario;
                     return true;
-				}
-			}
+                }
+            }
 
             return false;
         }
@@ -162,30 +160,24 @@ namespace Manager
             onMenu = scene.name == "MainMenu";
 
             if (scene.name != "MainMenu" && scene.name != "Harbor")
-			{
-                SpawningManager.Instance.SpawnScenario(currentScenario);
-                SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
-
-                GameObject portal = GameObject.Find("HarborPortal");
-                if (portal)
-                {
-                    portalPosition = portal.transform.position;
-                }
+            {
+                SetupScenario();
 
                 UpgradeController.Inst.UpdateValues();
 
-                if(JobController.Inst.currJob == null)
+                if (JobController.Inst.currJob == null)
                 {
                     QuickPlay();
                 }
             }
 
 
-            if(scene.name == "Harbor")
+            if (scene.name == "Harbor")
             {
                 JobStatus jobStatus = JobController.Inst.jobStatus;
                 JobView.Inst.ListJobs();
                 JobView.Inst.ListReputations();
+                JobView.Inst.SetConfigurations(); 
                 if(jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
                     JobView.Inst.ViewJob(JobController.Inst.currJob);
             }
@@ -194,6 +186,31 @@ namespace Manager
             JobView.Inst.LookForJobFeeback();
             JobView.Inst.UpdateJob();
 
+        }
+
+        public void SetupScenario()
+        {
+            portal = GameObject.Find("HarborPortal");
+
+            SpawningManager.Instance.SpawnScenario(currentScenario);
+            SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
+
+            if (currentScenario.name == "Tutorial")
+            {
+                foreach(Ship ship in SpawningManager.Instance.shipList)
+                {
+                    AIShip aiShip = ship.GetComponent<AIShip>();
+                    if (aiShip == null)
+                    {
+                        continue;
+                    }
+
+                    aiShip.SetHostile(playerShip.GetComponent<Ship>());
+                }
+
+                GameObject.Find("Canvas").transform.Find("Tutorial").gameObject.SetActive(true);
+                Time.timeScale = 0;
+            }
         }
     }
 }

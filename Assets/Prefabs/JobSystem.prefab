@@ -48,6 +48,7 @@ MonoBehaviour:
   jobStatus: 0
   currJobQtd: 0
   currJob: {fileID: 0}
+  customJob: {fileID: 11400000, guid: caae3a41e19f09e42982086378769b53, type: 2}
 --- !u!114 &1222553440681620975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,6 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f8e42e6834fdd45ae329b7c5bb4020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reputationList: {fileID: 0}
   jobIndex: -1
 --- !u!114 &193701928804185309
 MonoBehaviour:

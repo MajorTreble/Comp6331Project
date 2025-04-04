@@ -14,11 +14,12 @@ namespace Manager
     {
         public static SpawningManager Instance { get; private set; }
 		//private Faction selectedPatrolFaction;
-		public List<Ship> shipList = new List<Ship>();
-		private Dictionary<Faction.FactionType, AIShip> factionLeaders = new Dictionary<Faction.FactionType, AIShip>();
 		private Dictionary<Faction, AI_Waypoints> factionPaths = new Dictionary<Faction, AI_Waypoints>();
 
-		void Awake()
+        public List<Ship> shipList = new List<Ship>();
+        private Dictionary<Faction.FactionType, AIShip> factionLeaders = new Dictionary<Faction.FactionType, AIShip>();
+
+        void Awake()
         {
             if (Instance != null)
             {
@@ -28,25 +29,25 @@ namespace Manager
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            
+
             SceneManager.sceneUnloaded += OnSceneUnloaded; // Debug
         }
 
-		public GameObject Spawn(SpawnParams spawnParams)
-		{
-			GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
-			spawnParams.Setup(shipObject);
+        public GameObject Spawn(SpawnParams spawnParams)
+        {
+            GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
+            spawnParams.Setup(shipObject);
 
-			Ship ship = shipObject.GetComponent<Ship>();
-			if (ship != null)
-			{
-				shipList.Add(ship);
-			}
+            Ship ship = shipObject.GetComponent<Ship>();
+            if (ship != null)
+            {
+                shipList.Add(ship);
+            }
 
-			AIShip aiShip = shipObject.GetComponent<AIShip>();
-			if (aiShip != null)
-			{
-				bool isDefendFaction = JobController.Inst.currJob != null && aiShip.faction == JobController.Inst.currJob.allyFaction;
+            AIShip aiShip = shipObject.GetComponent<AIShip>();
+            if (aiShip != null)
+            {
+                bool isDefendFaction = JobController.Inst.currJob != null && aiShip.faction == JobController.Inst.currJob.allyFaction;
 
 				// Set patrol: Defend faction always patrols; others use AIBehavior.isPatrol
 				aiShip.shouldPatrol = isDefendFaction || aiShip.behavior.isPatrol; 
@@ -79,25 +80,20 @@ namespace Manager
 					aiShip.UpdatePatrolState(false);
 					if (nav != null) nav.ClearPath();
 				}
+                // Check if this faction already has a leader
+                AIShip designatedLeader = null;
 
-
-				// Check if this faction already has a leader
-				AIShip designatedLeader = null;
-
-				if (aiShip.behavior != null && aiShip.behavior.groupMode == AIBehavior.GroupMode.Formation)
-				{
-					if (!factionLeaders.TryGetValue(aiShip.faction.factionType, out designatedLeader))
-					{
-						// Assign as leader
-						factionLeaders[aiShip.faction.factionType] = aiShip;
-					}
-				}
-
-				aiShip.InitializeShip(designatedLeader);
-			}
-
-			return shipObject;
-		}
+                if (aiShip.behavior != null)
+                {
+                    if (!factionLeaders.TryGetValue(aiShip.faction.factionType, out designatedLeader))
+                    {
+                        // Assign as leader
+                        factionLeaders[aiShip.faction.factionType] = aiShip;
+                    }
+                }
+            }
+            return shipObject;
+        }
 
 		private void CreateFactionPath(Faction faction, GameObject shipPrefab)
 		{
@@ -107,7 +103,6 @@ namespace Manager
 				//Debug.LogError($"Prefab {shipPrefab.name} has no AIWaypointNavigator!");
 				return;
 			}
-
 			if (prefabNav.path == null)
 			{
 				//Debug.LogError($"Prefab {shipPrefab.name}'s AIWaypointNavigator has no path assigned!");
@@ -127,7 +122,7 @@ namespace Manager
             if (portal != null)
             {
                 portal.transform.position = scenario.portalPosition;
-                //portal.active = false;
+                //portal.SetActive(false);
             }
 
             foreach (UnitGroup unitGroup in scenario.unitGroups)
@@ -138,6 +133,9 @@ namespace Manager
 				GameObject orgFaction = new GameObject();
                 orgFaction.transform.name = "Org_" + unitGroup.faction.name;
 
+                AIGroup group = new AIGroup();
+                group.groupMode = unitGroup.groupMode;
+
                 foreach (ShipType type in unitGroup.shipTypes)
                 {
                     SpawnParams spawnParams = new SpawnParams();
@@ -145,9 +143,15 @@ namespace Manager
                     spawnParams.rotation = unitGroup.rotation;
                     spawnParams.faction = unitGroup.faction;
                     spawnParams.shipType = type;
+                    spawnParams.group = group;
                     spawnParams.parent = orgFaction.transform;
 
                     Spawn(spawnParams);
+                }
+
+                if (group.ships.Count > 0)
+                {
+                    group.leader = group.ships[0];
                 }
             }
 

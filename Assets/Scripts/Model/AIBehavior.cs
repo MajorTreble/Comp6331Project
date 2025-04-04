@@ -8,7 +8,6 @@ namespace Model
     public class AIBehavior : ScriptableObject
     {
         public enum Faction { Colonial, Earth, Pirates, Solo }
-        public enum GroupMode { None, Formation }
 
         [Header("General Settings")]
         public Faction faction;
@@ -27,9 +26,6 @@ namespace Model
         [Header("Combat")]
         public float attackRange;
         public float attackCooldown;
-
-        [Header("Group Behavior")]
-        public GroupMode groupMode = GroupMode.None;
 
         [Header("Aggression Tuning")]
         public float aggressionCalmValue = 1f;

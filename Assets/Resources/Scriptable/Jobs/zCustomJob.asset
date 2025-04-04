@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3fad1eae5179864cbba558fffeeeaf3, type: 3}
-  m_Name: Tutorial Job
+  m_Name: zCustomJob
   m_EditorClassIdentifier: 
-  jobName: Tutorial
-  jobDescription: Tutorial Description
-  jobType: 0
-  scenario: {fileID: 11400000, guid: 14d8742131d858c4691c5442129473c0, type: 2}
-  rewardCoins: 0
-  rewardRep: 0
-  jobTarget: 3
+  jobName: Placeholder Name
+  jobDescription: Placeholder Description
+  jobType: 1
+  scenario: {fileID: 0}
+  rewardCoins: 1
+  rewardRep: 1
+  jobTarget: 0
   quantity: 1
-  targetFaction: {fileID: 11400000, guid: f351217d9ace74f4eaab5deabbae09a6, type: 2}
-  allyFaction: {fileID: 11400000, guid: f351217d9ace74f4eaab5deabbae09a6, type: 2}
+  targetFaction: {fileID: 0}
+  allyFaction: {fileID: 0}
   dangerValue: 0

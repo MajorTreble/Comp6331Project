@@ -13,6 +13,7 @@ namespace Controller
         public JobStatus jobStatus = JobStatus.NotSelected;
         public int currJobQtd;
         public Job currJob;
+        public Job customJob;
 
         private void Awake()
         {

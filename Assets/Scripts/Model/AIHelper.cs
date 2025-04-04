@@ -10,6 +10,15 @@ namespace Model
 {
     public class AIHelper
     {
+        public static bool IsHostile(AIShip ship, Ship target)
+        {
+            Debug.Assert(ship != null && target != null, $"{MethodBase.GetCurrentMethod().Name} {ship} {target}");
+
+            return IsEnemy(ship.faction, target.faction) ||
+                ship.hostileShips.Contains(target) ||
+                (ship.group != null && ship.group.hostileShips.Contains(target));
+        }
+
         public static bool IsTargetInRange(AIShip ship)
         {
             Debug.Assert(ship != null);
@@ -112,7 +121,7 @@ namespace Model
             Debug.Assert(self != null, $"{MethodBase.GetCurrentMethod().Name} {self}");
 
             int count = 0;
-            foreach (AIShip other in SpawningManager.Instance.shipList)
+            foreach (Ship other in SpawningManager.Instance.shipList)
             {
                 if (other == self) continue;
                 if (other.faction == self.faction)
@@ -129,7 +138,7 @@ namespace Model
             Debug.Assert(self != null, $"{MethodBase.GetCurrentMethod().Name} {self}");
 
             int count = 0;
-            foreach (AIShip other in SpawningManager.Instance.shipList)
+            foreach (Ship other in SpawningManager.Instance.shipList)
             {
                 if (other == self) continue;
                 if (other.faction != self.faction && IsEnemy(self.faction, other.faction))

@@ -60,7 +60,7 @@ public class TargetController : MonoBehaviour
 
         if(JobController.Inst.currJob.jobType == JobType.Deliver)
         {
-            targets.Add(GameObject.Find("HarborPortal").transform); 
+            targets.Add(GameManager.Instance.portal.transform); 
             showPortal = true;
         }else if(JobController.Inst.currJob.jobType == JobType.Mine)
         {
@@ -101,7 +101,7 @@ public class TargetController : MonoBehaviour
             }
 
             targetsIcon[0].gameObject.SetActive(true);
-            SetTarget(GameManager.Instance.portalPosition, targetsIcon[0]);
+            SetTarget(GameManager.Instance.portal.transform.position, targetsIcon[0]);
         }else
         {
             for (int i = 0; i < targets.Count; i++)

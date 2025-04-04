@@ -25,7 +25,6 @@ public class Faction2Script : AIShip
 
 	public override void UpdateSeek()
 	{
-		Debug.Log("UE");
 		//switch (currentRole)
 		//{
 		//	case Role.Tank:

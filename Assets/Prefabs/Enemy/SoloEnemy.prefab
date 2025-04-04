@@ -167,7 +167,7 @@ MonoBehaviour:
   shields: 100
   faction: {fileID: 0}
   behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}
-  detectionRadius: 25
+  detectionRadius: 100
   roamRadius: 150
   avoidanceForce: 5
   obstacleAvoidanceRange: 10
@@ -185,10 +185,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   targetShip: {fileID: 0}
-  isInGroup: 0
-  isLeader: 0
-  groupLeader: {fileID: 0}
+
   shouldPatrol: 0
+  hostileShips: []
+  target: {fileID: 0}
 --- !u!114 &8252763875273912104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,6 +227,7 @@ MonoBehaviour:
   path: {fileID: 280589639202043909, guid: 2da6cbf8352771f4c9ec8fa67d4176bf, type: 3}
   stoppingDistance: 1.5
   waypointRadius: 30
+  targetOffset: {x: 0, y: 0, z: 0}
 --- !u!1001 &6542066700235273163
 PrefabInstance:
   m_ObjectHideFlags: 0

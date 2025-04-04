@@ -24,10 +24,11 @@ namespace AI.Steering
 
         public SteeringAgent trackedTarget;
         public Vector3 targetPosition;
+        public Vector3 targetOffset = Vector3.zero;
 
         public Vector3 TargetPosition
         {
-            get => trackedTarget != null ? trackedTarget.transform.position : targetPosition;
+            get => trackedTarget != null ? trackedTarget.transform.position + trackedTarget.transform.TransformVector(targetOffset) : targetPosition;
 			set => targetPosition = value;
 		}
         public Vector3 TargetForward

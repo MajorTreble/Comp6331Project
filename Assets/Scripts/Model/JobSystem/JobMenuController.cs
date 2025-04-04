@@ -10,11 +10,7 @@ using UnityEngine.Experimental.Rendering;
 public enum JobStatus {NotSelected, InProgress, Failed, Concluded};
 public class JobMenuController : MonoBehaviour
 {
-    public Job[] jobs;   
-    
-    
-    
-
+    public Job[] jobs;     
     public static JobMenuController Inst { get; private set; } //Singleton
     private void Awake()
     {
@@ -40,23 +36,16 @@ public class JobMenuController : MonoBehaviour
             Debug.LogError("No jobs found in the specified path.");
             return;
         }
-        jobs = new Job[4];
-
-        
+        jobs = new Job[4];        
         Faction[] allFac = Resources.LoadAll<Faction>("Scriptable/Faction");
         for (int i = 0; i < 4; i++)
-        {
-                 
+        {                 
             List<Job> factionJobs = new List<Job>();
             
-            int playerReputation = GameManager.Instance.reputation.reputations[i].value;
-
-            
+            int playerReputation = GameManager.Instance.reputation.reputations[i].value;            
             foreach (Job job in allJobs)
             {
-                if(job.allyFaction  != allFac[i]) continue;
-
-                
+                if(job.allyFaction  != allFac[i]) continue;                
                 switch (job.dangerValue)
                 {
                     case 1:
@@ -88,18 +77,26 @@ public class JobMenuController : MonoBehaviour
     public void AcceptJob(int _index)
     {
         if(_index < 0)return;
+
+        AcceptJob(jobs[_index]);
         
+        
+    }
+
+    public void AcceptJob(Job _job)
+    {
+
         JobController jc = JobController.Inst;
-        jc.currJob = jobs[_index];
+        jc.currJob = _job;
         jc.jobStatus = JobStatus.InProgress;
         JobView.Inst.UpdateJob();
 
 
         GameManager.Instance.currentScenario = jc.currJob.scenario;
 
-
-
     }
+
+
 
     
     

@@ -11,6 +11,7 @@ namespace Model.AI
 		Flee,     // The AI is running away (e.g., when health is low)
 		AllyAssist, // The AI is assisting the player
 		Patrol,
-		Attack
+		Attack,
+        Formation
 	}
 }

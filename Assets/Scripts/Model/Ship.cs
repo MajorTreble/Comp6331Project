@@ -16,6 +16,8 @@ namespace Model
         public float health;
         public float shields;
 
+        public Faction faction = null;
+
         public virtual void Start()
         {
             this.rb = GetComponent<Rigidbody>();

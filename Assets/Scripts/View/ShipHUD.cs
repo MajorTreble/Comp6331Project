@@ -15,6 +15,8 @@ public class ShipHUD : MonoBehaviour
 	
 	private Slider sld_Speed;
 
+	private GameObject tutorialButton;
+
 	PlayerShip ship;
 	PlayerController pc;
 
@@ -26,7 +28,7 @@ public class ShipHUD : MonoBehaviour
 		shieldsImage = ui.transform.Find("Shields").GetComponent<Image>();		
 		sld_Speed = ui.transform.Find("Sld_Speed").GetComponent<Slider>();
 
-		
+		tutorialButton = ui.transform.Find("Tutorial").gameObject;
 	}
 
 	private void Start() 
@@ -73,5 +75,11 @@ public class ShipHUD : MonoBehaviour
 	{
 		ship.Leave();
 		//GameManager.Instance.StopScenario();
+	}
+
+	public void AcceptTutorial()
+	{
+		tutorialButton.SetActive(false);
+		Time.timeScale = 1;
 	}
 }
