@@ -50,7 +50,7 @@ namespace AI.Steering
 
         public Vector3 Velocity { get; set; }
 
-        public Transform transform
+        public new Transform transform
         {
             get => owner.transform;
         }

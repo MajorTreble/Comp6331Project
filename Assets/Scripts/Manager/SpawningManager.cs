@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement; // Debug only
 
 using Model;
 using Model.AI;
+using Controller;
 
 namespace Manager
 {
@@ -12,9 +13,10 @@ namespace Manager
     public class SpawningManager : MonoBehaviour
     {
         public static SpawningManager Instance { get; private set; }
-
-        public List<Ship> shipList = new List<Ship>();
+		//private Faction selectedPatrolFaction;
+		public List<Ship> shipList = new List<Ship>();
 		private Dictionary<Faction.FactionType, AIShip> factionLeaders = new Dictionary<Faction.FactionType, AIShip>();
+		private Dictionary<Faction, AI_Waypoints> factionPaths = new Dictionary<Faction, AI_Waypoints>();
 
 		void Awake()
         {
@@ -44,6 +46,41 @@ namespace Manager
 			AIShip aiShip = shipObject.GetComponent<AIShip>();
 			if (aiShip != null)
 			{
+				bool isDefendFaction = JobController.Inst.currJob != null && aiShip.faction == JobController.Inst.currJob.allyFaction;
+
+				// Set patrol: Defend faction always patrols; others use AIBehavior.isPatrol
+				aiShip.shouldPatrol = isDefendFaction || aiShip.behavior.isPatrol; 
+				
+				Debug.Log($"Ship {aiShip.name} (Faction: {aiShip.faction.name}) - Should Patrol: {aiShip.shouldPatrol}");
+
+				AIWaypointNavigator nav = shipObject.GetComponent<AIWaypointNavigator>();
+
+				if (aiShip.shouldPatrol)
+				{
+					// Determine which faction's path to use
+					Faction patrolFaction = isDefendFaction ?
+						JobController.Inst.currJob.allyFaction :
+						aiShip.faction;
+
+					Debug.Log($"[SPAWN] {aiShip.name} assigned to patrol. Setting state to Patrol.");
+					if (!factionPaths.ContainsKey(patrolFaction))
+					{
+						CreateFactionPath(patrolFaction, spawnParams.Prefab);
+					}
+					if (nav != null && factionPaths.ContainsKey(patrolFaction))
+					{
+						nav.path = factionPaths[patrolFaction];
+						aiShip.UpdatePatrolState(true);
+					}
+				}
+				else
+				{
+					Debug.Log($"[SPAWN] {aiShip.name} not patrolling. State: {aiShip.currentState}");
+					aiShip.UpdatePatrolState(false);
+					if (nav != null) nav.ClearPath();
+				}
+
+
 				// Check if this faction already has a leader
 				AIShip designatedLeader = null;
 
@@ -62,10 +99,31 @@ namespace Manager
 			return shipObject;
 		}
 
+		private void CreateFactionPath(Faction faction, GameObject shipPrefab)
+		{
+			AIWaypointNavigator prefabNav = shipPrefab.GetComponent<AIWaypointNavigator>();
+			if (prefabNav == null)
+			{
+				//Debug.LogError($"Prefab {shipPrefab.name} has no AIWaypointNavigator!");
+				return;
+			}
 
-        public void SpawnScenario(Scenario scenario)
+			if (prefabNav.path == null)
+			{
+				//Debug.LogError($"Prefab {shipPrefab.name}'s AIWaypointNavigator has no path assigned!");
+				return;
+			}
+
+			// Rest of your existing instantiation code
+			AI_Waypoints pathInstance = Instantiate(prefabNav.path, Vector3.zero, Quaternion.identity);
+			pathInstance.name = $"{faction.name}_PatrolPath";
+			factionPaths.Add(faction, pathInstance);
+			Debug.Log($"Created path for {faction.name} with {pathInstance.WaypointCount} waypoints");
+		}
+
+		public void SpawnScenario(Scenario scenario)
         {
-            GameObject portal = GameManager.Instance.portal;
+			GameObject portal = GameManager.Instance.portal;
             if (portal != null)
             {
                 portal.transform.position = scenario.portalPosition;
@@ -74,7 +132,10 @@ namespace Manager
 
             foreach (UnitGroup unitGroup in scenario.unitGroups)
             {
-                GameObject orgFaction = new GameObject();
+				// Reset positions before spawning this group
+				unitGroup.ResetSpawnPositions();
+
+				GameObject orgFaction = new GameObject();
                 orgFaction.transform.name = "Org_" + unitGroup.faction.name;
 
                 foreach (ShipType type in unitGroup.shipTypes)

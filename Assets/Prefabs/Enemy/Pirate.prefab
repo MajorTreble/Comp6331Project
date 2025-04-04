@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6030673257891210850}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.06, y: -0.53, z: 6.18}
+  m_LocalPosition: {x: 0.06, y: -0.53, z: 7.16}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 2312662491760270164}
@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 5175624525873238366}
   - component: {fileID: 4882198248570157917}
   - component: {fileID: 8959509692265794081}
+  - component: {fileID: -8107684813319859126}
   m_Layer: 7
   m_Name: Pirate
   m_TagString: PirateShip
@@ -176,11 +177,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7277576965648325399}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 14.400156, y: 3.14, z: 11.99}
-  m_Center: {x: -0.039502144, y: -0.3, z: -0.7}
+  m_Size: {x: 14.400156, y: 4.51, z: 11.99}
+  m_Center: {x: -0.28, y: 2.02, z: 0.71}
 --- !u!54 &5175624525873238366
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -211,19 +212,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oriData: {fileID: 11400000, guid: a4c3c1d0ec94b3744a0fd33545dd2b3d, type: 2}
   rb: {fileID: 0}
-  steering: {fileID: 0}
+  steeringAgent: {fileID: 0}
   ammo: 0
   health: 100
   shields: 0
   faction: {fileID: 0}
-  behavior: {fileID: 11400000, guid: 06a5235808ba81e4ba9f97e49cb8fda8, type: 2}
+  behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}
   detectionRadius: 25
   roamRadius: 150
   avoidanceForce: 5
   obstacleAvoidanceRange: 10
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   obstacleAvoidanceWeight: 5
   attackCooldown: 3
   lastAttackTime: 0
@@ -238,6 +239,7 @@ MonoBehaviour:
   isInGroup: 0
   isLeader: 0
   groupLeader: {fileID: 0}
+  shouldPatrol: 0
 --- !u!114 &8959509692265794081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,6 +263,21 @@ MonoBehaviour:
   behaviorType: 1
   trackedTarget: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &-8107684813319859126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277576965648325399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8d1d1e277793ce4c8637087fc249300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: {fileID: 280589639202043909, guid: 2da6cbf8352771f4c9ec8fa67d4176bf, type: 3}
+  stoppingDistance: 1.5
+  waypointRadius: 30
 --- !u!1001 &3000934694986739847
 PrefabInstance:
   m_ObjectHideFlags: 0

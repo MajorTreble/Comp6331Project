@@ -36,6 +36,8 @@ namespace Model
         public float aggressionAverageValue = 4f;
         public float aggressionAggressiveValue = 10f;
 
-    }
+		[Header("Patrol/Roam Settings")]
+		public bool isPatrol = false;
+	}
 
 }

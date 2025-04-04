@@ -10,6 +10,7 @@ namespace Model.AI
 		Seek,    // The AI is chasing or attacking the player
 		Flee,     // The AI is running away (e.g., when health is low)
 		AllyAssist, // The AI is assisting the player
+		Patrol,
 		Attack
 	}
 }
