@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e2091ee695cdcd40bed3c95519fb76b, type: 3}
-  m_Name: Tutorial UnitGroup
+  m_Name: One Light On Patrol
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0, z: 200}
+  position: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0, w: 1}
   radius: 10
-  jobFaction: 1
-  shipTypes: 000000000000000000000000
-  groupMode: 1
-  patrolPrefab: {fileID: 0}
+  jobFaction: 0
+  shipTypes: 00000000
+  groupMode: 0
+  patrolPrefab: {fileID: 2327261576223514515, guid: 0afc5127469ce5441b6823bfc6379484, type: 3}

@@ -6,66 +6,66 @@ using Controller;
 namespace Model
 {
 
-    public class Ship : MonoBehaviour
-    {
-        public ShipData oriData;
-        public Rigidbody rb;
-        public SteeringAgent steeringAgent = null;
+	public class Ship : MonoBehaviour, IDamagable
+	{
+		public ShipData oriData;
+		public Rigidbody rb;
+		public SteeringAgent steeringAgent = null;
 
-        public int ammo;
-        public float health;
-        public float shields;
+		public int ammo;
+		public float health;
+		public float shields;
 
-        public Faction faction = null;
+		public Faction faction = null;
 
-        public virtual void Start()
-        {
-            this.rb = GetComponent<Rigidbody>();
+		public virtual void Start()
+		{
+			this.rb = GetComponent<Rigidbody>();
 			rb.interpolation = RigidbodyInterpolation.Interpolate;
 			this.steeringAgent = GetComponent<SteeringAgent>();
-            this.steeringAgent.rigidBody = rb;
-        }
+			this.steeringAgent.rigidBody = rb;
+		}
 
-        public virtual void SetStats()
-        {
-            health = oriData.maxHealth;
-            shields = oriData.maxShields;
-        }
+		public virtual void SetStats()
+		{
+			health = oriData.maxHealth;
+			shields = oriData.maxShields;
+		}
 
-        public virtual bool IsJobTarget()
-        {
-            return false;
-        }
+		public virtual bool IsJobTarget()
+		{
+			return false;
+		}
 
-        public virtual void ShieldRecover()
-        {
-            shields += oriData.shieldRegen;
-            shields = Mathf.Clamp(shields, 0, oriData.maxShields);
-        }
+		public virtual void ShieldRecover()
+		{
+			shields += oriData.shieldRegen;
+			shields = Mathf.Clamp(shields, 0, oriData.maxShields);
+		}
 
-        public virtual bool TakeDamage(float _dmg)
-        {
-            health -= _dmg;
+		public virtual bool TakeDamage(float damage, Ship attacker)
+		{
+			health -= damage;
 
-            return CheckDestroyed();
-        }
+			return CheckDestroyed();
+		}
 
-        public bool CheckDestroyed()
-        {
-            if (health > 0)
-                return false;
+		public bool CheckDestroyed()
+		{
+			if (health > 0)
+				return false;
 
-            JobController.Inst.OnObjDestroyed(transform.tag);
+			JobController.Inst.OnObjDestroyed(transform.tag);
 
-            this.gameObject.SetActive(false);
+			this.gameObject.SetActive(false);
 
-            return true;
-        }
+			return true;
+		}
 
-        public virtual void Leave()
-        {
-            JobController.Inst.OnObjLeave(transform.tag);
-            this.gameObject.SetActive(false);
-        }
-    }
+		public virtual void Leave()
+		{
+			JobController.Inst.OnObjLeave(transform.tag);
+			this.gameObject.SetActive(false);
+		}
+	}
 }

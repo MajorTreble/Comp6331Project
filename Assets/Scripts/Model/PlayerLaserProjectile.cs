@@ -8,6 +8,8 @@ namespace Model
 {
     public class PlayerLaserProjectile : MonoBehaviour
     {
+        Ship owner;
+
         public float speed = 100f;
         public float lifeTime = 3f;
         public float damage = 100f;
@@ -31,27 +33,14 @@ namespace Model
             
             Utils.DebugLog($"[PlayerLaserProjectile] hit by {other.tag}" + other.transform.name);
             //Debug.Log($"[PlayerLaserProjectile] hit by {other.tag}");
+
             // Damage Ship
-            Ship ship = other.GetComponent<Ship>();
-            if (ship != null)
+            IDamagable damagable = other.GetComponent<IDamagable>();
+            if (damagable != null)
             {
-                ship.TakeDamage(damage);
-                Destroy(gameObject);
+                damagable.TakeDamage(damage, owner);
                 return;
             }
-
-            // Damage Asteroid
-            BreakableAsteroid asteroid = other.GetComponent<BreakableAsteroid>();
-            if (asteroid != null)
-            {
-                asteroid.ReceiveDamage(damage);
-
-                Destroy(gameObject);
-                return;
-            }
-
-            // Just destroy if hit anything else
-            Destroy(gameObject);
         }
 
         public void setPlayerSpeed(float playerSpeed)

@@ -29,7 +29,7 @@ namespace Model.AI
         public GameObject laserPrefab; // Laser prefab for attacks
         public GameObject firePoint; // Point from which lasers are fired
 
-		protected Vector3 roamTarget;
+        protected Vector3 roamTarget;
 
         public float roamRadius = 150f;
         public float avoidanceForce = 5f; // Force to steer away from obstacles and ships
@@ -37,7 +37,7 @@ namespace Model.AI
         public float obstacleAvoidanceRange = 5f; // Range to detect obstacles
         public float obstacleAvoidanceWeight = 5f; // Strength of avoidance
 
-        public bool shouldPatrol = false;
+        public AI_Waypoints patrol = null;
 
         // Define AI states for finite state machine
         public AIState currentState = AIState.Idle;
@@ -47,6 +47,8 @@ namespace Model.AI
         public LayerMask shipLayer;
 
         protected AIShipBehaviorTree BT = new AIShipBehaviorTree();
+
+        protected AIWaypointNavigator navigator = null;
 
         public Ship targetShip = null;
 
@@ -70,12 +72,14 @@ namespace Model.AI
         public override void Start()
         {
             base.Start();
-			rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
+            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
             BT.aiShip = this;
             BT.Initialize();
 
             currentState = AIState.Idle;
             requestedState = AIState.Roam;
+
+            navigator = GetComponent<AIWaypointNavigator>();
 
             if (laserPrefab != null && laserPrefab.GetComponent<LaserProjectile>() == null)
             {
@@ -94,7 +98,6 @@ namespace Model.AI
 
             UpdatePerception();
             UpdateDecision();
-            EvaluateCombatTarget();
             UpdateStateMachine();
 
             steeringAgent.Update();
@@ -157,29 +160,6 @@ namespace Model.AI
             }
         }
 
-		public Vector3 ComputeObstacleAvoidance(Vector3 currentDirection)
-        {
-
-          Vector3 avoidance = Vector3.zero;
-          Collider[] hits = Physics.OverlapSphere(transform.position, obstacleAvoidanceRange, obstacleLayer); Debug.Log($"[{name}] Detected {hits.Length} obstacles");
-          Debug.Log($"[{name}] Detected {hits.Length} obstacles");
-
-          foreach (Collider hit in hits)
-          {
-            if (hit.gameObject == gameObject) continue; // Skip self
-
-            Vector3 toObstacle = hit.transform.position - transform.position;
-            float distance = toObstacle.magnitude;
-            if (distance < obstacleAvoidanceRange)
-            {
-              avoidance += (-toObstacle.normalized) * (obstacleAvoidanceRange / distance);
-            }
-          }
-
-          return avoidance.normalized * obstacleAvoidanceWeight;
-
-        }
-
         protected virtual void UpdateDecision()
         {
             BT.Evaluate();
@@ -195,14 +175,14 @@ namespace Model.AI
                     case AIState.Idle:
                         ExitIdle();
                         break;
-					case AIState.Patrol:
+                    case AIState.Patrol:
                         ExitPatrol();
                         break;
                     case AIState.Roam:
                         ExitRoam();
                         break;
-                    case AIState.Seek:
-                        ExitSeek();
+                    case AIState.Combat:
+                        ExitCombat();
                         break;
                     case AIState.Flee:
                         ExitFlee();
@@ -223,17 +203,17 @@ namespace Model.AI
                     case AIState.Idle:
                         EnterIdle();
                         break;
-					case AIState.Patrol:
+                    case AIState.Patrol:
                         EnterPatrol();
                         break;
                     case AIState.Roam:
                         EnterRoam();
                         break;
-                    case AIState.Seek:
-                        EnterSeek();
+                    case AIState.Combat:
+                        EnterCombat();
                         break;
                     case AIState.Flee:
-                        EnterSeek();
+                        EnterFlee();
                         break;
                     case AIState.AllyAssist:
                         EnterAllyAssist();
@@ -254,14 +234,14 @@ namespace Model.AI
             {
                 case AIState.Idle:
                     break;
-				case AIState.Patrol:
-                     UpdatePatrol();
-                     break;
+                case AIState.Patrol:
+                    UpdatePatrol();
+                    break;
                 case AIState.Roam:
                     UpdateRoam();
                     break;
-                case AIState.Seek:
-                    UpdateSeek();
+                case AIState.Combat:
+                    UpdateCombat();
                     break;
                 case AIState.Flee:
                     UpdateFlee();
@@ -296,8 +276,10 @@ namespace Model.AI
             }
         }
 
-        public void TakeDamage(GameObject attacker)
+        public override bool TakeDamage(float damage, Ship attacker)
         {
+            bool isDestroyed = base.TakeDamage(damage, attacker);
+
             Debug.Log($"[{name}] was hit by {attacker.name}");
 
             if (attacker.CompareTag("Player"))
@@ -318,147 +300,13 @@ namespace Model.AI
                     }
                 }
             }
-        }
 
-        private void EngageTarget()
-        {
-            if (currentTarget == null) return;
-            Debug.Log($"[{name}] Seeking target: {currentTarget.name}");
-
-            float d = Vector3.Distance(transform.position, currentTarget.position);
-            if (d > behavior.attackRange)
-            {
-                Vector3 dir = (currentTarget.position - transform.position).normalized;
-                transform.position += dir * behavior.chaseSpeed * Time.deltaTime;
-                Quaternion targetRot = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, behavior.rotationSpeed * Time.deltaTime);
-            }
-            else
-            {
-                AttackTarget();
-            }
-        }
-
-        private void AttackTarget()
-        {
-            // Placeholder for actual attack behavior.
-            Attack();
-        }
-
-        private void EvaluateCombatTarget()
-        {
-            Job job = JobController.Inst.currJob;
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player == null)
-            {
-                Debug.LogWarning("Player null");
-                return;
-            }
-
-            // Fallback: Use reputation + fuzzy logic to decide about player
-            if (player != null && behavior != null && AIHelper.ShouldAttackPlayer(this, player, job))
-            {
-                float dist = Vector3.Distance(transform.position, player.transform.position);
-                if (dist <= behavior.detectionRadius)
-                {
-                    Debug.Log($"[{name}] Player is enemy. Engaging.");
-                    currentTarget = player.transform;
-                    requestedState = AIState.Seek;
-                    return;
-                }
-            }
-
-            // Look for other hostile AI ships
-            AIShip enemyShip = FindNearestHostile();
-            if (enemyShip != null)
-            {
-                Debug.Log($"[{name}] Found hostile target: {enemyShip.name}");
-                currentTarget = enemyShip.transform;
-                requestedState = AIState.Seek;
-                return;
-            }
-
-            currentTarget = null;
-        }
-
-        private AIShip FindNearestHostile()
-        {
-            AIShip nearest = null;
-            float nearestDist = float.MaxValue;
-
-            foreach (Ship ship in SpawningManager.Instance.shipList)
-            {
-                if (ship == this) continue;
-
-                AIShip other = ship as AIShip;
-                if (other == null) continue;
-
-                bool hostile = AIHelper.IsMissionTarget(other) ||
-                AIHelper.IsEnemy(faction, other.faction) ||
-                (other.faction != this.faction && AIHelper.IsEnemy(faction, other.faction));
-
-
-                if (!hostile) continue;
-                if (hostile)
-                    Debug.Log($"[{name}] Found hostile: {other.name} due to mission logic.");
-
-                float d = Vector3.Distance(transform.position, other.transform.position);
-                if (d < nearestDist)
-                {
-                    nearestDist = d;
-                    nearest = other;
-                }
-            }
-
-            return nearest;
+            return isDestroyed;
         }
 
         public void SetBehavior(AIBehavior newBehavior)
         {
             behavior = newBehavior; // Set the behavior
-        }
-
-        protected void RotateTowardTarget(Vector3 direction, float rotationSpeed = 5f)
-        {
-            if (direction != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    targetRotation,
-                    Time.deltaTime * rotationSpeed
-                );
-            }
-        }
-
-        protected virtual void AttackEnemiesNearPlayer(GameObject player)
-        {
-            if (!player || !behavior) return;
-
-            // Expand detection parameters
-            Collider[] nearbyEnemies = Physics.OverlapSphere(
-                player.transform.position,
-                behavior.allyAssistRange * 1.5f, // Increased range
-                shipLayer  // Check multiple layers
-            );
-
-            Job job = JobController.Inst.currJob;
-
-            foreach (Collider enemy in nearbyEnemies)
-            {
-                AIShip enemyAI = enemy.GetComponent<AIShip>();
-                if (enemyAI && AIHelper.ShouldAttackPlayer(this, player, job))
-                {
-                    Vector3 targetDirection = (enemy.transform.position - transform.position).normalized;
-                    RotateTowardTarget(targetDirection, behavior.rotationSpeed * 0.8f); // Smoother rotation
-
-                    if (Time.time > lastAttackTime + behavior.attackCooldown)
-                    {
-                        Attack();
-                        break; // Focus on one target at a time
-                    }
-                }
-            }
         }
 
         public virtual void Attack()
@@ -475,7 +323,7 @@ namespace Model.AI
             EnemyLaser laserScript = laser.GetComponent<EnemyLaser>();
             if (laserScript != null)
             {
-                laserScript.shooter = gameObject;
+                laserScript.shooter = this;
                 laserScript.faction = faction;
             }
 
@@ -500,7 +348,7 @@ namespace Model.AI
             if (rel == Relationship.Enemy)
             {
                 if (aggressionLevel > 0.7f)
-                    requestedState = AIState.Seek;
+                    requestedState = AIState.Combat;
                 else if (aggressionLevel < 0.3f)
                     requestedState = AIState.Flee;
             }
@@ -552,22 +400,22 @@ namespace Model.AI
         {
         }
 
-        // Seek //
+        // Combat //
 
-        protected void EnterSeek()
+        protected void EnterCombat()
         {
             steeringAgent.maxSpeed = steeringAgent.initialMaxSpeed;
             steeringAgent.movements.Add(new Pursue());
             steeringAgent.movements.Add(new LookWhereYouAreGoing());
         }
 
-        protected void ExitSeek()
+        protected void ExitCombat()
         {
             steeringAgent.trackedTarget = null;
             steeringAgent.movements.Clear();
         }
 
-        public virtual void UpdateSeek()
+        public virtual void UpdateCombat()
         {
             if (currentLKP == null)
             {
@@ -657,13 +505,12 @@ namespace Model.AI
             float dist = Vector3.Distance(transform.position, currentTarget.position);
             if (dist > behavior.attackRange)
             {
-                requestedState = AIState.Seek;
+                requestedState = AIState.Combat;
                 return;
             }
 
             //Vector3 direction = (player.position - transform.position).normalized;
             Vector3 direction = (currentTarget.position - transform.position).normalized;
-            RotateTowardTarget(direction, behavior.rotationSpeed);
 
             if (Time.time >= lastAttackTime + behavior.attackCooldown)
             {
@@ -689,53 +536,42 @@ namespace Model.AI
         {
         }
 
-		protected void EnterPatrol()
+        protected void EnterPatrol()
         {
+            navigator.path = patrol;
+            steeringAgent.movements.Clear();
 
-          steeringAgent.movements.Clear();
+            if (navigator.path != null)
+            {
+                // Seek toward waypoints
+                steeringAgent.movements.Add(new Seek());
+                steeringAgent.movements.Add(new LookWhereYouAreGoing());
 
-          AIWaypointNavigator nav = GetComponent<AIWaypointNavigator>();
-          if (nav != null && nav.path != null)
-          {
-            // Seek toward waypoints
-            steeringAgent.movements.Add(new Seek());
-            steeringAgent.movements.Add(new LookWhereYouAreGoing());
+                // Collision avoidance for dynamic obstacles
+                CollisionAvoidance avoidance = new CollisionAvoidance();
+                avoidance.weight = 2.0f;
+                avoidance.avoidList.AddRange(AIHelper.GetObstacles(this));
+                steeringAgent.movements.Add(avoidance);
 
-            // Collision avoidance for dynamic obstacles
-            CollisionAvoidance avoidance = new CollisionAvoidance();
-            avoidance.weight = 2.0f;
-            avoidance.avoidList.AddRange(GetObstacles());
-            steeringAgent.movements.Add(avoidance);
+                // Separation behavior for same-faction ships
+                Separation separation = new Separation();
+                separation.Weight = 10.0f;
+                separation.DesiredSeparation = 15.0f;
+                steeringAgent.movements.Add(separation);
+            }
+            else
+            {
+                Debug.LogWarning($"[{name}] Patrol setup failed: No waypoints!");
+                requestedState = AIState.Roam;
+            }
 
-            // Separation behavior for same-faction ships
-            Separation separation = new Separation();
-            separation.Weight = 10.0f;
-            separation.DesiredSeparation = 15.0f;
-            steeringAgent.movements.Add(separation);
-          }
-          else
-          {
-            Debug.LogWarning($"[{name}] Patrol setup failed: No waypoints!");
-            requestedState = AIState.Roam;
-          }
-
-        }
-
-        private List<SteeringAgent> GetObstacles()
-        {
-          //To avoid ships of same faction
-          List<SteeringAgent> obstacles = new List<SteeringAgent>();
-          foreach (Ship ship in SpawningManager.Instance.shipList)
-          {
-            if (ship != this && ship.steeringAgent != null)
-              obstacles.Add(ship.steeringAgent);
-          }
-          return obstacles;
         }
 
         protected void ExitPatrol()
         {
-          steeringAgent.movements.Clear();
+            navigator.path = null;
+
+            steeringAgent.movements.Clear();
         }
 
         protected void UpdatePatrol()
@@ -743,24 +579,10 @@ namespace Model.AI
 
         }
 
-
-        public void UpdatePatrolState(bool shouldPatrol)
-        {
-          this.shouldPatrol = shouldPatrol;
-          if (shouldPatrol)
-          {
-            requestedState = AIState.Patrol;
-          }
-          else
-          {
-            requestedState = AIState.Roam;
-          }
-        }
-
         private void OnDrawGizmosSelected()
         {
-          Gizmos.color = Color.yellow;
-          Gizmos.DrawWireSphere(transform.position, obstacleAvoidanceRange);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, obstacleAvoidanceRange);
         }
 
     }

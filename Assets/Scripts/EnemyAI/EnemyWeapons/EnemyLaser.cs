@@ -6,10 +6,11 @@ using Model;
 
 public class EnemyLaser : MonoBehaviour
 {
+	public Ship shooter;
+
 	public float speed = 20f;
 	public float damage = 10f;
 	private int playerHitCount = 0;
-	public GameObject shooter;
 	public Faction faction;
 
 	void Start()
@@ -43,7 +44,7 @@ public class EnemyLaser : MonoBehaviour
 			if (targetAI.faction == faction) return;
 
 			Debug.Log($"Laser from [{shooter?.name}] hit [{targetAI.name}]");
-			targetAI.TakeDamage(shooter);
+			targetAI.TakeDamage(damage, shooter);
 			Destroy(gameObject);
 		}
 	}
