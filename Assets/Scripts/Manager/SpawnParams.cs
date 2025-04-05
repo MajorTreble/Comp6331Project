@@ -16,7 +16,7 @@ namespace Manager
         public ShipType shipType = ShipType.Light;
         public Faction faction = null;
         public AIGroup group = null;
-
+        public AI_Waypoints patrol = null;
 
         public SpawnParams() { }
 
@@ -49,6 +49,8 @@ namespace Manager
 
                     aiShip.group = group;
                     group.ships.Add(aiShip);
+
+                    aiShip.patrol = patrol;
                 }
             }
         }

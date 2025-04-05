@@ -153,7 +153,7 @@ namespace Controller
                 if(s.CompareTag("Player")) continue;
                 if(s.transform.gameObject.activeSelf == true)
                 {
-                    s.TakeDamage(s.oriData.maxHealth);
+                    s.TakeDamage(s.oriData.maxHealth, null);
                     break;
                 }                
             }     

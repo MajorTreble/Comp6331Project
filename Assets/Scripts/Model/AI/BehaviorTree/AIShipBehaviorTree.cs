@@ -17,11 +17,11 @@ namespace Model.AI.BehaviorTree
             {
                 new Sequence(new List<Node>
                 {
-                    new Condition( () => aiShip.currentState != AIState.Seek ),
+                    new Condition( () => aiShip.currentState != AIState.Combat ),
                     new Condition( () => aiShip.currentLKP != null && aiShip.currentLKP.visibility == LKPVisibility.Seen ),
                     new Condition( () => aiShip.target != null ),
 
-                    new SetAIStateNode(aiShip, AIState.Seek)
+                    new SetAIStateNode(aiShip, AIState.Combat)
                 }),
                 new Sequence(new List<Node>
                 {
@@ -32,6 +32,12 @@ namespace Model.AI.BehaviorTree
 
                     new SetAIStateNode(aiShip, AIState.Formation),
                     new FollowGroupLeaderNode(aiShip)
+                }),
+                new Sequence(new List<Node>
+                {
+                    new Condition( () => aiShip.currentState != AIState.Formation ),
+                    new Condition( () => aiShip.patrol != null ),
+                    new SetAIStateNode(aiShip, AIState.Patrol)
                 }),
                 new Sequence(new List<Node>
                 {

@@ -4,7 +4,7 @@ using UnityEngine;
 using Controller;
 
 namespace Model.Environment {
-    public class BreakableAsteroid : MonoBehaviour
+    public class BreakableAsteroid : MonoBehaviour, IDamagable
     {
         public bool canBreak = true;
         public float minSize = 0.2f;
@@ -46,9 +46,9 @@ namespace Model.Environment {
         }
 
         
-		public bool ReceiveDamage(float _dmg)
+		public bool TakeDamage(float damage, Ship attacker)
 		{
-			health -= _dmg;
+			health -= damage;
 
 			return CheckDestroyed();
 		}
