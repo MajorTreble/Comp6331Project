@@ -51,6 +51,11 @@ namespace AI.Steering
 
         public Vector3 Velocity { get; set; }
 
+        public new Transform transform
+        {
+            get => owner.transform;
+        }
+
         public void TrackTarget(SteeringAgent target)
         {
             trackedTarget = target;

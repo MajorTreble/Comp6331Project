@@ -21,7 +21,8 @@ namespace Model
         public virtual void Start()
         {
             this.rb = GetComponent<Rigidbody>();
-            this.steeringAgent = GetComponent<SteeringAgent>();
+			rb.interpolation = RigidbodyInterpolation.Interpolate;
+			this.steeringAgent = GetComponent<SteeringAgent>();
             this.steeringAgent.rigidBody = rb;
         }
 

@@ -29,6 +29,16 @@ namespace Model.AI
         public GameObject laserPrefab; // Laser prefab for attacks
         public GameObject firePoint; // Point from which lasers are fired
 
+		protected Vector3 roamTarget;
+
+        public float roamRadius = 150f;
+        public float avoidanceForce = 5f; // Force to steer away from obstacles and ships
+
+        public float obstacleAvoidanceRange = 5f; // Range to detect obstacles
+        public float obstacleAvoidanceWeight = 5f; // Strength of avoidance
+
+        public bool shouldPatrol = false;
+
         // Define AI states for finite state machine
         public AIState currentState = AIState.Idle;
         public AIState requestedState = AIState.Roam;
@@ -60,7 +70,7 @@ namespace Model.AI
         public override void Start()
         {
             base.Start();
-
+			rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
             BT.aiShip = this;
             BT.Initialize();
 
@@ -147,6 +157,29 @@ namespace Model.AI
             }
         }
 
+		public Vector3 ComputeObstacleAvoidance(Vector3 currentDirection)
+        {
+
+          Vector3 avoidance = Vector3.zero;
+          Collider[] hits = Physics.OverlapSphere(transform.position, obstacleAvoidanceRange, obstacleLayer); Debug.Log($"[{name}] Detected {hits.Length} obstacles");
+          Debug.Log($"[{name}] Detected {hits.Length} obstacles");
+
+          foreach (Collider hit in hits)
+          {
+            if (hit.gameObject == gameObject) continue; // Skip self
+
+            Vector3 toObstacle = hit.transform.position - transform.position;
+            float distance = toObstacle.magnitude;
+            if (distance < obstacleAvoidanceRange)
+            {
+              avoidance += (-toObstacle.normalized) * (obstacleAvoidanceRange / distance);
+            }
+          }
+
+          return avoidance.normalized * obstacleAvoidanceWeight;
+
+        }
+
         protected virtual void UpdateDecision()
         {
             BT.Evaluate();
@@ -161,6 +194,9 @@ namespace Model.AI
                 {
                     case AIState.Idle:
                         ExitIdle();
+                        break;
+					case AIState.Patrol:
+                        ExitPatrol();
                         break;
                     case AIState.Roam:
                         ExitRoam();
@@ -186,6 +222,9 @@ namespace Model.AI
                 {
                     case AIState.Idle:
                         EnterIdle();
+                        break;
+					case AIState.Patrol:
+                        EnterPatrol();
                         break;
                     case AIState.Roam:
                         EnterRoam();
@@ -215,6 +254,9 @@ namespace Model.AI
             {
                 case AIState.Idle:
                     break;
+				case AIState.Patrol:
+                     UpdatePatrol();
+                     break;
                 case AIState.Roam:
                     UpdateRoam();
                     break;
@@ -645,6 +687,80 @@ namespace Model.AI
 
         protected void UpdateFormation()
         {
+        }
+
+		protected void EnterPatrol()
+        {
+
+          steeringAgent.movements.Clear();
+
+          AIWaypointNavigator nav = GetComponent<AIWaypointNavigator>();
+          if (nav != null && nav.path != null)
+          {
+            // Seek toward waypoints
+            steeringAgent.movements.Add(new Seek());
+            steeringAgent.movements.Add(new LookWhereYouAreGoing());
+
+            // Collision avoidance for dynamic obstacles
+            CollisionAvoidance avoidance = new CollisionAvoidance();
+            avoidance.weight = 2.0f;
+            avoidance.avoidList.AddRange(GetObstacles());
+            steeringAgent.movements.Add(avoidance);
+
+            // Separation behavior for same-faction ships
+            Separation separation = new Separation();
+            separation.Weight = 10.0f;
+            separation.DesiredSeparation = 15.0f;
+            steeringAgent.movements.Add(separation);
+          }
+          else
+          {
+            Debug.LogWarning($"[{name}] Patrol setup failed: No waypoints!");
+            requestedState = AIState.Roam;
+          }
+
+        }
+
+        private List<SteeringAgent> GetObstacles()
+        {
+          //To avoid ships of same faction
+          List<SteeringAgent> obstacles = new List<SteeringAgent>();
+          foreach (Ship ship in SpawningManager.Instance.shipList)
+          {
+            if (ship != this && ship.steeringAgent != null)
+              obstacles.Add(ship.steeringAgent);
+          }
+          return obstacles;
+        }
+
+        protected void ExitPatrol()
+        {
+          steeringAgent.movements.Clear();
+        }
+
+        protected void UpdatePatrol()
+        {
+
+        }
+
+
+        public void UpdatePatrolState(bool shouldPatrol)
+        {
+          this.shouldPatrol = shouldPatrol;
+          if (shouldPatrol)
+          {
+            requestedState = AIState.Patrol;
+          }
+          else
+          {
+            requestedState = AIState.Roam;
+          }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+          Gizmos.color = Color.yellow;
+          Gizmos.DrawWireSphere(transform.position, obstacleAvoidanceRange);
         }
 
     }
