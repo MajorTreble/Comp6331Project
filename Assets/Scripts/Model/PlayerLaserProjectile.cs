@@ -58,6 +58,12 @@ namespace Model
         {
             this.playerSpeed = playerSpeed;
         }
+
+        public void SetPlayerDamage(float playerDamage)
+        {
+            this.damage = playerDamage;
+
+        }
     }
 
 }

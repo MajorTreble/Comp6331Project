@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jobName: Placeholder Name
   jobDescription: Placeholder Description
-  jobType: 1
-  scenario: {fileID: 0}
-  rewardCoins: 1
-  rewardRep: 1
-  jobTarget: 0
+  jobType: 3
+  scenario: {fileID: 11400000, guid: e371798ec0652a54f8c19df950343949, type: 2}
+  rewardCoins: 625
+  rewardRep: 400
+  jobTarget: 5
   quantity: 1
-  targetFaction: {fileID: 0}
-  allyFaction: {fileID: 0}
-  dangerValue: 0
+  enemyFaction: {fileID: 11400000, guid: 053310607fcc97947b8d1d0346adc446, type: 2}
+  allyFaction: {fileID: 11400000, guid: f351217d9ace74f4eaab5deabbae09a6, type: 2}
+  dangerValue: 3

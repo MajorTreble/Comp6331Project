@@ -96,6 +96,7 @@ namespace Controller
                 UpdateJob(1);
             }
 
+
             if(currJob.jobType == JobType.Deliver)
             {
                 UpdateJob(1);

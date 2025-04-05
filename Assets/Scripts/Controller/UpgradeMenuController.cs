@@ -49,7 +49,7 @@ public class UpgradeMenuController : MonoBehaviour
         uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
 
         upgrName = "Ammo";
-        //baseValue = ship.ammo;
+        baseValue = oriData.maxAmmo;
         value = new float[valueMult.Length];
         for (int i = 0; i < valueMult.Length; i++)
         {

@@ -20,7 +20,16 @@ public class PlayerReputation : ScriptableObject
     
     public List<Reputation> reputations = new List<Reputation>();
     public int coins;
-    
+
+    public void Reset()
+    {
+        foreach (Reputation rep in reputations)
+        {
+            rep.value = 0;           
+        }
+        coins = 0;
+    }
+
     public float GetReputation(Faction faction)
     {
         return 0.0f;
@@ -40,8 +49,8 @@ public class PlayerReputation : ScriptableObject
         }
 
         Job job = JobController.Inst.currJob;
-        if ((job.targetFaction == factionA && job.allyFaction == factionB) || 
-            (job.targetFaction == factionB && job.allyFaction == factionA))
+        if ((job.enemyFaction == factionA && job.allyFaction == factionB) || 
+            (job.enemyFaction == factionB && job.allyFaction == factionA))
         {
             return ReputationStatus.Enemy;
         }

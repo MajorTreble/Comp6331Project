@@ -17,7 +17,7 @@ public class JobView : MonoBehaviour
 
     Transform jobOptions;
     GameObject jobTemplate;
-    Transform jobTarget;
+    //Transform jobTarget;
     Text jobDescription;
     Text jobFeedback;
 
@@ -56,7 +56,7 @@ public class JobView : MonoBehaviour
     }
 
 
-    void Start()
+    public void Start()
     {
         SetTestButtons();
         UpdateJob();  
@@ -65,28 +65,33 @@ public class JobView : MonoBehaviour
     public void SetConfigurations()
     {
         Transform jobConfigurations = GameObject.Find("JobConfigurations").transform;
+        Job customJob = JobController.Inst.customJob;
 
         allFac = Resources.LoadAll<Faction>("Scriptable/Faction");
         allDif = new string[] { "Easy", "Medium", "Hard" };
         allJobType = (JobType[])System.Enum.GetValues(typeof(JobType));
         allScen = Resources.LoadAll<Scenario>("Scriptable/Scenario");
 
-        Transform config = Utils.FindChildByName(jobConfigurations, "JobFaction").transform; 
+        Transform config = Utils.FindChildByName(jobConfigurations, "JobAlly").transform; 
         Dropdown dd = Utils.FindChildByName(config, "drop").GetComponent<Dropdown>();
+        dd.onValueChanged.AddListener(UpdateJobConfiguration);
         dd.ClearOptions();
         foreach (Faction faction in allFac)
         {
             dd.options.Add(new Dropdown.OptionData(faction.title));
         }
+        dd.value = (int)customJob.allyFaction.factionType;
         dd.RefreshShownValue(); 
 
         config = Utils.FindChildByName(jobConfigurations, "JobDifficulty").transform; 
         dd = Utils.FindChildByName(config, "drop").GetComponent<Dropdown>();
+        dd.onValueChanged.AddListener(UpdateJobConfiguration);
         dd.ClearOptions();
         foreach (String dif in allDif)
         {
             dd.options.Add(new Dropdown.OptionData(dif));
-        }        
+        }                
+        dd.value = (int)customJob.dangerValue;
         dd.RefreshShownValue(); 
 
         config = Utils.FindChildByName(jobConfigurations, "JobType").transform; 
@@ -96,27 +101,38 @@ public class JobView : MonoBehaviour
         foreach (JobType type in allJobType)
         {
             dd.options.Add(new Dropdown.OptionData(type.ToString()));
-        }
+        }        
+        dd.value = (int)customJob.jobType;
         dd.RefreshShownValue(); 
         
 
-        config = Utils.FindChildByName(jobConfigurations, "JobTarget").transform; 
-        jobTarget = config;
+        config = Utils.FindChildByName(jobConfigurations, "JobEnemy").transform; 
+        //jobTarget = config;
         dd = Utils.FindChildByName(config, "drop").GetComponent<Dropdown>();
+        dd.onValueChanged.AddListener(UpdateJobConfiguration);
         dd.ClearOptions();
         foreach (Faction faction in allFac)
         {
             dd.options.Add(new Dropdown.OptionData(faction.title));
-        }
+        }        
+        dd.value = (int)customJob.enemyFaction.factionType;
         dd.RefreshShownValue(); 
 
 
         config = Utils.FindChildByName(jobConfigurations, "JobScenario").transform; 
         dd = Utils.FindChildByName(config, "drop").GetComponent<Dropdown>();
+        dd.onValueChanged.AddListener(UpdateJobConfiguration);
         dd.ClearOptions();        
         foreach (Scenario scenario in allScen)
         {
             dd.options.Add(new Dropdown.OptionData(scenario.mapName));
+        }
+        for (int i = 0; i < dd.options.Count; i++)
+        {
+            if (dd.options[i].text == customJob.scenario.name)
+            {
+                dd.value = i;
+            }
         }
         dd.RefreshShownValue(); 
     }
@@ -124,9 +140,12 @@ public class JobView : MonoBehaviour
     
     void UpdateJobConfiguration(int value)
     {
-        JobType type = allJobType[value];
-
-        jobTarget.gameObject.SetActive(type==JobType.Hunt || type==JobType.Defend);        
+        Transform departure = GameObject.Find("Departure").transform;
+        bool same = GetOptionValue("JobAlly") == GetOptionValue("JobEnemy");
+        string text = same ? "Ally and Enemy can not be the same": "Departure";   
+        
+        departure.GetComponent<Button>().interactable = !same;
+        departure.GetChild(0).GetComponent<Text>().text = text;
     }
 
 
@@ -149,6 +168,8 @@ public class JobView : MonoBehaviour
 
     public void ViewJob(Job job)
     {
+        if(!oldJobVersion) return;
+
         GameObject go = GameObject.Find("JobDescriptionText");
         if(go!=null) jobDescription = go.GetComponent<Text>();  
 
@@ -219,7 +240,6 @@ public class JobView : MonoBehaviour
                 jobFeedback.color = color;
                 jobFeedback.text = jobText;
             }
-
         }
 
         if(JobController.Inst.jobStatus == JobStatus.Failed) 
@@ -321,11 +341,11 @@ public class JobView : MonoBehaviour
         {
             if(JobController.Inst.currJob == null)
             {
-                JobController.Inst.customJob.allyFaction = allFac[GetOptionValue("JobFaction")];
+                JobController.Inst.customJob.allyFaction = allFac[GetOptionValue("JobAlly")];
                 JobController.Inst.customJob.dangerValue = 1+GetOptionValue("JobDifficulty");
                 JobController.Inst.customJob.jobType = allJobType[GetOptionValue("JobType")];
-                JobController.Inst.customJob.targetFaction = allFac[GetOptionValue("JobTarget")];
-                JobController.Inst.customJob.scenario = allScen[GetOptionValue("JobScenario")];
+                JobController.Inst.customJob.enemyFaction = allFac[GetOptionValue("JobEnemy")];
+                JobController.Inst.customJob.scenario = allScen[GetOptionValue("JobScenario")];                   
 
                 switch (JobController.Inst.customJob.dangerValue)
                 {
@@ -356,8 +376,29 @@ public class JobView : MonoBehaviour
                     break;
                 }
 
-                if(JobController.Inst.customJob.jobType == JobType.Deliver)
+                JobTarget target = JobTarget.Self;
+                switch (JobController.Inst.customJob.jobType)
+                {
+                    case JobType.Defend:
+                    target = (JobTarget)(int)JobController.Inst.customJob.allyFaction.factionType;
+                    break;
+                    case JobType.Deliver:
+                    target = JobTarget.Self; 
                     JobController.Inst.customJob.quantity = 1;
+                    break;
+                    case JobType.Hunt:
+                    target = (JobTarget)(int)JobController.Inst.customJob.enemyFaction.factionType;
+                    break;
+                    case JobType.Mine:
+                    target = JobTarget.Asteroid;
+                    break;
+                    default:
+                    Debug.LogWarning("Error on Job Type");
+                    break;
+                }
+
+                JobController.Inst.customJob.jobTarget = target;
+
 
                 JobMenuController.Inst.AcceptJob(JobController.Inst.customJob);
             }
@@ -375,6 +416,7 @@ public class JobView : MonoBehaviour
 
     public void Departure()
     {
+        AcceptJob();
         if(JobController.Inst.currJob != null)
 		{
             GameManager.Instance.StartScenario();         
@@ -438,13 +480,16 @@ public class JobView : MonoBehaviour
                 break;
         }
 
-        jobText += " " + jc.currJob.quantity;
+        if(jc.currJob.jobType != JobType.Deliver)
+        {
+            jobText += " " + jc.currJob.quantity;
                   
-        jobText += " " + jc.currJob.jobTarget;   
+            jobText += " " + jc.currJob.jobTarget;   
 
-        jobText += jc.currJob.quantity > 1? "s": ""; 
+            jobText += jc.currJob.quantity > 1? "s": ""; 
 
-        jobText += " - " + jc.currJobQtd + "/" + jc.currJob.quantity;
+            jobText += " - " + jc.currJobQtd + "/" + jc.currJob.quantity;
+        }
         
 
         Color color = Color.white;
