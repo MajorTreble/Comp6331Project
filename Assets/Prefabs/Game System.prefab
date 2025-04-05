@@ -53,7 +53,7 @@ MonoBehaviour:
   playerLaserPrefab: {fileID: 8220181580064264272, guid: b06f1a81083ec7c42a0a43e177b3654f, type: 3}
   playerSpawnPosition: {x: 0, y: 0, z: 0}
   playerSpawnRotation: {x: 0, y: 0, z: 0, w: 1}
-  isNewGame: 1
+  isNewGame: 0
   hasPlayedTutorial: 0
   onMenu: 0
   tutorialScenario: {fileID: 11400000, guid: 14d8742131d858c4691c5442129473c0, type: 2}
@@ -63,8 +63,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 10f49a4a1bc257f4893cbba1a3563944, type: 2}
   - {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
   - {fileID: 11400000, guid: 25107e128c8d4b44aae9e282179587ba, type: 2}
-  currentScenario: {fileID: 11400000, guid: 14d8742131d858c4691c5442129473c0, type: 2}
-  portalPosition: {x: 25, y: 25, z: 25}
+  - {fileID: 11400000, guid: 74a5ad1a41c9fca46a4cd0c7f92bbbc0, type: 2}
+  currentScenario: {fileID: 11400000, guid: e371798ec0652a54f8c19df950343949, type: 2}
 --- !u!114 &2855395254434112166
 MonoBehaviour:
   m_ObjectHideFlags: 0

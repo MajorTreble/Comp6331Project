@@ -21,13 +21,12 @@ namespace Model
         public Scenario  scenario = null;
 
         public int rewardCoins = 1;
-        //public RepType rewardType = RepType.Colonial; 
         public int rewardRep = 1;
 
         public JobTarget jobTarget = JobTarget.Colonial;
         public int quantity = 1;
 
-        public Faction targetFaction = null;
+        public Faction enemyFaction = null;
         public Faction allyFaction = null;
 
         public int dangerValue = 0;

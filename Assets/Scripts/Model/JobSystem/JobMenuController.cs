@@ -21,10 +21,10 @@ public class JobMenuController : MonoBehaviour
         else Destroy(gameObject);
     }
 
-
-    private void Start() 
+    void Start()
     {
-             
+        if(JobController.Inst.jobStatus == JobStatus.Failed || JobController.Inst.jobStatus == JobStatus.Concluded)
+            FinishJob();
     }
 
 
@@ -95,11 +95,6 @@ public class JobMenuController : MonoBehaviour
         GameManager.Instance.currentScenario = jc.currJob.scenario;
 
     }
-
-
-
-    
-    
 
     public void FinishJob()
     {

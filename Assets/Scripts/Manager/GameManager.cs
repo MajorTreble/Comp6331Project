@@ -83,6 +83,9 @@ namespace Manager
                 isNewGame = false;
             }
 
+            reputation.Reset();
+            UpgradeController.Inst.upgrData.Reset();
+
             Job[] jobs = Resources.LoadAll<Job>("Scriptable/Tutorial");
 
             JobController jc = JobController.Inst;
