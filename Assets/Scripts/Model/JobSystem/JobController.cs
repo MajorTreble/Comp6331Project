@@ -13,6 +13,7 @@ namespace Controller
         public JobStatus jobStatus = JobStatus.NotSelected;
         public int currJobQtd;
         public Job currJob;
+        public Job customJob;
 
         private void Awake()
         {
@@ -94,6 +95,7 @@ namespace Controller
             {
                 UpdateJob(1);
             }
+
 
             if(currJob.jobType == JobType.Deliver)
             {

@@ -7,96 +7,140 @@ using Manager;
 namespace Model
 {
 
-	public class PlayerShip : Ship
-	{
+    public class PlayerShip : Ship
+    {
 
-		public GameObject laser = null;
-		private GameObject laserPrefab;
-		public Transform weapon_1;
-		public float fireRate = 0.2f;
-		private float fireCooldown = 0f;
+        public GameObject laser = null;
+        private GameObject laserPrefab;
+        public Transform weapon_1;
+        public Transform weapon_2;
+        private float fireCooldown = 0f;
 
-
-		//Upgrade System, get curr values for the ship
-		public float CurrMaxHealth { get { return oriData.maxHealth + UpgradeController.Inst.upgrData.maxHealth; } }
-		public float CurrMaxShields { get { return oriData.maxShields + UpgradeController.Inst.upgrData.maxShields; } }
-		public float CurrShieldRegen { get { return oriData.shieldRegen + UpgradeController.Inst.upgrData.shieldRegen; } }
-		public float CurrAcc { get { return oriData.acc + UpgradeController.Inst.upgrData.acc; } }
-		public float CurrMaxSpeed { get { return oriData.maxSpeed + UpgradeController.Inst.upgrData.maxSpeed; } }
-		public float CurrTurnSpeed { get { return oriData.turnSpeed + UpgradeController.Inst.upgrData.turnSpeed; } }
+        private bool w1Shoot = false;
 
 
-		public float laserDist;
-		float laserDmg = 100;
+        //Upgrade System, get curr values for the ship
+        public float CurrMaxHealth { get { return oriData.maxHealth + UpgradeController.Inst.upgrData.maxHealth; } }
+        public float CurrMaxShields { get { return oriData.maxShields + UpgradeController.Inst.upgrData.maxShields; } }
+        public int CurrMaxAmmo { get { return oriData.maxAmmo + UpgradeController.Inst.upgrData.maxAmmo; } }
+        public float CurrShieldRegen { get { return oriData.shieldRegen + UpgradeController.Inst.upgrData.shieldRegen; } }
+        public float CurrAcc { get { return oriData.acc + UpgradeController.Inst.upgrData.acc; } }
+        public float CurrMaxSpeed { get { return oriData.maxSpeed + UpgradeController.Inst.upgrData.maxSpeed; } }
+        public float CurrTurnSpeed { get { return oriData.turnSpeed + UpgradeController.Inst.upgrData.turnSpeed; } }
+        public float CurrLaserDamage { get { return oriData.laserDamage + UpgradeController.Inst.upgrData.laserDamage; } }
 
-		public void Awake()
-		{
-			GetWeapon();
-			laserPrefab = GameManager.Instance.playerLaserPrefab;
+        public void Awake()
+        {
+            this.faction = new Faction();
+            this.faction.factionType = Faction.FactionType.Solo;
 
-			if (laserPrefab == null)
-			{
-				Debug.LogError("[PlayerShip] Player laser prefab is null.");
-			}
-		}
+            GetWeapon();
+            laserPrefab = GameManager.Instance.playerLaserPrefab;
 
-		public void Update()
-		{
-			ShieldRecover();
-		}
+            if (laserPrefab == null)
+            {
+                Debug.LogError("[PlayerShip] Player laser prefab is null.");
+            }
 
-		public override void SetStats()
-		{
-			health = CurrMaxHealth;
-			shields = CurrMaxShields;
-		}
+            SetStats();
+        }
 
-		public override void ShieldRecover()
-		{
-			shields += CurrShieldRegen;
-			shields = Mathf.Clamp(shields, 0, CurrMaxShields);
-		}
+        public void Update()
+        {
+            ShieldRecover();
 
-		void GetWeapon()
-		{
-			weapon_1 = Utils.FindChildByName(this.transform, "Weapon1");
+        }
 
-			if (weapon_1 == null)
-			{
-				Debug.Log("weapon not found, again");
-				Invoke("GetWeapon", 0.3f);
-				return;
-			}
+        void LateUpdate()
+        {            
+            AimWeapons();
+        }
 
-		}
-		public void FireLaser(float playerSpeed = 0)
-		{
-			if (Time.time < fireCooldown) return;
+        void AimWeapons()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            float distance = 250;
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, distance))
+            {
+                if(!hit.transform.CompareTag("Player"))
+                    distance = hit.distance;
+            }
 
-			if (laserPrefab != null && weapon_1 != null)
-			{
-				GameObject laser = Instantiate(laserPrefab, weapon_1.position, weapon_1.rotation);
-				PlayerLaserProjectile playerLaserProjectile = laser.GetComponent<PlayerLaserProjectile>();
-				playerLaserProjectile.setPlayerSpeed(playerSpeed);
-			}
+            Vector3 point = ray.GetPoint(distance);
 
-			fireCooldown = Time.time + fireRate;
-		}
+            weapon_1.LookAt(point);
+            weapon_2.LookAt(point);
+        }
 
-		public override bool TakeDamage(float damageAmount)
-		{
-			bool destroyed = base.TakeDamage(damageAmount); // Use base ship behavior
+        public override void SetStats()
+        {
+            health = CurrMaxHealth;
+            shields = CurrMaxShields;
+            ammo = CurrMaxAmmo;
+        }
 
-			// Just to check if player ship is getting hit
-			Debug.Log("[PlayerShip] Player took damage!");
+        public override void ShieldRecover()
+        {
+            shields += CurrShieldRegen*Time.deltaTime;
+            shields = Mathf.Clamp(shields, 0, CurrMaxShields);
+        }
 
-			return destroyed;
-		}
+        void GetWeapon()
+        {
+            weapon_1 = Utils.FindChildByName(this.transform, "Weapon1");
+            weapon_2 = Utils.FindChildByName(this.transform, "Weapon2");
 
-		public override void Leave()
-		{
-			base.Leave();
-			JobController.Inst.LeaveMap();
-		}
-	}
+            if (weapon_1 == null || weapon_2 == null )
+            {
+                Debug.Log("weapon not found, again");
+                Invoke("GetWeapon", 0.3f);
+                return;
+            }
+
+        }
+        public void FireLaser(float playerSpeed = 0)
+        {
+            if (Time.time < fireCooldown) return;
+
+            if (laserPrefab != null && weapon_1 != null)
+            {
+                GameObject laser = Instantiate(laserPrefab);
+                if(w1Shoot)
+                {
+                    laser.transform.position = weapon_1.position;
+                    laser.transform.rotation = weapon_1.rotation;
+                    w1Shoot = false;
+                }else
+                {
+                    laser.transform.position = weapon_2.position;
+                    laser.transform.rotation = weapon_2.rotation;
+                    w1Shoot = true;
+                }
+                
+                PlayerLaserProjectile playerLaserProjectile = laser.GetComponent<PlayerLaserProjectile>();
+                playerLaserProjectile.setPlayerSpeed(playerSpeed);
+                playerLaserProjectile.SetPlayerDamage(CurrLaserDamage);
+            }
+
+            fireCooldown = Time.time + oriData.attackCooldown;
+            ammo--;
+        }
+
+        public override bool TakeDamage(float damageAmount)
+        {
+            bool destroyed = base.TakeDamage(damageAmount); // Use base ship behavior
+
+            // Just to check if player ship is getting hit
+            Debug.Log("[PlayerShip] Player took damage!");
+
+            return destroyed;
+        }
+
+        public override void Leave()
+        {
+            base.Leave();
+            JobController.Inst.LeaveMap();
+        }
+    }
 }

@@ -7,34 +7,29 @@ using Controller;
 using Model;
 
 public enum ReputationStatus
-    {
-        Neutral,
-        Friendly,
-        Enemy
-    }
+{
+    Neutral,
+    Friendly,
+    Enemy
+}
 
-public class PlayerReputation : MonoBehaviour
+
+[CreateAssetMenu(fileName = "PlayerReputation", menuName = "ScriptableObjects/PlayerReputation", order = 0)]
+public class PlayerReputation : ScriptableObject
 {   
-        
+    
     public List<Reputation> reputations = new List<Reputation>();
     public int coins;
 
-    public static PlayerReputation Inst { get; private set; } //Singleton
-    private void Awake()
+    public void Reset()
     {
-        if (Inst == null)
+        foreach (Reputation rep in reputations)
         {
-            Inst = this;
-            DontDestroyOnLoad(gameObject);
+            rep.value = 0;           
         }
-
-        foreach (RepType rep in System.Enum.GetValues(typeof(RepType)))
-        {
-            Debug.LogWarning("ForTests - Change back to 0");
-            reputations.Add(new Reputation (rep, 1000));
-        }
+        coins = 0;
     }
-    
+
     public float GetReputation(Faction faction)
     {
         return 0.0f;
@@ -42,7 +37,8 @@ public class PlayerReputation : MonoBehaviour
 
     public ReputationStatus GetReputationStatus(Faction factionA, Faction factionB)
     {
-        if (factionA.factionType == Faction.FactionType.Pirates || factionB.factionType == Faction.FactionType.Pirates)
+        if ((factionA.factionType == Faction.FactionType.Pirates && factionB.factionType != Faction.FactionType.Pirates)
+            || (factionB.factionType == Faction.FactionType.Pirates && factionA.factionType != Faction.FactionType.Pirates))
         {
             return ReputationStatus.Enemy;
         }
@@ -53,8 +49,8 @@ public class PlayerReputation : MonoBehaviour
         }
 
         Job job = JobController.Inst.currJob;
-        if ((job.targetFaction == factionA && job.allyFaction == factionB) || 
-            (job.targetFaction == factionB && job.allyFaction == factionA))
+        if ((job.enemyFaction == factionA && job.allyFaction == factionB) || 
+            (job.enemyFaction == factionB && job.allyFaction == factionA))
         {
             return ReputationStatus.Enemy;
         }
@@ -73,12 +69,12 @@ public class PlayerReputation : MonoBehaviour
         return ReputationStatus.Neutral;
     }
 
-    public void ChangeReputation(RepType _type, int _value)
+    public void ChangeReputation(Faction _fac, int _value)
     {
-        Reputation rep = reputations.Find(i => i.type == _type);
+        Reputation rep = reputations.Find(i => i.fac == _fac);
         if (rep != null)
             rep.ChangeValue(_value);
         else
-            Debug.LogWarning($"Item of type {_type} not found.");
+            Debug.LogWarning($"Item of faction {_fac} not found.");
     }
 }

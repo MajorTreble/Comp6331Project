@@ -12,7 +12,7 @@ namespace Controller
 
         public float currSpeed;
         public int throttle;
-        public float mouseSensitivity;
+        public float mouseRotFac ;
 
 
         Vector3 Velocity;
@@ -24,7 +24,7 @@ namespace Controller
             playerShipRb = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
             playerShip = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
 
-            mouseSensitivity = mouseSensitivity == 0 ? 10 : mouseSensitivity;
+            mouseRotFac = mouseRotFac == 0 ? 0.05f : mouseRotFac;
         }
 
         void LateUpdate()
@@ -39,38 +39,59 @@ namespace Controller
                 return;
             }
 
-            //Input 
+            if (Input.GetKey(KeyCode.Z)) Stabilize();
+
+            ShipRotation();
+            ShipMovement();
+            Shoot();
+
+
+            CameraFollow.Inst.MoveCamera();
+        }
+
+        void ShipRotation()
+        {
             float vertical = Input.GetAxis("Vertical");
             float horizontal = Input.GetAxis("Horizontal");
-            float mouseX = Input.GetAxis("Mouse X");
-            float mouseY = Input.GetAxis("Mouse Y");
+            
+            Vector3 rotation = new Vector3(-vertical, horizontal, 0) * playerShip.CurrTurnSpeed * Time.deltaTime;
+            
+            Vector3 mousePos = Input.mousePosition;
+            Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
 
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            Vector3 mouseOffset = mousePos - screenCenter;
+            Vector3 mouseRot = new Vector3(-mouseOffset.y, mouseOffset.x, 0) * mouseRotFac * Time.deltaTime;
+
+            Vector3 combRot = rotation + mouseRot;
+
+            Quaternion deltaRot = Quaternion.Euler(combRot);
+            playerShipRb.MoveRotation(playerShipRb.rotation * deltaRot);
+        }
+
+        void ShipMovement()
+        {
+            if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Alpha1))
                 throttle += 1;
-            if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Alpha1))
                 throttle -= 1;
 
             throttle = Mathf.Clamp(throttle, -1, 3);
             float desiredMov = playerShip.CurrMaxSpeed * throttle / 3;
-            //Mov
+
             currSpeed = Mathf.Lerp(currSpeed, desiredMov, playerShip.CurrAcc * Time.deltaTime);
-
-            //Rot
-            Vector3 rotation = new Vector3(-mouseY, mouseX, horizontal) * playerShip.CurrTurnSpeed * Time.deltaTime * mouseSensitivity;
-
-            //RigidBody based movement
+            
             playerShipRb.MovePosition(playerShipRb.position + (playerShipRb.transform.forward * currSpeed * Time.deltaTime));
-            Quaternion deltaRotation = Quaternion.Euler(rotation);
-            playerShipRb.MoveRotation(playerShipRb.rotation * deltaRotation);
 
-            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0))
+            
+        }
+
+        void Shoot()
+        {
+            if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0) )
             {
-                playerShipRb.GetComponent<PlayerShip>().FireLaser(currSpeed);
+                if(playerShip.ammo > 0)
+                    playerShipRb.GetComponent<PlayerShip>().FireLaser(currSpeed);
             }
-
-            if (Input.GetKey(KeyCode.E)) Stabilize();
-
-            CameraFollow.Inst.MoveCamera();
         }
 
 

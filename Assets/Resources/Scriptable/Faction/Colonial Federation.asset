@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Colonial Federation
   description: 
-  factionType: 1
+  factionType: 0
   prefabs:
   - {fileID: 7277576965648325399, guid: 8490807d7238503468bd9aeb85e4fe8b, type: 3}
   behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}

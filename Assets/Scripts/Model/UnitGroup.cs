@@ -5,24 +5,29 @@ using UnityEngine;
 namespace Model
 {
 
-	[CreateAssetMenu(fileName = "UnitGroup", menuName = "ScriptableObjects/UnitGroup", order = 1)]
-	public class UnitGroup : ScriptableObject
-	{
-		public Vector3 position = Vector3.zero;
-		public Quaternion rotation = Quaternion.identity;
-		public float radius = 10.0f;
+    public enum GroupMode { None, Formation }
 
-		public Faction faction = null;
-		public List<ShipType> shipTypes = new List<ShipType>();
+    [CreateAssetMenu(fileName = "UnitGroup", menuName = "ScriptableObjects/UnitGroup", order = 1)]
+    public class UnitGroup : ScriptableObject
+    {
+        public Vector3 position = Vector3.zero;
+        public Quaternion rotation = Quaternion.identity;
+        public float radius = 10.0f;
 
-		public Vector3 SpawnPosition()
-		{
-			Vector3 randomPosition = Random.insideUnitSphere * radius;
-			randomPosition.y = 0.0f;
-			randomPosition += position;
+        public Faction faction = null;
+        public List<ShipType> shipTypes = new List<ShipType>();
 
-			return randomPosition;
-		}
-	}
+        [Header("Group Behavior")]
+        public GroupMode groupMode = GroupMode.None;
+
+        public Vector3 SpawnPosition()
+        {
+            Vector3 randomPosition = Random.insideUnitSphere * radius;
+            randomPosition.y = 0.0f;
+            randomPosition += position;
+
+            return randomPosition;
+        }
+    }
 
 }

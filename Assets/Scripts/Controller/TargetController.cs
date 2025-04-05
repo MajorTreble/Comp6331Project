@@ -60,7 +60,7 @@ public class TargetController : MonoBehaviour
 
         if(JobController.Inst.currJob.jobType == JobType.Deliver)
         {
-            targets.Add(GameObject.Find("HarborPortal").transform); 
+            targets.Add(GameManager.Instance.portal.transform); 
             showPortal = true;
         }else if(JobController.Inst.currJob.jobType == JobType.Mine)
         {
@@ -101,7 +101,7 @@ public class TargetController : MonoBehaviour
             }
 
             targetsIcon[0].gameObject.SetActive(true);
-            SetTarget(GameManager.Instance.portalPosition, targetsIcon[0]);
+            SetTarget(GameManager.Instance.portal.transform.position, targetsIcon[0]);
         }else
         {
             for (int i = 0; i < targets.Count; i++)
@@ -117,26 +117,27 @@ public class TargetController : MonoBehaviour
     {
         Vector3 screenPos = Camera.main.WorldToScreenPoint(_pos);
 
-        if (screenPos.z > 0)
+        if (screenPos.z < 0)
         {
-            screenPos.x = Mathf.Clamp(screenPos.x, 0, Screen.width);
-            screenPos.y = Mathf.Clamp(screenPos.y, 0, Screen.height);
-            _icon.transform.position = screenPos;
-            _icon.enabled = true;
-
-            float dist = Vector3.Distance(Camera.main.transform.position, _pos);
-
-            float scale = Mathf.Clamp(100 / dist, 0.25f, 1f); 
-            Vector2 newSize = Vector2.Lerp(targetOriSize*0.25f, targetOriSize, scale);
-
-            _icon.rectTransform.sizeDelta = newSize;
-        }
-        else
-        {
-            _icon.enabled = false;
+            screenPos.x = Screen.width - screenPos.x;
+            screenPos.y = Screen.height - screenPos.y;
+            
+            screenPos.x = screenPos.x < Screen.width / 2 ? 0 : Screen.width;
+            screenPos.y = screenPos.y < Screen.height / 2 ? 0 : Screen.height;
         }
 
     
+        screenPos.x = Mathf.Clamp(screenPos.x, 0, Screen.width);
+        screenPos.y = Mathf.Clamp(screenPos.y, 0, Screen.height);
+        screenPos.z = 0;
+        _icon.transform.position = screenPos;
+        _icon.enabled = true;
 
+        float dist = Vector3.Distance(Camera.main.transform.position, _pos);
+
+        float scale = Mathf.Clamp(100 / dist, 0.25f, 1f); 
+        Vector2 newSize = Vector2.Lerp(targetOriSize*0.25f, targetOriSize, scale);
+
+        _icon.rectTransform.sizeDelta = newSize;
     }
 }

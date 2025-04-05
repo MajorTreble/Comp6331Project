@@ -73,7 +73,7 @@ namespace Controller
                     break;
 
                 case "Ammo":                
-                    ammo = (int)value;
+                    upgrData.maxAmmo = (int)value;
                     break;
 
                 case "MaxShield":                

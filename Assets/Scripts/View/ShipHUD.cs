@@ -15,8 +15,12 @@ public class ShipHUD : MonoBehaviour
 	
 	private Slider sld_Speed;
 
+	private GameObject tutorialButton;
+
 	PlayerShip ship;
 	PlayerController pc;
+
+	private Image playerAim;
 
 	private void Awake()
 	{
@@ -25,8 +29,10 @@ public class ShipHUD : MonoBehaviour
 		healthImage = ui.transform.Find("Health Bar").GetComponent<Image>();
 		shieldsImage = ui.transform.Find("Shields").GetComponent<Image>();		
 		sld_Speed = ui.transform.Find("Sld_Speed").GetComponent<Slider>();
+			
+		playerAim = ui.transform.Find("Aim").GetChild(0).GetComponent<Image>();
 
-		
+		tutorialButton = ui.transform.Find("Tutorial").gameObject;
 	}
 
 	private void Start() 
@@ -66,6 +72,8 @@ public class ShipHUD : MonoBehaviour
 				Utils.FindChildByName(sld_Speed.transform, "Fill").GetComponent<Image>().color = Color.red;
 				sld_Speed.direction = Slider.Direction.TopToBottom;
 			} 
+
+			UpdateAim();
 		}
 	}
 
@@ -73,5 +81,21 @@ public class ShipHUD : MonoBehaviour
 	{
 		ship.Leave();
 		//GameManager.Instance.StopScenario();
+	}
+
+	public void AcceptTutorial()
+	{
+		tutorialButton.SetActive(false);
+		Time.timeScale = 1;
+	}
+
+	void UpdateAim()
+	{
+		Vector3 aimPos = playerAim.transform.position;
+		Vector3 mousePos = Input.mousePosition;
+
+		playerAim.transform.position = mousePos;
+
+
 	}
 }

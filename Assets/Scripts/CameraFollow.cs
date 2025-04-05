@@ -75,19 +75,21 @@ public class CameraFollow : MonoBehaviour
         }
 
         Vector3 offset = cockpitView ? cockpitOffset : thirdPersonOffset;
-        Vector3 desiredPosition = player.position + player.rotation * offset;
-        Quaternion desiredRotation = Quaternion.LookRotation(player.forward, Vector3.up);
+        Vector3 desiredPosition = player.position + (player.rotation * offset);
+        Quaternion desiredRotation = player.rotation;
+
+        //Quaternion desiredRotation = Quaternion.LookRotation(player.forward, Vector3.up);
 
         if (cockpitView)
         {
             // Stick to cockpit immediately (no smoothing)
-            transform.position = desiredPosition + shakeOffset; ;
+            transform.position = desiredPosition + shakeOffset;
             transform.rotation = desiredRotation;
         }
         else
         {
             // Smooth follow for third-person view
-            transform.position = desiredPosition + shakeOffset; ;
+            transform.position = desiredPosition + shakeOffset;
             transform.rotation = desiredRotation;
             //The jittering was caused by high speeds and the smoothness, if the smooth is took out the jitter stops
             //Maybe with the cinemachine this resolves better. 

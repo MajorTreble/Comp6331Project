@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   maxShields: 100
-  shieldRegen: 10
-  acc: 1
+  maxAmmo: 100
+  shieldRegen: 0
+  acc: 10
   maxSpeed: 50
-  turnSpeed: 10
-  attackCooldown: 3
+  turnSpeed: 0
+  attackCooldown: 0

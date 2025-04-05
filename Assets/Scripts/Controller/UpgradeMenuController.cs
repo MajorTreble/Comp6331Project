@@ -24,7 +24,7 @@ public class UpgradeMenuController : MonoBehaviour
         upgradeList = GameObject.Find("UpgradeList").transform;
 
         txt_Coins = GameObject.Find("Txt_Coins").GetComponent<Text>();
-        txt_Coins.text = "Coins:" + GameManager.Instance.reputation;
+        //txt_Coins.text = "Coins: " + GameManager.Instance.reputation.coins;
     }
 
     void CreateUpgrades()
@@ -49,7 +49,7 @@ public class UpgradeMenuController : MonoBehaviour
         uc.AddUpgrade(new UpgradeController.Upgrade(upgrName, 0, cost, value ));
 
         upgrName = "Ammo";
-        //baseValue = ship.ammo;
+        baseValue = oriData.maxAmmo;
         value = new float[valueMult.Length];
         for (int i = 0; i < valueMult.Length; i++)
         {
@@ -144,6 +144,7 @@ public class UpgradeMenuController : MonoBehaviour
 
     public void UpdateCoins()
     {
+        
         txt_Coins.text = "Coins:" + GameManager.Instance.reputation.coins;
     }
 }

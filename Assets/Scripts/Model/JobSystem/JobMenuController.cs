@@ -10,11 +10,7 @@ using UnityEngine.Experimental.Rendering;
 public enum JobStatus {NotSelected, InProgress, Failed, Concluded};
 public class JobMenuController : MonoBehaviour
 {
-    public Job[] jobs;   
-    
-    
-    
-
+    public Job[] jobs;     
     public static JobMenuController Inst { get; private set; } //Singleton
     private void Awake()
     {
@@ -25,10 +21,10 @@ public class JobMenuController : MonoBehaviour
         else Destroy(gameObject);
     }
 
-
-    private void Start() 
+    void Start()
     {
-             
+        if(JobController.Inst.jobStatus == JobStatus.Failed || JobController.Inst.jobStatus == JobStatus.Concluded)
+            FinishJob();
     }
 
 
@@ -40,23 +36,16 @@ public class JobMenuController : MonoBehaviour
             Debug.LogError("No jobs found in the specified path.");
             return;
         }
-        jobs = new Job[4];
-
-        
-
+        jobs = new Job[4];        
+        Faction[] allFac = Resources.LoadAll<Faction>("Scriptable/Faction");
         for (int i = 0; i < 4; i++)
-        {
-                 
+        {                 
             List<Job> factionJobs = new List<Job>();
             
-            int playerReputation = PlayerReputation.Inst.reputations[i].value;
-
-            
+            int playerReputation = GameManager.Instance.reputation.reputations[i].value;            
             foreach (Job job in allJobs)
             {
-                if(job.rewardType  != (RepType)i) continue;
-
-                
+                if(job.allyFaction  != allFac[i]) continue;                
                 switch (job.dangerValue)
                 {
                     case 1:
@@ -77,7 +66,10 @@ public class JobMenuController : MonoBehaviour
             {
                 Job randomJob = factionJobs[Random.Range(0, factionJobs.Count)];
                 jobs[i] = randomJob;
-            }                 
+            }else
+            {
+                Debug.LogError("factionJobs Count = 0");
+            }     
         }
     }
 
@@ -85,21 +77,24 @@ public class JobMenuController : MonoBehaviour
     public void AcceptJob(int _index)
     {
         if(_index < 0)return;
+
+        AcceptJob(jobs[_index]);
         
+        
+    }
+
+    public void AcceptJob(Job _job)
+    {
+
         JobController jc = JobController.Inst;
-        jc.currJob = jobs[_index];
+        jc.currJob = _job;
         jc.jobStatus = JobStatus.InProgress;
         JobView.Inst.UpdateJob();
 
 
         GameManager.Instance.currentScenario = jc.currJob.scenario;
 
-
-
     }
-
-    
-    
 
     public void FinishJob()
     {
@@ -112,11 +107,11 @@ public class JobMenuController : MonoBehaviour
         {
             case JobStatus.Concluded:
                 player.coins += jc.currJob.rewardCoins;
-                player.ChangeReputation(jc.currJob.rewardType, jc.currJob.rewardRep);
+                player.ChangeReputation(jc.currJob.allyFaction, jc.currJob.rewardRep);
 
             break;
             case JobStatus.Failed:
-                player.ChangeReputation(jc.currJob.rewardType, -jc.currJob.rewardRep/2);//Looses half reputation on a failed attempt
+                player.ChangeReputation(jc.currJob.allyFaction, -jc.currJob.rewardRep/2);//Looses half reputation on a failed attempt
             break;            
             default:
                 jc.FailJob();

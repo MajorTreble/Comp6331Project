@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91dc32bc4caf5f5458f53469067e5ab9, type: 3}
-  m_Name: Test
+  m_Name: Astronix
   m_EditorClassIdentifier: 
-  mapName: Test
+  mapName: Astronix
   sceneName: SkyBoxScene
   playerPosition: {x: 0, y: 0, z: 0}
   playerRotation: {x: 0, y: 0, z: 0, w: 1}
-  portalPosition: {x: 25, y: 25, z: 25}
+  portalPosition: {x: 1000, y: 125, z: 125}
+  isPortalDisabled: 0
   difficulty: 0
   supportedJobType: 00000000010000000200000003000000
   unitGroups:
