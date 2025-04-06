@@ -50,14 +50,12 @@ namespace Model
 			return CheckDestroyed();
 		}
 
-		public bool CheckDestroyed()
+		public virtual bool CheckDestroyed()
 		{
 			if (health > 0)
 				return false;
 
 			JobController.Inst.OnObjDestroyed(transform.tag);
-
-			Invoke("Leave",1);
 
 			this.gameObject.SetActive(false);
 
@@ -71,13 +69,14 @@ namespace Model
 		}
 
 
-		bool immunity = false;
+		public float immoDuration = 1.0f;//immortality
+		private float immoCd = 0.0f;
+
 		void OnCollisionEnter(Collision collision)
 		{
-			if(immunity) return;
+			if (Time.time < immoCd) return;
 
-			immunity = true;
-			Invoke("ResetImmunity", 1);
+			immoCd = Time.time + immoDuration;
 
 			float dmgMult = 0.3f;
 			float relativeVel = collision.relativeVelocity.magnitude;			
@@ -88,10 +87,6 @@ namespace Model
 			//Debug.Log($"[Colision DMG] Speed: {dmg} - Transform Name: {collision.transform.name} - Health: {health}");
 
 			CheckDestroyed();
-		}
-		void ResetImmunity()
-		{
-			immunity = false;
 		}
 	}
 }

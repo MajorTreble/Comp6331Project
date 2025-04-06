@@ -20,6 +20,7 @@ namespace Controller
         PlayerShip playerShip;
 
         bool devTools = false;
+        bool rotOnMouse = false;
 
         void Start()
         {
@@ -62,20 +63,23 @@ namespace Controller
         void ShipRotation()
         {
             float vertical = Input.GetAxis("Vertical");
-            float horizontal = Input.GetAxis("Horizontal");
-            
+            float horizontal = Input.GetAxis("Horizontal");            
             Vector3 rotation = new Vector3(-vertical, horizontal, 0) * playerShip.CurrTurnSpeed * Time.deltaTime;
+            Quaternion finalRot = playerShipRb.rotation * Quaternion.Euler(rotation);
             
-            Vector3 mousePos = Input.mousePosition;
-            Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+            if(Input.GetKey(KeyCode.M)) rotOnMouse = !rotOnMouse;
+            if(rotOnMouse)
+            {
+                Vector3 mousePos = Input.mousePosition;
+                Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+                Vector3 mouseOffset = mousePos - screenCenter;
+                Vector3 mouseRot = new Vector3(-mouseOffset.y, mouseOffset.x, 0) * mouseRotFac * Time.deltaTime;
+                Vector3 combRot = rotation + mouseRot;
+                Quaternion deltaRot = Quaternion.Euler(combRot);
+                finalRot = playerShipRb.rotation * deltaRot;
+            }
 
-            Vector3 mouseOffset = mousePos - screenCenter;
-            Vector3 mouseRot = new Vector3(-mouseOffset.y, mouseOffset.x, 0) * mouseRotFac * Time.deltaTime;
-
-            Vector3 combRot = rotation + mouseRot;
-
-            Quaternion deltaRot = Quaternion.Euler(combRot);
-            playerShipRb.MoveRotation(playerShipRb.rotation * deltaRot);
+            playerShipRb.MoveRotation(finalRot);
         }
 
         void ShipMovement()

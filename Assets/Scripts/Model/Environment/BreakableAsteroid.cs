@@ -102,7 +102,6 @@ namespace Model.Environment {
                 SpawnBreakEffect();
 
                 gameObject.SetActive(false);
-                //Destroy(gameObject);
             }
         }
 

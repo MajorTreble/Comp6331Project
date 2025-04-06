@@ -16,17 +16,7 @@ namespace Model.Environment
         {
             transform.Rotate(Vector3.up * spinSpeed * Time.deltaTime, Space.World);
         }
-
-        void OnTriggerEnter(Collider other)
-        {
-            //if (other.CompareTag("PlayerLaser") || other.CompareTag("SpaceshipComponent") || other.CompareTag("Player"))
-            //{
-              //  Debug.Log("[MineableAsteroid] Hit by mining tool!");
-
-                //DestroyAsteroid();
-            //}
-        }
-
+       
         public bool TakeDamage(float damage, Ship attacker)
 		{
 			health -= damage;

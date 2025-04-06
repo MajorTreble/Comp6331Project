@@ -138,6 +138,16 @@ namespace Model
             return destroyed;
         }
 
+        public override bool CheckDestroyed()
+        {
+            bool isDestroyed = base.CheckDestroyed();
+
+            if(isDestroyed) Leave();
+
+            return isDestroyed;
+            
+        }
+
         public override void Leave()
         {
             base.Leave();
