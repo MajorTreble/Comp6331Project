@@ -16,17 +16,22 @@ namespace Controller
             public int weight; // Higher value = More frequent spawning
         }
 
+        [Header("Space Objects")]
         [SerializeField]
         public SpaceObject[] spaceObjects; // List of objects with their spawn weight
+        public GameObject mineableAsteroid;
 
         public Transform player;
-        public float spawnRadius = 100f;
+        public float spawnRadius = 150f;
         public int maxObjects = 30;
         public float despawnDistance = 200f;
         public float cameraSpawnDistance = 50f;
 
         public List<GameObject> activeObjects = new List<GameObject>();
+        public List<GameObject> activeMineableAsteroids = new List<GameObject>();
         private int totalWeight;
+
+        private Rigidbody playerRb;
 
         void Awake()
         {
@@ -46,7 +51,7 @@ namespace Controller
                 if (foundPlayer != null)
                 {
                     player = foundPlayer.transform;
-                    //Debug.Log("[SpaceEnvironmentController] Player found by tag.");
+                    playerRb = player.GetComponent<Rigidbody>();
                 }
                 else
                 {
@@ -58,6 +63,12 @@ namespace Controller
             for (int i = 0; i < maxObjects; i++)
             {
                 SpawnObject();
+            }
+
+            if (JobController.Inst != null && JobController.Inst.currJob != null &&
+                JobController.Inst.currJob.jobType == JobType.Mine)
+            {
+                SpawnMineableAsteroids(JobController.Inst.currJob.quantity);
             }
         }
 
@@ -77,13 +88,22 @@ namespace Controller
             if (player != null)
             {
                 spawnPos = player.position + Random.onUnitSphere * spawnRadius;
+                float dynamicDistance = spawnRadius;
+
+                if (playerRb != null)
+                {
+                    float speed = playerRb.velocity.magnitude;
+                    dynamicDistance = Mathf.Clamp(spawnRadius + speed * 2f, spawnRadius, spawnRadius * 3f);
+                    spawnPos = player.position + Random.onUnitSphere * dynamicDistance;
+                    Debug.Log($"[SpaceEnvironmentController] Speed: {playerRb.velocity.magnitude}, Spawn Distance: {dynamicDistance}");
+                }
             }
             else
             {
                 Camera mainCam = Camera.main;
                 if (mainCam == null)
                 {
-                    Debug.LogError("Main Camera not found! Cannot spawn objects.");
+                    Debug.LogError("[SpaceEnvironmentController] Main Camera not found! Cannot spawn objects.");
                     return;
                 }
 
@@ -123,20 +143,19 @@ namespace Controller
             Vector3 newPos;
             if (player != null)
             {
-                // Recycle around the player
                 newPos = player.position + Random.onUnitSphere * spawnRadius;
-            }
-            else
-            {
-                // Recycle in front of the main camera
-                Camera mainCam = Camera.main;
-                if (mainCam == null) return;
-
-                newPos = mainCam.transform.position + mainCam.transform.forward * cameraSpawnDistance;
-            }
-
-            obj.transform.position = newPos;
-            obj.transform.rotation = Random.rotation;
+                float dynamicDistance = spawnRadius;
+                
+                if (playerRb != null)
+                {
+                    float speed = playerRb.velocity.magnitude;
+                    dynamicDistance = Mathf.Clamp(spawnRadius * 2 + speed * 2f, spawnRadius, spawnRadius * 3f);
+                    newPos = player.position + Random.onUnitSphere * dynamicDistance;
+                    Debug.Log($"[SpaceEnvironmentController] Speed: {playerRb.velocity.magnitude}, Spawn Distance: {dynamicDistance}");
+                }
+                obj.transform.position = newPos;
+                obj.transform.rotation = Random.rotation;
+            } 
         }
 
         void CalculateTotalWeight()
@@ -164,6 +183,38 @@ namespace Controller
             }
 
             return spaceObjects[0].prefab;
+        }
+
+        void SpawnMineableAsteroids(int count)
+        {
+            if (mineableAsteroid == null)
+            {
+                Debug.LogWarning("[SpaceEnvironmentController] Mineable asteroid prefab is not assigned.");
+                return;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 spawnPos;
+
+                if (player != null)
+                {
+                    Vector3 forward = player.forward;
+                    Vector3 randomOffset = Random.insideUnitSphere * spawnRadius * 5f;
+                    spawnPos = player.position + forward * 300 + randomOffset;
+                }
+                else
+                {
+                    Debug.LogWarning("[SpaceEnvironmentController] No player found for spawn position.");
+                    continue;
+                }
+
+                Debug.Log($"[SpaceEnvironmentController] Spawned mineable asteroid at {spawnPos}");
+                GameObject obj = Instantiate(mineableAsteroid, spawnPos, Random.rotation);
+                activeMineableAsteroids.Add(obj);
+            }
+
+            Debug.Log($"[SpaceEnvironmentController] Spawned {count} mineable asteroids.");
         }
     }
 }

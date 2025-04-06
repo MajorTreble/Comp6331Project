@@ -20,7 +20,6 @@ namespace Model.Environment {
         {
             InvokeRepeating(nameof(FindAffectedObjects), 0f, forceUpdateInterval);
         }
-
         void FindAffectedObjects()
         {
             Vector3 boxSize = new Vector3(stormRadiusX, stormRadiusY, stormRadiusZ);
@@ -82,14 +81,18 @@ namespace Model.Environment {
         // Reset Effects When Object Leaves Storm
         void OnObjectExitStorm(Rigidbody rb)
         {
-            Utils.DebugLog($"[SpaceStorm] {rb.gameObject.name} LEFT the storm.");
+            if (rb == null) return;
+
+            Utils.DebugLog($"[SpaceStorm] {rb.gameObject.name} ({rb.tag}) LEFT the storm.");
 
             if (rb.CompareTag("Player"))
             {
                 Utils.DebugLog("[SpaceStorm] Resetting Player turbulence effect.");
                 CameraFollow.Inst?.StopShake();
+                return;
             }
-        
+
+            rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, 0.2f);  
         }
 
         void OnDrawGizmosSelected()

@@ -1421,15 +1421,17 @@ MonoBehaviour:
   - prefab: {fileID: 7152616548933556000, guid: e0eba002f06f32c46ba490ddd44511ca, type: 3}
     weight: 4
   - prefab: {fileID: 4225513920101283801, guid: 3dbc8ec9b199aa44ab3a83e6a0fdf62a, type: 3}
-    weight: 2
-  - prefab: {fileID: 7894545744898623229, guid: c335f5b90c4825145be460f9ebfd2ecd, type: 3}
     weight: 1
+  - prefab: {fileID: 7894545744898623229, guid: c335f5b90c4825145be460f9ebfd2ecd, type: 3}
+    weight: 2
+  mineableAsteroid: {fileID: 4406897587596707410, guid: a044e521e0f34c94bbfce97629216fa6, type: 3}
   player: {fileID: 0}
-  spawnRadius: 100
+  spawnRadius: 150
   maxObjects: 30
   despawnDistance: 200
   cameraSpawnDistance: 50
   activeObjects: []
+  activeMineableAsteroids: []
 --- !u!4 &581797728
 Transform:
   m_ObjectHideFlags: 0
@@ -3041,6 +3043,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Game System
       objectReference: {fileID: 0}
+    - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: explosionEffect
+      value: 
+      objectReference: {fileID: 425513439473346423, guid: 08f7b1a71c2dba44583791d71444f332, type: 3}
     - target: {fileID: 2855395254434112164, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
       propertyPath: m_RootOrder
       value: 14

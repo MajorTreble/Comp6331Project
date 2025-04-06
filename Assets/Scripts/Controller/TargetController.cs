@@ -64,7 +64,7 @@ public class TargetController : MonoBehaviour
             showPortal = true;
         }else if(JobController.Inst.currJob.jobType == JobType.Mine)
         {
-            foreach (GameObject s in SpaceEnvironmentController.Instance.activeObjects)
+            foreach (GameObject s in SpaceEnvironmentController.Instance.activeMineableAsteroids)
             {                
                 targets.Add(s.transform);            
             } 

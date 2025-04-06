@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -5693234831545767502}
   m_Layer: 0
   m_Name: Storm
-  m_TagString: Untagged
+  m_TagString: SpaceStorm
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

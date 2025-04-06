@@ -15,6 +15,8 @@ TagManager:
   - IceAsteroid
   - MagneticAsteroid
   - PlayerLaser
+  - MineableAsteroid
+  - SpaceStorm
   layers:
   - Default
   - TransparentFX

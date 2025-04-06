@@ -67,11 +67,11 @@ namespace Model.Environment {
 
         private void OnCollisionEnter(Collision collision)
         {
-            Debug.Log("[MagneticAsteroid] ------------------------------");
             if (hasBroken) return;
 
             if (collision.gameObject.CompareTag("PlayerLaser") || collision.gameObject.CompareTag("SpaceshipComponent"))
             {
+                Debug.Log("[MagneticAsteroid] Breaking Magnetic Asteroid.");
                 BreakApart();
             }
         }

@@ -311,10 +311,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2baebca167218844eadd208056ca4335, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityStrength: 10
+  gravityStrength: 10000
   pullRadius: 15
   eventHorizonRadius: 7
-  maxPullSpeed: 5
+  maxPullSpeed: 5000
 --- !u!114 &-2351022695033083791
 MonoBehaviour:
   m_ObjectHideFlags: 0
