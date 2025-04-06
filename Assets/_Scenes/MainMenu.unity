@@ -1509,6 +1509,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Game System
       objectReference: {fileID: 0}
+    - target: {fileID: 2855395254434112155, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
+      propertyPath: explosionEffect
+      value: 
+      objectReference: {fileID: 425513439473346423, guid: 08f7b1a71c2dba44583791d71444f332, type: 3}
     - target: {fileID: 2855395254434112164, guid: 8928d8655dca5454286565ea80cf0a5c, type: 3}
       propertyPath: m_RootOrder
       value: 7

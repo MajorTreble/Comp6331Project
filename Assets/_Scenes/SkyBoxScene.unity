@@ -1421,9 +1421,9 @@ MonoBehaviour:
   - prefab: {fileID: 7152616548933556000, guid: e0eba002f06f32c46ba490ddd44511ca, type: 3}
     weight: 4
   - prefab: {fileID: 4225513920101283801, guid: 3dbc8ec9b199aa44ab3a83e6a0fdf62a, type: 3}
-    weight: 2
-  - prefab: {fileID: 7894545744898623229, guid: c335f5b90c4825145be460f9ebfd2ecd, type: 3}
     weight: 1
+  - prefab: {fileID: 7894545744898623229, guid: c335f5b90c4825145be460f9ebfd2ecd, type: 3}
+    weight: 2
   mineableAsteroid: {fileID: 4406897587596707410, guid: a044e521e0f34c94bbfce97629216fa6, type: 3}
   player: {fileID: 0}
   spawnRadius: 150
