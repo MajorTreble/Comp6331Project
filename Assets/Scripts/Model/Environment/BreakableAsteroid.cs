@@ -40,8 +40,8 @@ namespace Model.Environment {
             //Debug.Log("Asteroid is touching: " + collision.gameObject.name);
             if (collision.gameObject.tag != "Asteroid" && canBreak && transform.localScale.x > minSize)
             {
-                //Debug.Log("Asteroid is breaking..");
-                //BreakAsteroid();
+                Debug.Log("Asteroid is breaking..");
+                BreakAsteroid();
             }
         }
 

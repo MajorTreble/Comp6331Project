@@ -120,8 +120,8 @@ namespace Model
                 }
 
                 PlayerLaserProjectile playerLaserProjectile = laser.GetComponent<PlayerLaserProjectile>();
-                playerLaserProjectile.setPlayerSpeed(playerSpeed);
-                playerLaserProjectile.SetPlayerDamage(CurrLaserDamage);
+
+                playerLaserProjectile.SetPlayerProjectile(playerSpeed, CurrLaserDamage, this);
             }
 
             fireCooldown = Time.time + oriData.attackCooldown;

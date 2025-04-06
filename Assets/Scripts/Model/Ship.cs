@@ -57,6 +57,8 @@ namespace Model
 
 			JobController.Inst.OnObjDestroyed(transform.tag);
 
+			Invoke("Leave",1);
+
 			this.gameObject.SetActive(false);
 
 			return true;
@@ -66,6 +68,30 @@ namespace Model
 		{
 			JobController.Inst.OnObjLeave(transform.tag);
 			this.gameObject.SetActive(false);
+		}
+
+
+		bool immunity = false;
+		void OnCollisionEnter(Collision collision)
+		{
+			if(immunity) return;
+
+			immunity = true;
+			Invoke("ResetImmunity", 1);
+
+			float dmgMult = 0.3f;
+			float relativeVel = collision.relativeVelocity.magnitude;			
+			float dmg = relativeVel * dmgMult;
+
+			health -= dmg;
+
+			//Debug.Log($"[Colision DMG] Speed: {dmg} - Transform Name: {collision.transform.name} - Health: {health}");
+
+			CheckDestroyed();
+		}
+		void ResetImmunity()
+		{
+			immunity = false;
 		}
 	}
 }

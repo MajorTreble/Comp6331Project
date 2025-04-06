@@ -19,6 +19,8 @@ namespace Controller
         Rigidbody playerShipRb;
         PlayerShip playerShip;
 
+        bool devTools = false;
+
         void Start()
         {
             playerShipRb = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
@@ -27,8 +29,15 @@ namespace Controller
             mouseRotFac = mouseRotFac == 0 ? 0.05f : mouseRotFac;
         }
 
+        void DevTools()
+        {
+            if(Input.GetKey(KeyCode.F1)) playerShip.Leave();
+        }
+
         void LateUpdate()
         {
+            if(GameManager.devTools) DevTools();
+
             if (GameManager.Instance.onMenu)
                 return;
 
@@ -40,6 +49,7 @@ namespace Controller
             }
 
             if (Input.GetKey(KeyCode.Z)) Stabilize();
+            if (Input.GetKey(KeyCode.Escape)) GiveUpJob();
 
             ShipRotation();
             ShipMovement();
@@ -102,6 +112,11 @@ namespace Controller
             playerShipRb.velocity = Vector3.Lerp(playerShipRb.velocity, Vector3.zero, Time.deltaTime);
             playerShipRb.angularVelocity = Vector3.Lerp(playerShipRb.angularVelocity, Vector3.zero, Time.deltaTime);
             playerShipRb.rotation = Quaternion.Lerp(playerShipRb.rotation, Quaternion.identity, Time.deltaTime);
+        }
+
+        void GiveUpJob()
+        {
+            JobController.Inst.FailJob();
         }
     }
 

@@ -7,6 +7,7 @@ using Controller;
 using Model;
 using Model.AI;
 using Model.Data;
+using UnityEditor;
 
 namespace Manager
 {
@@ -14,6 +15,7 @@ namespace Manager
     public class GameManager : MonoBehaviour, IDataPersistence
     {
         public static GameManager Instance { get; private set; }
+        public static bool devTools { get; private set; }
 
         public PlayerReputation reputation = null;
 
@@ -58,6 +60,19 @@ namespace Manager
         protected void Start()
         {
             PersistenceManager.Instance.dataPersistence.Add(this);
+        }
+
+        void LateUpdate()
+        {
+            if(Input.GetKey(KeyCode.F12)) devTools = !devTools;
+            if(devTools) DevTools();
+        }
+
+        void DevTools()
+        {
+            if (Input.GetKeyDown(KeyCode.P))
+                Time.timeScale = Time.timeScale == 1 ? 0 : 1;           
+
         }
 
         // IDataPersistence
@@ -183,6 +198,7 @@ namespace Manager
                 JobView.Inst.ListJobs();
                 JobView.Inst.ListReputations();
                 JobView.Inst.SetConfigurations();
+                JobView.Inst.UpdateReputations();                
                 if (jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
                     JobView.Inst.ViewJob(JobController.Inst.currJob);
             }
@@ -190,6 +206,7 @@ namespace Manager
             JobView.Inst.SetTestButtons();
             JobView.Inst.LookForJobFeeback();
             JobView.Inst.UpdateJob();
+            
 
         }
 
