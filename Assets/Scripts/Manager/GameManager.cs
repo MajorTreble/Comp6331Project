@@ -25,6 +25,8 @@ namespace Manager
 
         public GameObject playerLaserPrefab;
 
+        public GameObject explosionEffect;
+
         public Vector3 playerSpawnPosition;
         public Quaternion playerSpawnRotation;
 
