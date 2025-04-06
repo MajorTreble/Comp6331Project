@@ -49,8 +49,11 @@ namespace Model
                 return;
             }
 
-            // Just destroy if hit anything else
-            Destroy(gameObject);
+            // Just destroy if hit anything else, Not destroyed by ice asteroid or storm
+            if (!other.CompareTag("IceAsteroid") || !other.CompareTag("SpaceStorm")) { 
+                Destroy(gameObject);
+            }
+            
         }
 
         public void setPlayerSpeed(float playerSpeed)
