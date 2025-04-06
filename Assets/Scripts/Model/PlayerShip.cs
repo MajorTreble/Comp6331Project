@@ -52,7 +52,7 @@ namespace Model
         }
 
         void LateUpdate()
-        {            
+        {
             AimWeapons();
         }
 
@@ -63,7 +63,7 @@ namespace Model
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, distance))
             {
-                if(!hit.transform.CompareTag("Player"))
+                if (!hit.transform.CompareTag("Player"))
                     distance = hit.distance;
             }
 
@@ -82,7 +82,7 @@ namespace Model
 
         public override void ShieldRecover()
         {
-            shields += CurrShieldRegen*Time.deltaTime;
+            shields += CurrShieldRegen * Time.deltaTime;
             shields = Mathf.Clamp(shields, 0, CurrMaxShields);
         }
 
@@ -91,7 +91,7 @@ namespace Model
             weapon_1 = Utils.FindChildByName(this.transform, "Weapon1");
             weapon_2 = Utils.FindChildByName(this.transform, "Weapon2");
 
-            if (weapon_1 == null || weapon_2 == null )
+            if (weapon_1 == null || weapon_2 == null)
             {
                 Debug.Log("weapon not found, again");
                 Invoke("GetWeapon", 0.3f);
@@ -106,18 +106,19 @@ namespace Model
             if (laserPrefab != null && weapon_1 != null)
             {
                 GameObject laser = Instantiate(laserPrefab);
-                if(w1Shoot)
+                if (w1Shoot)
                 {
                     laser.transform.position = weapon_1.position;
                     laser.transform.rotation = weapon_1.rotation;
                     w1Shoot = false;
-                }else
+                }
+                else
                 {
                     laser.transform.position = weapon_2.position;
                     laser.transform.rotation = weapon_2.rotation;
                     w1Shoot = true;
                 }
-                
+
                 PlayerLaserProjectile playerLaserProjectile = laser.GetComponent<PlayerLaserProjectile>();
                 playerLaserProjectile.setPlayerSpeed(playerSpeed);
                 playerLaserProjectile.SetPlayerDamage(CurrLaserDamage);
@@ -127,9 +128,9 @@ namespace Model
             ammo--;
         }
 
-        public override bool TakeDamage(float damageAmount)
+        public override bool TakeDamage(float damageAmount, Ship attacker)
         {
-            bool destroyed = base.TakeDamage(damageAmount); // Use base ship behavior
+            bool destroyed = base.TakeDamage(damageAmount, attacker); // Use base ship behavior
 
             // Just to check if player ship is getting hit
             Debug.Log("[PlayerShip] Player took damage!");

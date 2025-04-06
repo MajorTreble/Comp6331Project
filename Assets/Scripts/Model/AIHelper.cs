@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
+using AI.Steering;
 using Manager;
 using Model.AI;
 
@@ -190,5 +191,18 @@ namespace Model
             float aggression = (totalWeight > 0f) ? weightedSum / totalWeight : avgValue;
             return aggression;
         }
+
+        public static List<SteeringAgent> GetObstacles(Ship self)
+        {
+            //To avoid ships of same faction
+            List<SteeringAgent> obstacles = new List<SteeringAgent>();
+            foreach (Ship ship in SpawningManager.Instance.shipList)
+            {
+                if (ship != self && ship.steeringAgent != null)
+                    obstacles.Add(ship.steeringAgent);
+            }
+            return obstacles;
+        }
+
     }
 }

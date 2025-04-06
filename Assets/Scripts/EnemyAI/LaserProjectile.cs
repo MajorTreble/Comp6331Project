@@ -6,9 +6,10 @@ using Model.AI;
 
 public class LaserProjectile : MonoBehaviour
 {
+	public Ship shooter;
+
 	public int damage = 10;
 	public float lifetime = 3f;
-	public GameObject shooter;
 
 	void Start()
 	{
@@ -34,7 +35,7 @@ public class LaserProjectile : MonoBehaviour
 		AIShip aiShip = collision.gameObject.GetComponent<AIShip>();
 		if (aiShip != null)
 		{
-			aiShip.TakeDamage(shooter);
+			aiShip.TakeDamage(damage, shooter);
 		}
 
 		if (collision.gameObject.CompareTag("Player"))

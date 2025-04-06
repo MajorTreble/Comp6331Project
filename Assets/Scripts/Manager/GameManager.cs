@@ -166,7 +166,7 @@ namespace Manager
 
             if (scene.name != "MainMenu" && scene.name != "Harbor")
             {
-                SetupScenario();
+                SetupScenario(JobController.Inst.currJob);
 
                 UpgradeController.Inst.UpdateValues();
 
@@ -182,8 +182,8 @@ namespace Manager
                 JobStatus jobStatus = JobController.Inst.jobStatus;
                 JobView.Inst.ListJobs();
                 JobView.Inst.ListReputations();
-                JobView.Inst.SetConfigurations(); 
-                if(jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
+                JobView.Inst.SetConfigurations();
+                if (jobStatus == JobStatus.Concluded || jobStatus == JobStatus.Failed)
                     JobView.Inst.ViewJob(JobController.Inst.currJob);
             }
 
@@ -193,16 +193,16 @@ namespace Manager
 
         }
 
-        public void SetupScenario()
+        public void SetupScenario(Job job)
         {
             portal = GameObject.Find("HarborPortal");
 
-            SpawningManager.Instance.SpawnScenario(currentScenario);
+            SpawningManager.Instance.SpawnScenario(currentScenario, job.allyFaction, job.enemyFaction);
             SpawnPlayer(playerSpawnPosition, playerSpawnRotation);
 
             if (currentScenario.name == "Tutorial")
             {
-                foreach(Ship ship in SpawningManager.Instance.shipList)
+                foreach (Ship ship in SpawningManager.Instance.shipList)
                 {
                     AIShip aiShip = ship.GetComponent<AIShip>();
                     if (aiShip == null)
