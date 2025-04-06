@@ -49,7 +49,7 @@ namespace Model
                 case JobTarget.Solo:
                     return "SoloShip";
                 case JobTarget.Asteroid:
-                    return "Asteroid";
+                    return "MineableAsteroid";
                 case JobTarget.Self:
                     return "Player";
                 default:

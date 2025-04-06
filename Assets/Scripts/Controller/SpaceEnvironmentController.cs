@@ -16,8 +16,10 @@ namespace Controller
             public int weight; // Higher value = More frequent spawning
         }
 
+        [Header("Space Objects")]
         [SerializeField]
         public SpaceObject[] spaceObjects; // List of objects with their spawn weight
+        public GameObject mineableAsteroidPrefab;
 
         public Transform player;
         public float spawnRadius = 100f;
@@ -26,6 +28,7 @@ namespace Controller
         public float cameraSpawnDistance = 50f;
 
         public List<GameObject> activeObjects = new List<GameObject>();
+        public List<GameObject> activeMineableAsteroids = new List<GameObject>();
         private int totalWeight;
 
         void Awake()
@@ -46,7 +49,6 @@ namespace Controller
                 if (foundPlayer != null)
                 {
                     player = foundPlayer.transform;
-                    //Debug.Log("[SpaceEnvironmentController] Player found by tag.");
                 }
                 else
                 {
@@ -58,6 +60,12 @@ namespace Controller
             for (int i = 0; i < maxObjects; i++)
             {
                 SpawnObject();
+            }
+
+            if (JobController.Inst != null && JobController.Inst.currJob != null &&
+                JobController.Inst.currJob.jobType == JobType.Mine)
+            {
+                SpawnMineableAsteroids(JobController.Inst.currJob.quantity);
             }
         }
 
@@ -164,6 +172,38 @@ namespace Controller
             }
 
             return spaceObjects[0].prefab;
+        }
+
+        void SpawnMineableAsteroids(int count)
+        {
+            if (mineableAsteroidPrefab == null)
+            {
+                Debug.LogWarning("[SpaceEnvironmentController] Mineable asteroid prefab is not assigned.");
+                return;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 spawnPos;
+
+                if (player != null)
+                {
+                    Vector3 forward = player.forward;
+                    Vector3 randomOffset = Random.insideUnitSphere * spawnRadius * 5f;
+                    spawnPos = player.position + forward * 300 + randomOffset;
+                }
+                else
+                {
+                    Debug.LogWarning("[SpaceEnvironmentController] No player found for spawn position.");
+                    continue;
+                }
+
+                Debug.Log($"[SpaceEnvironmentController] Spawned mineable asteroid at {spawnPos}");
+                GameObject obj = Instantiate(mineableAsteroidPrefab, spawnPos, Random.rotation);
+                activeMineableAsteroids.Add(obj);
+            }
+
+            Debug.Log($"[SpaceEnvironmentController] Spawned {count} mineable asteroids.");
         }
     }
 }
