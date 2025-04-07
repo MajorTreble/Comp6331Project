@@ -7,8 +7,6 @@ using Controller;
 using Model;
 using Model.AI;
 using Model.Data;
-using UnityEditor;
-using Unity.Plastic.Newtonsoft.Json.Linq;
 
 namespace Manager
 {
@@ -130,8 +128,6 @@ namespace Manager
         {
             isNewGame = false;
             hasPlayedTutorial = true;
-
-            //Job[] jobs = Resources.LoadAll<Job>("Scriptable/Jobs");
 
             JobController jc = JobController.Inst;
             Job job = jc.customJob;

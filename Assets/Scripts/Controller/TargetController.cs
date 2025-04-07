@@ -127,7 +127,7 @@ public class TargetController : MonoBehaviour
 
         for (int i = 0; i < hostileTargets.Count; i++)
         {
-            if (hostileTargets[i].gameObject.activeSelf)
+            if (hostileTargets[i].transform.gameObject.activeSelf)
             {
                 if (AIHelper.IsHostile(hostileTargets[i], GameManager.Instance.playerShip.GetComponent<PlayerShip>()))
                 {
@@ -135,7 +135,7 @@ public class TargetController : MonoBehaviour
                     hostileTargetsIcon[i].gameObject.SetActive(true);
                 }
             }
-            else targetsIcon[i].gameObject.SetActive(false);
+            else hostileTargetsIcon[i].gameObject.SetActive(false);
         }
     }
 
