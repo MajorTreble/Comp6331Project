@@ -111,7 +111,7 @@ namespace Model.AI
             {
                 if (ship == null || ship == this) continue;
 
-                if (!AIHelper.IsHostile(this, ship))
+                if (!(AIHelper.IsEnemy(this.faction, ship.faction) || AIHelper.IsHostile(this, ship)))
                 {
                     continue;
                 }

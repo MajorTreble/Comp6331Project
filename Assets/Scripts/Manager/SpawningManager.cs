@@ -81,7 +81,7 @@ namespace Manager
 
         public void SpawnUnitGroup(UnitGroup unitGroup, Faction jobAlly, Faction jobTarget)
         {
-            if (unitGroup == null)
+            if (unitGroup == null || jobAlly == null || jobTarget == null)
             {
                 return;
             }

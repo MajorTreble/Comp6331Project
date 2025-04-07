@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using Controller;
 using Manager;
-
 using Model;
+using Model.AI;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ public class TargetController : MonoBehaviour
     public static TargetController Inst { get; private set; } //Singleton
 
     Vector2 targetOriSize;
+    Vector2 hostileTargetOriSize;
 
 
     public bool showPortal;
@@ -36,6 +38,9 @@ public class TargetController : MonoBehaviour
     public List<Transform> targets;
     public List<Image> targetsIcon;
 
+    public List<AIShip> hostileTargets;
+    public List<Image> hostileTargetsIcon;
+
     void Start()
     {
        
@@ -49,7 +54,8 @@ public class TargetController : MonoBehaviour
         showPortal = false;
 
         GameObject template = GameObject.Find("TargetTemplate");
-        
+        GameObject hostileTemplate = GameObject.Find("HostileTargetTemplate");
+
         if (template == null)
 		{
             return;
@@ -57,8 +63,9 @@ public class TargetController : MonoBehaviour
 
         GameObject go = template;
         targetOriSize = template.GetComponent<Image>().rectTransform.sizeDelta;
+        hostileTargetOriSize = hostileTemplate.GetComponent<Image>().rectTransform.sizeDelta;
 
-        if(JobController.Inst.currJob.jobType == JobType.Deliver)
+        if (JobController.Inst.currJob.jobType == JobType.Deliver)
         {
             targets.Add(GameManager.Instance.portal.transform); 
             showPortal = true;
@@ -74,7 +81,13 @@ public class TargetController : MonoBehaviour
             {
                 if(s is PlayerShip) continue;
 
-                if(s.CompareTag(JobUtil.ToTag(JobController.Inst.currJob.jobTarget)))
+                hostileTargets.Add(s.GetComponent<AIShip>());
+                GameObject icon = Instantiate(hostileTemplate, hostileTemplate.transform.parent);
+                icon.SetActive(false);
+                hostileTargetsIcon.Add(icon.GetComponent<Image>());
+                
+
+                if (s.CompareTag(JobUtil.ToTag(JobController.Inst.currJob.jobTarget)))
                     targets.Add(s.transform);            
             }            
         }
@@ -101,19 +114,32 @@ public class TargetController : MonoBehaviour
             }
 
             targetsIcon[0].gameObject.SetActive(true);
-            SetTarget(GameManager.Instance.portal.transform.position, targetsIcon[0]);
+            SetTarget(GameManager.Instance.portal.transform.position, targetsIcon[0], targetOriSize);
         }else
         {
             for (int i = 0; i < targets.Count; i++)
             {
                 if(targets[i].gameObject.activeSelf)
-                    SetTarget(targets[i].position, targetsIcon[i]);     
+                    SetTarget(targets[i].position, targetsIcon[i], targetOriSize);     
                 else targetsIcon[i].gameObject.SetActive(false);
             }  
-        }        
+        }
+
+        for (int i = 0; i < hostileTargets.Count; i++)
+        {
+            if (hostileTargets[i].gameObject.activeSelf)
+            {
+                if (AIHelper.IsHostile(hostileTargets[i], GameManager.Instance.playerShip.GetComponent<PlayerShip>()))
+                {
+                    SetTarget(hostileTargets[i].transform.position, hostileTargetsIcon[i], hostileTargetOriSize);
+                    hostileTargetsIcon[i].gameObject.SetActive(true);
+                }
+            }
+            else targetsIcon[i].gameObject.SetActive(false);
+        }
     }
 
-    void SetTarget(Vector3 _pos, Image _icon)
+    void SetTarget(Vector3 _pos, Image _icon, Vector2 _size)
     {
         Vector3 screenPos = Camera.main.WorldToScreenPoint(_pos);
 
@@ -136,7 +162,7 @@ public class TargetController : MonoBehaviour
         float dist = Vector3.Distance(Camera.main.transform.position, _pos);
 
         float scale = Mathf.Clamp(100 / dist, 0.25f, 1f); 
-        Vector2 newSize = Vector2.Lerp(targetOriSize*0.25f, targetOriSize, scale);
+        Vector2 newSize = Vector2.Lerp(_size * 0.25f, _size, scale);
 
         _icon.rectTransform.sizeDelta = newSize;
     }
