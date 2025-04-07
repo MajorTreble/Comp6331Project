@@ -289,7 +289,7 @@ public class JobView : MonoBehaviour
         UpdateReputations();
     }
 
-    void UpdateReputations()
+    public void UpdateReputations()
     {
         for (int i = 0; i < GameManager.Instance.reputation.reputations.Count; i++)
         {
@@ -509,6 +509,7 @@ public class JobView : MonoBehaviour
             jobFeedback.color = color;
             jobFeedback.text = jobText;
         }
+
         
     }
 

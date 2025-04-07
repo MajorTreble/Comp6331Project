@@ -1,26 +1,42 @@
 using UnityEngine;
 
+
+using Controller;
+
 namespace Model.Environment
 {
-    public class MineableAsteroid : MonoBehaviour
+    public class MineableAsteroid : MonoBehaviour, IDamagable
     {
         [Header("Spinning")]
         public float spinSpeed = 10f;
+
+        private float health = 50;
 
         void Update()
         {
             transform.Rotate(Vector3.up * spinSpeed * Time.deltaTime, Space.World);
         }
+       
+        public bool TakeDamage(float damage, Ship attacker)
+		{
+			health -= damage;
 
-        void OnTriggerEnter(Collider other)
+			return CheckDestroyed();
+		}
+        public bool CheckDestroyed()
+		{
+			if(health > 0)
+				return false;
+            
+            DestroyAsteroid();
+
+			return true;	
+		}
+
+        void DestroyAsteroid()
         {
-            if (other.CompareTag("PlayerLaser") || other.CompareTag("SpaceshipComponent") || other.CompareTag("Player"))
-            {
-                Debug.Log("[MineableAsteroid] Hit by mining tool!");
-
-                Destroy(gameObject);
-            }
+            JobController.Inst.OnObjDestroyed(transform.tag);
+            gameObject.SetActive(false);
         }
-
     }
 }

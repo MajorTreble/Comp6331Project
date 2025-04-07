@@ -50,7 +50,7 @@ namespace Model
 			return CheckDestroyed();
 		}
 
-		public bool CheckDestroyed()
+		public virtual bool CheckDestroyed()
 		{
 			if (health > 0)
 				return false;
@@ -66,6 +66,27 @@ namespace Model
 		{
 			JobController.Inst.OnObjLeave(transform.tag);
 			this.gameObject.SetActive(false);
+		}
+
+
+		public float immoDuration = 1.0f;//immortality
+		private float immoCd = 0.0f;
+
+		void OnCollisionEnter(Collision collision)
+		{
+			if (Time.time < immoCd) return;
+
+			immoCd = Time.time + immoDuration;
+
+			float dmgMult = 0.3f;
+			float relativeVel = collision.relativeVelocity.magnitude;			
+			float dmg = relativeVel * dmgMult;
+
+			health -= dmg;
+
+			//Debug.Log($"[Colision DMG] Speed: {dmg} - Transform Name: {collision.transform.name} - Health: {health}");
+
+			CheckDestroyed();
 		}
 	}
 }

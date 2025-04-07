@@ -120,8 +120,8 @@ namespace Model
                 }
 
                 PlayerLaserProjectile playerLaserProjectile = laser.GetComponent<PlayerLaserProjectile>();
-                playerLaserProjectile.setPlayerSpeed(playerSpeed);
-                playerLaserProjectile.SetPlayerDamage(CurrLaserDamage);
+
+                playerLaserProjectile.SetPlayerProjectile(playerSpeed, CurrLaserDamage, this);
             }
 
             fireCooldown = Time.time + oriData.attackCooldown;
@@ -136,6 +136,16 @@ namespace Model
             Debug.Log("[PlayerShip] Player took damage!");
 
             return destroyed;
+        }
+
+        public override bool CheckDestroyed()
+        {
+            bool isDestroyed = base.CheckDestroyed();
+
+            if(isDestroyed) Leave();
+
+            return isDestroyed;
+            
         }
 
         public override void Leave()

@@ -125,6 +125,7 @@ public class JobMenuController : MonoBehaviour
         UpgradeController.Inst.umc.UpdateCoins();
         JobView.Inst.jobIndex = -1;
         JobView.Inst.ViewJob(null);
+        JobView.Inst.UpdateReputations();
 
     }
 

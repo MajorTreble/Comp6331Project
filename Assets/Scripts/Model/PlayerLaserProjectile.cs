@@ -73,6 +73,14 @@ namespace Model
             this.damage = playerDamage;
 
         }
+
+        public void SetPlayerProjectile(float _playerSpeed, float _playerDamage, Ship _owner)
+        {
+            this.playerSpeed = _playerSpeed;
+            this.damage = _playerDamage;
+            this.owner = _owner;
+
+        }
     }
 
 }
