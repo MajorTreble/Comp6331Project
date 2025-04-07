@@ -29,6 +29,23 @@ namespace Model.Environment {
             StartCoroutine(EnableBreakingAfterDelay());
         }
 
+        private void Update() 
+        {
+            if(Input.GetKeyDown(KeyCode.L))
+            {                
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.Sleep();
+
+            }
+            if(Input.GetKeyDown(KeyCode.K))
+            {
+                
+                rb.ResetInertiaTensor();
+            }
+
+        }
+
         IEnumerator EnableBreakingAfterDelay()
         {
             yield return new WaitForSeconds(breakCooldown);
