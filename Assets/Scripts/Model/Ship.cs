@@ -47,7 +47,10 @@ namespace Model
 
         public virtual bool TakeDamage(float damage, Ship attacker)
         {
-            health -= damage;
+            if(shields > 0)
+                shields -= damage;
+            else
+                health -= (damage + shields);
 
             return CheckDestroyed();
         }
