@@ -38,7 +38,7 @@ namespace Model.Weapon
 
         void OnTriggerEnter(Collider other)
         {
-            if (other == this) return;
+            if (other == this || other.GetComponent<Ship>() == shooter) return;
 
             Vector3 hitPosition = other.bounds.center;
             Utils.DebugLog($"[LaserProjectile] hit by {other.tag}" + other.transform.name);

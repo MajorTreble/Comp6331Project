@@ -92,6 +92,7 @@ MonoBehaviour:
   health: 100
   shields: 100
   faction: {fileID: 0}
+  immoDuration: 1
   weapon_1: {fileID: 0}
   weapon_2: {fileID: 0}
 --- !u!114 &-2124949118174447166
@@ -120,8 +121,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 12.446079, y: 1.6461797, z: 11.417653}
-  m_Center: {x: 1.4500303, y: 0.32308984, z: -1.2186646}
+  m_Size: {x: 12, y: 4, z: 12}
+  m_Center: {x: 0, y: 0, z: -1.12}
 --- !u!114 &7450351474904936078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,7 +172,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5692264513234847176}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.867, y: -1.142, z: 5.13}
+  m_LocalPosition: {x: 2.867, y: -1.142, z: 6.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2459338492817421401}
@@ -215,7 +216,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8923455679161770527}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.867, y: -1.142, z: 5.13}
+  m_LocalPosition: {x: -2.867, y: -1.142, z: 6.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2459338492817421401}
