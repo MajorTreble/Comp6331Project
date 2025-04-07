@@ -13,8 +13,7 @@ GameObject:
   - component: {fileID: 4477858925664087069}
   - component: {fileID: 4477858925664087068}
   - component: {fileID: 7471723298361527734}
-  - component: {fileID: -5148658976567793416}
-  - component: {fileID: 5034999630480189046}
+  - component: {fileID: 8849094849067905929}
   m_Layer: 0
   m_Name: EnemyLaser
   m_TagString: Untagged
@@ -115,7 +114,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-5148658976567793416
+--- !u!114 &8849094849067905929
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,22 +123,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4477858925664087043}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b645646bf5beee4491f55aaf713fae0, type: 3}
+  m_Script: {fileID: 11500000, guid: f67f60c49904730419f5c91df6ed4c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
-  damage: 10
---- !u!114 &5034999630480189046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4477858925664087043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9724d41a1cd8c514897b817fe13630cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
-  lifetime: 3
+  speed: 300
+  lifeTime: 3
+  damage: 100

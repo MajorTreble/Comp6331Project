@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using static UnityEngine.GraphicsBuffer;
 
 using AI;
@@ -9,7 +10,8 @@ using Controller;
 using Manager;
 using Model.AI.BehaviorTree;
 using static Model.Faction;
-using UnityEngine.Assertions.Must;
+using Model.Weapon;
+
 
 namespace Model.AI
 {
@@ -26,8 +28,7 @@ namespace Model.AI
         //public float attackRange = 10f; // Attack range
         public float attackCooldown = 2f; // Cooldown between attacks
         public float lastAttackTime; // Time of the last attack
-        public GameObject laserPrefab; // Laser prefab for attacks
-        public GameObject firePoint; // Point from which lasers are fired
+        public LaserWeapon weapon;
 
         protected Vector3 roamTarget;
 
@@ -62,11 +63,12 @@ namespace Model.AI
         public LastKnownPosition currentLKP = null;
         public Ship target = null;
 
-        private Transform currentTarget = null;  // The current enemy target this AIShip is engaging (could be player or another ship).
-
         public void Awake()
         {
             LKP = new List<LastKnownPosition>();
+
+            weapon = Utils.FindChildByName(this.transform, "Weapon").GetComponent<LaserWeapon>();
+            weapon.Setup(this);
         }
 
         public override void Start()
@@ -80,11 +82,6 @@ namespace Model.AI
             requestedState = AIState.Roam;
 
             navigator = GetComponent<AIWaypointNavigator>();
-
-            if (laserPrefab != null && laserPrefab.GetComponent<LaserProjectile>() == null)
-            {
-                laserPrefab.AddComponent<LaserProjectile>();
-            }
         }
 
         private void Update()
@@ -282,23 +279,9 @@ namespace Model.AI
 
             Debug.Log($"[{name}] was hit by {attacker.name}");
 
-            if (attacker.CompareTag("Player"))
+            if (attacker.CompareTag("Player") || AIHelper.IsEnemy(faction, attacker.faction))
             {
-                currentTarget = attacker.transform;
-                requestedState = AIState.Attack;
-            }
-            else
-            {
-                AIShip attackerAI = attacker.GetComponent<AIShip>();
-                if (attackerAI != null)
-                {
-                    Debug.Log($"[{name}] was hit by [{attackerAI.name}] from faction {attackerAI.faction}");
-                    if (AIHelper.IsEnemy(faction, attackerAI.faction))
-                    {
-                        currentTarget = attacker.transform;
-                        requestedState = AIState.Attack;
-                    }
-                }
+                SetHostile(attacker);
             }
 
             return isDestroyed;
@@ -311,29 +294,11 @@ namespace Model.AI
 
         public virtual void Attack()
         {
-
             if (Time.time < lastAttackTime + behavior.attackCooldown) return;
-            if (laserPrefab == null || firePoint == null) return;
 
-            // Ensure laserPrefab has EnemyLaser script
-            GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation);
+            Debug.Log($"[{name}] Engaging target: {target?.name ?? "None"}");
 
-            Debug.Log($"[{name}] Engaging target: {currentTarget?.name ?? "None"}");
-
-            EnemyLaser laserScript = laser.GetComponent<EnemyLaser>();
-            if (laserScript != null)
-            {
-                laserScript.shooter = this;
-                laserScript.faction = faction;
-            }
-
-            // Just move the laser forward using physics or custom code
-            Rigidbody laserRb = laser.GetComponent<Rigidbody>();
-            if (laserRb == null)
-            {
-                laserRb = laser.AddComponent<Rigidbody>();
-            }
-            laserRb.velocity = firePoint.transform.forward * 30f;
+            weapon.Fire();
 
             lastAttackTime = Time.time;
         }
@@ -436,17 +401,15 @@ namespace Model.AI
                     break;
             }
 
-            if (currentTarget == null)
-            {
-                Debug.LogWarning("Current target is null, need to be checked");
-                return;
-            }
+            float dist = Vector3.Distance(transform.position, target.transform.position);
+            Vector3 forward = transform.TransformDirection(Vector3.forward);
+            Vector3 toTarget = Vector3.Normalize(target.transform.position - transform.position);
+            float dotProduct = Vector3.Dot(forward, toTarget);
 
-            float dist = Vector3.Distance(transform.position, currentTarget.position);
-            if (dist <= behavior.attackRange)
+            if (dist <= behavior.attackRange &&
+                dotProduct >= 0.707)
             {
-                requestedState = AIState.Attack;
-                return;
+                Attack();
             }
         }
 
@@ -499,10 +462,10 @@ namespace Model.AI
         protected virtual void UpdateAttack()
         {
             //if (player == null) return;
-            if (currentTarget == null || behavior == null) return;
+            if (target == null || behavior == null) return;
 
             //float dist = Vector3.Distance(transform.position, player.position);
-            float dist = Vector3.Distance(transform.position, currentTarget.position);
+            float dist = Vector3.Distance(transform.position, target.transform.position);
             if (dist > behavior.attackRange)
             {
                 requestedState = AIState.Combat;
@@ -510,7 +473,7 @@ namespace Model.AI
             }
 
             //Vector3 direction = (player.position - transform.position).normalized;
-            Vector3 direction = (currentTarget.position - transform.position).normalized;
+            Vector3 direction = (target.transform.position - transform.position).normalized;
 
             if (Time.time >= lastAttackTime + behavior.attackCooldown)
             {

@@ -1,7 +1,9 @@
 using System.Runtime.InteropServices;
+using UnityEngine;
+
 using Controller;
 using Model.Environment;
-using UnityEngine;
+using Model.Weapon;
 using Manager;
 
 namespace Model
@@ -9,15 +11,11 @@ namespace Model
 
     public class PlayerShip : Ship
     {
+        public LaserWeapon weapon_1;
+        public LaserWeapon weapon_2;
 
-        public GameObject laser = null;
-        private GameObject laserPrefab;
-        public Transform weapon_1;
-        public Transform weapon_2;
         private float fireCooldown = 0f;
-
         private bool w1Shoot = false;
-
 
         //Upgrade System, get curr values for the ship
         public float CurrMaxHealth { get { return oriData.maxHealth + UpgradeController.Inst.upgrData.maxHealth; } }
@@ -34,13 +32,7 @@ namespace Model
             this.faction = new Faction();
             this.faction.factionType = Faction.FactionType.Solo;
 
-            GetWeapon();
-            laserPrefab = GameManager.Instance.playerLaserPrefab;
-
-            if (laserPrefab == null)
-            {
-                Debug.LogError("[PlayerShip] Player laser prefab is null.");
-            }
+            SetupWeapons();
 
             SetStats();
         }
@@ -56,6 +48,22 @@ namespace Model
             AimWeapons();
         }
 
+        void SetupWeapons()
+        {
+            weapon_1 = Utils.FindChildByName(this.transform, "Weapon1").GetComponent<LaserWeapon>();
+            weapon_2 = Utils.FindChildByName(this.transform, "Weapon2").GetComponent<LaserWeapon>();
+
+            if (weapon_1 == null || weapon_2 == null)
+            {
+                Debug.Log("weapon not found, again");
+                Invoke("SetupWeapons", 0.3f);
+                return;
+            }
+
+            weapon_1.Setup(this, CurrLaserDamage);
+            weapon_2.Setup(this, CurrLaserDamage);
+        }
+
         void AimWeapons()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -69,8 +77,8 @@ namespace Model
 
             Vector3 point = ray.GetPoint(distance);
 
-            weapon_1.LookAt(point);
-            weapon_2.LookAt(point);
+            weapon_1.gameObject.transform.LookAt(point);
+            weapon_2.gameObject.transform.LookAt(point);
         }
 
         public override void SetStats()
@@ -86,43 +94,14 @@ namespace Model
             shields = Mathf.Clamp(shields, 0, CurrMaxShields);
         }
 
-        void GetWeapon()
-        {
-            weapon_1 = Utils.FindChildByName(this.transform, "Weapon1");
-            weapon_2 = Utils.FindChildByName(this.transform, "Weapon2");
-
-            if (weapon_1 == null || weapon_2 == null)
-            {
-                Debug.Log("weapon not found, again");
-                Invoke("GetWeapon", 0.3f);
-                return;
-            }
-
-        }
         public void FireLaser(float playerSpeed = 0)
         {
             if (Time.time < fireCooldown) return;
 
-            if (laserPrefab != null && weapon_1 != null)
-            {
-                GameObject laser = Instantiate(laserPrefab);
-                if (w1Shoot)
-                {
-                    laser.transform.position = weapon_1.position;
-                    laser.transform.rotation = weapon_1.rotation;
-                    w1Shoot = false;
-                }
-                else
-                {
-                    laser.transform.position = weapon_2.position;
-                    laser.transform.rotation = weapon_2.rotation;
-                    w1Shoot = true;
-                }
+            LaserWeapon weapon = w1Shoot ? weapon_1 : weapon_2;
+            weapon.Fire();
 
-                PlayerLaserProjectile playerLaserProjectile = laser.GetComponent<PlayerLaserProjectile>();
-
-                playerLaserProjectile.SetPlayerProjectile(playerSpeed, CurrLaserDamage, this);
-            }
+            w1Shoot = !w1Shoot;
 
             fireCooldown = Time.time + oriData.attackCooldown;
             ammo--;
@@ -142,10 +121,10 @@ namespace Model
         {
             bool isDestroyed = base.CheckDestroyed();
 
-            if(isDestroyed) Leave();
+            if (isDestroyed) Leave();
 
             return isDestroyed;
-            
+
         }
 
         public override void Leave()
