@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8220181580064264273}
-  - component: {fileID: 4323313357628835392}
   - component: {fileID: 3396548030279334376}
+  - component: {fileID: 2561636227475724931}
   m_Layer: 0
   m_Name: PlayerLaser
   m_TagString: SpaceshipComponent
@@ -33,21 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4323313357628835392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8220181580064264272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41024e8eca172d74c935264c2fa57e23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 400
-  lifeTime: 3
-  damage: 100
 --- !u!136 &3396548030279334376
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -62,6 +47,21 @@ CapsuleCollider:
   m_Height: 106.72839
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 50.14612}
+--- !u!114 &2561636227475724931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8220181580064264272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f67f60c49904730419f5c91df6ed4c26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 300
+  lifeTime: 3
+  damage: 100
 --- !u!1001 &8220181579746934866
 PrefabInstance:
   m_ObjectHideFlags: 0

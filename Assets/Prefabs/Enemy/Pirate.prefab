@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 7180803749134355734}
   - component: {fileID: 401292783803901391}
   - component: {fileID: 8991110574378237725}
+  - component: {fileID: 5422712240159731626}
   m_Layer: 7
-  m_Name: firePoint
+  m_Name: Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,6 +82,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5422712240159731626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6030673257891210850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7ef895fe304bb34f90acb153014e620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
 --- !u!1 &7277576965648325399
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,31 +227,30 @@ MonoBehaviour:
   oriData: {fileID: 11400000, guid: a4c3c1d0ec94b3744a0fd33545dd2b3d, type: 2}
   rb: {fileID: 0}
   steeringAgent: {fileID: 0}
+  laserWeapon: {fileID: 0}
   ammo: 0
   health: 100
   shields: 0
   faction: {fileID: 0}
   behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}
   detectionRadius: 100
-  roamRadius: 150
-  avoidanceForce: 5
-  obstacleAvoidanceRange: 10
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 192
-  obstacleAvoidanceWeight: 5
   attackCooldown: 3
   lastAttackTime: 0
-  laserPrefab: {fileID: 4477858925664087043, guid: c0ed85eb34e6f534b962a55f19672102, type: 3}
-  firePoint: {fileID: 6030673257891210850}
+  weapon: {fileID: 0}
+  roamRadius: 150
+  avoidanceForce: 5
+  obstacleAvoidanceRange: 10
+  obstacleAvoidanceWeight: 5
+  patrol: {fileID: 0}
   currentState: 0
   requestedState: 2
   shipLayer:
     serializedVersion: 2
     m_Bits: 128
   targetShip: {fileID: 0}
-
-  shouldPatrol: 0
   hostileShips: []
   target: {fileID: 0}
 --- !u!114 &8959509692265794081
@@ -263,6 +276,7 @@ MonoBehaviour:
   behaviorType: 1
   trackedTarget: {fileID: 0}
   targetPosition: {x: 0, y: 0, z: 0}
+  targetOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &-8107684813319859126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,7 +292,6 @@ MonoBehaviour:
   path: {fileID: 280589639202043909, guid: 2da6cbf8352771f4c9ec8fa67d4176bf, type: 3}
   stoppingDistance: 1.5
   waypointRadius: 30
-  targetOffset: {x: 0, y: 0, z: 0}
 --- !u!1001 &3000934694986739847
 PrefabInstance:
   m_ObjectHideFlags: 0
