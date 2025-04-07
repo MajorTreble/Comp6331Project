@@ -15,8 +15,7 @@ namespace Model
         {
             Debug.Assert(ship != null && target != null, $"{MethodBase.GetCurrentMethod().Name} {ship} {target}");
 
-            return IsEnemy(ship.faction, target.faction) ||
-                ship.hostileShips.Contains(target) ||
+            return ship.hostileShips.Contains(target) ||
                 (ship.group != null && ship.group.hostileShips.Contains(target));
         }
 
