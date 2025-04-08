@@ -7,7 +7,6 @@ using Controller;
 using Model;
 using Model.AI;
 using Model.Data;
-using UnityEditor;
 
 namespace Manager
 {
@@ -130,10 +129,9 @@ namespace Manager
             isNewGame = false;
             hasPlayedTutorial = true;
 
-            Job[] jobs = Resources.LoadAll<Job>("Scriptable/Jobs");
-
             JobController jc = JobController.Inst;
-            jc.currJob = jobs[0];
+            Job job = jc.customJob;
+            jc.currJob = job;
             jc.jobStatus = JobStatus.InProgress;
 
             currentScenario = quickPlayScenario;
@@ -181,14 +179,12 @@ namespace Manager
 
             if (scene.name != "MainMenu" && scene.name != "Harbor")
             {
-                SetupScenario(JobController.Inst.currJob);
-
-                UpgradeController.Inst.UpdateValues();
-
                 if (JobController.Inst.currJob == null)
                 {
                     QuickPlay();
                 }
+                SetupScenario(JobController.Inst.currJob);
+                UpgradeController.Inst.UpdateValues();
             }
 
 

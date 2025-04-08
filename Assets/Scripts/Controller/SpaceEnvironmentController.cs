@@ -24,7 +24,7 @@ namespace Controller
         public Transform player;
         public float spawnRadius = 150f;
         public int maxObjects = 30;
-        public float despawnDistance = 200f;
+        public float despawnDistance = 400f;
         public float cameraSpawnDistance = 50f;
 
         public List<GameObject> activeObjects = new List<GameObject>();
@@ -87,19 +87,23 @@ namespace Controller
 
             if (player != null)
             {
-                spawnPos = player.position + Random.onUnitSphere * spawnRadius;
+                spawnPos = player.position + (player.forward * spawnRadius) + (Random.onUnitSphere * spawnRadius);
+                //player + fowardpos + randompos
+
                 float dynamicDistance = spawnRadius;
 
                 if (playerRb != null)
                 {
                     float speed = playerRb.velocity.magnitude;
-                    dynamicDistance = Mathf.Clamp(spawnRadius + speed * 2f, spawnRadius, spawnRadius * 3f);
-                    spawnPos = player.position + Random.onUnitSphere * dynamicDistance;
+                    dynamicDistance = Mathf.Clamp(spawnRadius + speed * 2f, spawnRadius, despawnDistance);
+                    spawnPos = player.position + (player.forward * dynamicDistance) + (Random.onUnitSphere * dynamicDistance);
                     Debug.Log($"[SpaceEnvironmentController] Speed: {playerRb.velocity.magnitude}, Spawn Distance: {dynamicDistance}");
                 }
             }
             else
             {
+                Debug.LogError("should always have a player");
+
                 Camera mainCam = Camera.main;
                 if (mainCam == null)
                 {
@@ -143,14 +147,14 @@ namespace Controller
             Vector3 newPos;
             if (player != null)
             {
-                newPos = player.position + Random.onUnitSphere * spawnRadius;
+                newPos = player.position + (player.forward * spawnRadius) + (Random.onUnitSphere * spawnRadius);
                 float dynamicDistance = spawnRadius;
                 
                 if (playerRb != null)
                 {
                     float speed = playerRb.velocity.magnitude;
                     dynamicDistance = Mathf.Clamp(spawnRadius * 2 + speed * 2f, spawnRadius, spawnRadius * 3f);
-                    newPos = player.position + Random.onUnitSphere * dynamicDistance;
+                    newPos = player.position + (player.forward * dynamicDistance) + (Random.onUnitSphere * dynamicDistance);
                     Debug.Log($"[SpaceEnvironmentController] Speed: {playerRb.velocity.magnitude}, Spawn Distance: {dynamicDistance}");
                 }
                 obj.transform.position = newPos;
