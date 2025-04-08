@@ -10,7 +10,7 @@ namespace AI.Steering
         public Rigidbody rigidBody;
 
         public float initialMaxSpeed;
-        public float maxSpeed = 15;
+        public float maxSpeed = 12;
         public float rotationSpeed = 1.0f;
         public float radius = 1.0f;
         public bool lockY = false;

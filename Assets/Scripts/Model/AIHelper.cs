@@ -5,6 +5,7 @@ using UnityEngine;
 
 using Manager;
 using Model.AI;
+using static Model.Faction;
 
 namespace Model
 {
@@ -13,8 +14,11 @@ namespace Model
         public static bool IsHostile(AIShip ship, Ship target)
         {
             Debug.Assert(ship != null && target != null, $"{MethodBase.GetCurrentMethod().Name} {ship} {target}");
-
-            return IsEnemy(ship.faction, target.faction) ||
+			if (target.CompareTag("Player") && ship.faction.factionType == FactionType.Pirates)
+			{
+				return true; // Pirates always treat player as hostile
+			}
+			return IsEnemy(ship.faction, target.faction) ||
                 ship.hostileShips.Contains(target) ||
                 (ship.group != null && ship.group.hostileShips.Contains(target));
         }
@@ -23,15 +27,17 @@ namespace Model
         {
             Debug.Assert(ship != null);
 
-            if (ship.targetShip == null)
-			{
-                return false;
-			}
+			Ship targetShip = ship.currentTarget.GetComponent<Ship>();
+			if (targetShip == null)
+				return false;
 
-            return IsTargetInRange(ship, ship.targetShip, ship.detectionRadius);
-        }
+			//return IsTargetInRange(ship, targetShip, ship.detectionRadius);
+			return Vector3.Distance(ship.transform.position,
+				   ship.currentTarget.position) <= ship.behavior.attackRange;
+		}
 
-        public static bool IsTargetInRange(Ship ship, Ship target, float detectionRadius)
+
+		public static bool IsTargetInRange(Ship ship, Ship target, float detectionRadius)
         {
             Debug.Assert(ship != null && target != null, $"{MethodBase.GetCurrentMethod().Name} {ship} {target}");
 

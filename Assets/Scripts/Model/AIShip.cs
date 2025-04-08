@@ -60,7 +60,7 @@ namespace Model.AI
         public LastKnownPosition currentLKP = null;
         public Ship target = null;
 
-        private Transform currentTarget = null;  // The current enemy target this AIShip is engaging (could be player or another ship).
+        public Transform currentTarget = null;  // The current enemy target this AIShip is engaging (could be player or another ship).
 
         public void Awake()
         {
@@ -81,7 +81,7 @@ namespace Model.AI
             {
                 laserPrefab.AddComponent<LaserProjectile>();
             }
-        }
+		}
 
         private void Update()
         {
@@ -93,8 +93,8 @@ namespace Model.AI
             }
 
             UpdatePerception();
-            UpdateDecision();
-            EvaluateCombatTarget();
+			EvaluateCombatTarget();
+			UpdateDecision();
             UpdateStateMachine();
 
             steeringAgent.Update();
@@ -153,9 +153,11 @@ namespace Model.AI
             // Get best target
             if (AIGroup.GetBestTarget(this, ref currentLKP))
             {
-                target = currentLKP.target;
+				Debug.Log($"[{name}] Best target found, Target: {currentLKP?.target?.name}");
+				target = currentLKP.target;
             }
         }
+
 
 		public Vector3 ComputeObstacleAvoidance(Vector3 currentDirection)
         {
@@ -187,8 +189,13 @@ namespace Model.AI
 
         protected void UpdateStateMachine()
         {
+			if (currentState == AIState.Attack && currentTarget != null)
+			{
+				// Prevent state change while attacking valid target because Attack isnt being called otherwise
+				return;
+			}
 
-            if (requestedState != currentState)
+			if (requestedState != currentState)
             {
                 switch (currentState)
                 {
@@ -344,42 +351,32 @@ namespace Model.AI
             // Placeholder for actual attack behavior.
             Attack();
         }
-
+        
         private void EvaluateCombatTarget()
         {
-            Job job = JobController.Inst.currJob;
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player == null)
-            {
-                Debug.LogWarning("Player null");
-                return;
-            }
-
-            // Fallback: Use reputation + fuzzy logic to decide about player
-            if (player != null && behavior != null && AIHelper.ShouldAttackPlayer(this, player, job))
-            {
-                float dist = Vector3.Distance(transform.position, player.transform.position);
-                if (dist <= behavior.detectionRadius)
-                {
-                    Debug.Log($"[{name}] Player is enemy. Engaging.");
-                    currentTarget = player.transform;
-                    requestedState = AIState.Seek;
-                    return;
-                }
-            }
-
-            // Look for other hostile AI ships
-            AIShip enemyShip = FindNearestHostile();
-            if (enemyShip != null)
-            {
-                Debug.Log($"[{name}] Found hostile target: {enemyShip.name}");
-                currentTarget = enemyShip.transform;
-                requestedState = AIState.Seek;
-                return;
-            }
-
-            currentTarget = null;
-        }
+			Debug.Log($"[{name}] EvaluateCombatTarget => target: {target}, currentTarget: {currentTarget}, requestedState: {requestedState}");
+			if (target != null)
+			{
+				currentTarget = target.transform;
+				//requestedState = AIState.Seek;
+				Debug.Log($"[{name}] LKP chose target: {target.name}");
+				if (AIHelper.IsTargetInRange(this)) // Only set to Attack if target is in range
+				{
+					requestedState = AIState.Attack;
+					Debug.Log($"[{name}] LKP chose target: {target.name} and transitioning to Attack state.");
+				}
+				else
+				{
+					requestedState = AIState.Seek;
+					Debug.Log($"[{name}] LKP chose target: {target.name} and transitioning to Seek state.");
+				}
+			}
+			else
+			{
+				currentTarget = null;
+				Debug.Log($"[{name}] No target from LKP");
+			}
+		}
 
         private AIShip FindNearestHostile()
         {
@@ -397,8 +394,11 @@ namespace Model.AI
                 AIHelper.IsEnemy(faction, other.faction) ||
                 (other.faction != this.faction && AIHelper.IsEnemy(faction, other.faction));
 
+				Debug.Log($"Checking if [{other.name}] is hostile to [{name}]: " +
+		        $"Self faction = {faction?.factionType}, Other faction = {other.faction?.factionType}");
 
-                if (!hostile) continue;
+
+				if (!hostile) continue;
                 if (hostile)
                     Debug.Log($"[{name}] Found hostile: {other.name} due to mission logic.");
 
@@ -463,16 +463,16 @@ namespace Model.AI
 
         public virtual void Attack()
         {
+			Debug.Log($"[{name}] Attack() fired at {Time.time} | cooldown ends: {lastAttackTime + behavior.attackCooldown}");
 
-            if (Time.time < lastAttackTime + behavior.attackCooldown) return;
+			if (Time.time < lastAttackTime + behavior.attackCooldown) return;
             if (laserPrefab == null || firePoint == null) return;
 
-            // Ensure laserPrefab has EnemyLaser script
-            GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation);
+			Debug.Log($"[{name}] Instantiating laser at position: {firePoint.transform.position}, rotation: {firePoint.transform.rotation}");
+			GameObject laser = Instantiate(laserPrefab, firePoint.transform.position, firePoint.transform.rotation);
+			Debug.Log($"[{name}] Laser created: {laser.name}");
 
-            Debug.Log($"[{name}] Engaging target: {currentTarget?.name ?? "None"}");
-
-            EnemyLaser laserScript = laser.GetComponent<EnemyLaser>();
+			LaserProjectile laserScript = laser.GetComponent<LaserProjectile>();
             if (laserScript != null)
             {
                 laserScript.shooter = gameObject;
@@ -594,13 +594,16 @@ namespace Model.AI
                 return;
             }
 
-            float dist = Vector3.Distance(transform.position, currentTarget.position);
-            if (dist <= behavior.attackRange)
-            {
-                requestedState = AIState.Attack;
-                return;
-            }
-        }
+			Vector3 dir = (currentTarget.position - transform.position).normalized;
+			transform.position += dir * behavior.chaseSpeed * Time.deltaTime;
+			RotateTowardTarget(dir, behavior.rotationSpeed);
+
+			if (AIHelper.IsTargetInRange(this))
+			{
+				requestedState = AIState.Attack;
+				return;
+			}
+		}
 
         // Flee //
 
@@ -650,27 +653,31 @@ namespace Model.AI
 
         protected virtual void UpdateAttack()
         {
-            //if (player == null) return;
             if (currentTarget == null || behavior == null) return;
 
-            //float dist = Vector3.Distance(transform.position, player.position);
-            float dist = Vector3.Distance(transform.position, currentTarget.position);
-            if (dist > behavior.attackRange)
-            {
-                requestedState = AIState.Seek;
-                return;
-            }
+			float dist = Vector3.Distance(transform.position, currentTarget.position);
+			Debug.Log($"[{name}] UpdateAttack called | currentTarget = {currentTarget?.name}");
 
-            //Vector3 direction = (player.position - transform.position).normalized;
-            Vector3 direction = (currentTarget.position - transform.position).normalized;
-            RotateTowardTarget(direction, behavior.rotationSpeed);
+			if (dist > behavior.attackRange)
+			{
+				// Keep pursuing while in Attack state
+				Vector3 moveDir = (currentTarget.position - transform.position).normalized;
+				transform.position += moveDir * behavior.chaseSpeed * Time.deltaTime;
+				RotateTowardTarget(moveDir, behavior.rotationSpeed);
+			}
+			else
+			{
+				// Within range: attack
+				RotateTowardTarget((currentTarget.position - transform.position).normalized, behavior.rotationSpeed);
 
-            if (Time.time >= lastAttackTime + behavior.attackCooldown)
-            {
-                Attack();
-                lastAttackTime = Time.time;
-            }
-        }
+				if (Time.time >= lastAttackTime + behavior.attackCooldown)
+				{
+					Attack();
+					Debug.Log($"[{name}] Attacking target: {currentTarget.name}");
+
+				}
+			}
+		}
 
         // Formation //
 
@@ -746,7 +753,10 @@ namespace Model.AI
 
         public void UpdatePatrolState(bool shouldPatrol)
         {
-          this.shouldPatrol = shouldPatrol;
+		  Debug.Log($"Setting patrol state: {shouldPatrol}");
+          if (currentState == AIState.Attack || currentState == AIState.Seek) return; // Ignore patrol if attacking/seeking
+
+		  this.shouldPatrol = shouldPatrol;
           if (shouldPatrol)
           {
             requestedState = AIState.Patrol;
