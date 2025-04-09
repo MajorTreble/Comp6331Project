@@ -184,6 +184,7 @@ namespace Manager
                     QuickPlay();
                 }
                 SetupScenario(JobController.Inst.currJob);
+                JobController.Inst.StartJob();
                 UpgradeController.Inst.UpdateValues();
             }
 

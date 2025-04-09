@@ -18,6 +18,7 @@ namespace Model.AI.BehaviorTree
                 new Sequence(new List<Node>
                 {
                     new Condition( () => aiShip.currentState != AIState.Combat ),
+                    new Condition( () => aiShip.disableCombat == false ),
                     new Condition( () => aiShip.currentLKP != null && aiShip.currentLKP.visibility == LKPVisibility.Seen ),
                     new Condition( () => aiShip.target != null ),
 

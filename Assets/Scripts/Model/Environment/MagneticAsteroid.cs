@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Model.AI.Environment;
 
 namespace Model.Environment {
+
     public class MagneticAsteroid : MonoBehaviour
     {
         public float spinSpeed = 30f;
@@ -19,7 +20,7 @@ namespace Model.Environment {
         public float breakForce = 3f;
         public MagneticFragmentGroupAI fragmentGroupPrefab;
 
-        private bool hasBroken = false;
+        public bool hasBroken = false;
 
 
         void Update()

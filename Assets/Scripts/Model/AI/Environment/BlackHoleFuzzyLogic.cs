@@ -24,15 +24,13 @@ namespace Model.AI.Environment
         public float farProximityThreshold = 25f;
         public float mediumProximityThreshold = 15f;
 
-        private GameObject blackHolePrefab;
+        public GameObject blackHolePrefab;
 
         public MagneticFragmentGroupAI fragmentGroup;
 
 
         public void Awake()
         {
-            blackHolePrefab = GameManager.Instance.blackHolePrefab;
-
             if (blackHolePrefab == null)
             {
                 Debug.LogError("[BlackHoleFuzzyLogic] Blackhole prefab is null.");

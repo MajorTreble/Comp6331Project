@@ -2,6 +2,8 @@ using UnityEngine;
 
 using Manager;
 using Model;
+using Model.AI;
+using Model.Environment;
 
 
 namespace Controller
@@ -23,9 +25,15 @@ namespace Controller
                 DontDestroyOnLoad(gameObject);
             }
             else Destroy(gameObject);
+
+            Asteroid.OnDestroyed += OnDestroyed;
         }
 
-    
+        private void OnDestory()
+        {
+            Asteroid.OnDestroyed -= OnDestroyed;
+        }
+
         public void UpdateJob(int qtd)
         {
             currJobQtd += qtd;
@@ -39,10 +47,57 @@ namespace Controller
                 TargetController.Inst.showPortal = true;
             }
 
-
             JobView.Inst.UpdateJob();
         }
-        
+
+        public void StartJob()
+        {
+            if (currJob.jobType == JobType.Deliver)
+            {
+                ForceHostile(GameManager.Instance.playerShip.GetComponent<Ship>());
+            }
+            else if (currJob.jobType == JobType.Defend)
+            {
+                foreach (Ship ship in SpawningManager.Instance.shipList)
+                {
+                    if (ship.faction == currJob.allyFaction)
+                    {
+                        ForceHostile(ship);
+
+                        AIShip aiShip = ship.GetComponent<AIShip>();
+                        if (aiShip)
+                        {
+                            aiShip.disableCombat = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void OnDestroyed(Asteroid asteroid)
+        {
+            OnObjDestroyed(asteroid.transform.tag);
+
+            if (currJob.jobType == JobType.Mine)
+            {
+                ForceHostile(GameManager.Instance.playerShip.GetComponent<Ship>());
+            }
+        }
+
+        protected void ForceHostile(Ship hostileShip)
+        {
+            foreach (Ship ship in SpawningManager.Instance.shipList)
+            {
+                if (ship.faction == currJob.enemyFaction)
+                {
+                    AIShip aiShip = ship.GetComponent<AIShip>();
+                    if (aiShip)
+                    {
+                        aiShip.SetHostile(hostileShip);
+                    }
+                }
+            }
+        }
 
         public void FailJob()
         {
