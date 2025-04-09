@@ -23,6 +23,8 @@ namespace Model
 
         public List<UnitGroup> unitGroups = new List<UnitGroup>();
 
+        public List<Vector3> unitGroupsPosition = new List<Vector3>();
+
         public UnitGroup defendUnitGroup;
 
         public List<SpaceObjectGroup> spaceObjectGroups = new List<SpaceObjectGroup>();

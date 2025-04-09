@@ -38,7 +38,7 @@ namespace AI.Steering
                 Vector3 circleCenter = agent.transform.position + lastDisplacement.normalized * agent.maxSpeed;
                 Vector3 destination = circleCenter + direction.normalized * wanderRadius;
                 desiredVelocity = destination - agent.transform.position;
-                desiredVelocity.y = 0;
+                //desiredVelocity.y = 0;
                 desiredVelocity = desiredVelocity.normalized * agent.maxSpeed;
 
                 lastWanderDirection = direction;
