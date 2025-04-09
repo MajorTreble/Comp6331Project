@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement; // Debug only
 using Model;
 using Model.AI;
 using Controller;
+using System.Runtime.InteropServices;
 
 namespace Manager
 {
@@ -55,14 +56,24 @@ namespace Manager
                 //portal.SetActive(false);
             }
 
+
+
             foreach (UnitGroup unitGroup in scenario.unitGroups)
             {
                 SpawnUnitGroup(unitGroup, jobAlly, jobTarget);
             }
 
-            if (scenario.defendUnitGroup)
+            if(JobController.Inst.currJob.jobType == JobType.Defend)
             {
-                SpawnUnitGroup(scenario.defendUnitGroup, jobAlly, jobTarget);
+                if(!scenario.defendUnitGroup)
+                {
+                    Debug.LogError("No Defend Unit Group");
+                }
+
+                for (int i = 0; i < JobController.Inst.currJob.quantity; i++)
+                {                    
+                    SpawnUnitGroup(scenario.defendUnitGroup, jobAlly, jobTarget);
+                }                
             }
 
             GameObject orgSpaceObject = new GameObject();
@@ -88,8 +99,14 @@ namespace Manager
 
             Faction faction = unitGroup.jobFaction == JobFaction.JobAlly ? jobAlly : jobTarget;
 
-            GameObject orgFaction = new GameObject();
-            orgFaction.transform.name = "Org_" + faction.name;
+            GameObject orgFaction = GameObject.Find("Org_" + faction.name);
+            
+            if(orgFaction == null)
+            {
+                orgFaction = new GameObject();
+                orgFaction.transform.name = "Org_" + faction.name;                
+            }
+
 
             AIGroup group = new AIGroup();
             group.groupMode = unitGroup.groupMode;

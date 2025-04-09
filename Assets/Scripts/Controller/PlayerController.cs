@@ -50,7 +50,7 @@ namespace Controller
             }
 
             if (Input.GetKey(KeyCode.Z)) Stabilize();
-            if (Input.GetKey(KeyCode.Escape)) GiveUpJob();
+            if (Input.GetKey(KeyCode.G)) GiveUpJob();
 
             ShipRotation();
             ShipMovement();
