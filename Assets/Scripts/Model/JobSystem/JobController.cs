@@ -23,10 +23,9 @@ namespace Controller
             {
                 Inst = this;
                 DontDestroyOnLoad(gameObject);
+                Asteroid.OnDestroyed += OnDestroyed;
             }
             else Destroy(gameObject);
-
-            Asteroid.OnDestroyed += OnDestroyed;
         }
 
         private void OnDestory()
