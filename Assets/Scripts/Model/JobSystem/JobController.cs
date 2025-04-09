@@ -124,6 +124,7 @@ namespace Controller
         public void OnObjDestroyed(string _tag)
         {
             //Debug.Log(_tag + " - " + currJob.jobTarget+ " - " + JobUtil.ToTag(currJob.jobTarget));
+            
             if(_tag == JobUtil.ToTag(currJob.jobTarget))
             {
                 TargetDestoyed();

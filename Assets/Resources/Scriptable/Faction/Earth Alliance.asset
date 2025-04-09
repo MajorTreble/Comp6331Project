@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ae010558ce1fa47b7cfc9df5418fce, type: 3}
   m_Name: Earth Alliance
   m_EditorClassIdentifier: 
-  title: Earth Alliance
+  title: Colonial Federation
   description: 
-  factionType: 1
+  factionType: 0
   prefabs:
   - {fileID: 7277576965648325399, guid: f743aa4662ae8e84291763a98ed7235e, type: 3}
   behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}

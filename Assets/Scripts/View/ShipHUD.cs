@@ -58,6 +58,8 @@ public class ShipHUD : MonoBehaviour
 		
 		if(ship!=null)
 		{
+			if(ship.ammo < 1) JobView.Inst.UpdateJob();
+
 			ammoText.text = ship.ammo.ToString();
 			healthImage.fillAmount = ship.health / ship.CurrMaxHealth;
 			shieldsImage.fillAmount = ship.shields / ship.CurrMaxShields;

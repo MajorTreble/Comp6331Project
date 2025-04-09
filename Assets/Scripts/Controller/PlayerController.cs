@@ -19,7 +19,6 @@ namespace Controller
         Rigidbody playerShipRb;
         PlayerShip playerShip;
 
-        bool devTools = false;
         bool rotOnMouse = false;
 
         void Start()

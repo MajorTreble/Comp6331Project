@@ -110,7 +110,9 @@ namespace Model
             float dmg = relativeVel * dmgMult;
 
             health -= dmg;
-			healthBar.UpdateHealthBar(oriData.maxHealth, health);
+
+            if(!this.transform.CompareTag("Player"))
+			    healthBar.UpdateHealthBar(oriData.maxHealth, health);
 
 			//Debug.Log($"[Colision DMG] Speed: {dmg} - Transform Name: {collision.transform.name} - Health: {health}");
 

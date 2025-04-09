@@ -121,6 +121,7 @@ namespace Manager
             AI_Waypoints patrol = null;
             if (unitGroup.patrolPrefab)
             {
+                unitGroup.patrolPrefab.transform.GetChild(3).position = GameManager.Instance.portal.transform.position;
                 SpawnParams spawnParamsPatrol = new SpawnParams(unitGroup.patrolPrefab, Vector3.zero, Quaternion.identity);
                 GameObject patrolObject = Spawn(spawnParamsPatrol);
                 patrol = patrolObject.GetComponent<AI_Waypoints>();

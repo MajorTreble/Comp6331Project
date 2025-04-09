@@ -497,12 +497,15 @@ public class JobView : MonoBehaviour
         {
             color = Color.red;
             jobText += " [F]";
-        }
-        if(jc.jobStatus == JobStatus.Concluded)
+        }else if(jc.jobStatus == JobStatus.Concluded)
         {
             color = Color.green;
             jobText += " [C]";
-        }        
+        }else if(GameManager.Instance.playerShip.GetComponent<PlayerShip>().ammo < 1)
+        {
+            color = Color.yellow;
+            jobText += "\n No ammo, press [G] to Give Up Job";
+        }
 
         if (jobFeedback)
         {

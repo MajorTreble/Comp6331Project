@@ -22,11 +22,12 @@ MonoBehaviour:
   supportedJobType: 00000000010000000200000003000000
   unitGroups:
   - {fileID: 11400000, guid: 53a91d70a3c6a074693acb4b43d43985, type: 2}
-  - {fileID: 11400000, guid: 5cc97f11ecd78e746942bae61b961283, type: 2}
-  - {fileID: 11400000, guid: ca58e3bdfc6f7c7408b22f36e54f5732, type: 2}
+  - {fileID: 11400000, guid: f7b55265a8fdeb64d99f218edd195e9a, type: 2}
+  - {fileID: 11400000, guid: f7b55265a8fdeb64d99f218edd195e9a, type: 2}
   - {fileID: 11400000, guid: 3af5574ce7da68c4a8b31bf5ecda31ab, type: 2}
-  - {fileID: 11400000, guid: 602dd71f456102249b55ac7a38eba17d, type: 2}
-  - {fileID: 11400000, guid: aa5fde14dc33cc24bbb598ef9c7d3b58, type: 2}
+  - {fileID: 11400000, guid: cbcabd7e6bbd5fb47ba0a278963519f4, type: 2}
+  - {fileID: 11400000, guid: cbcabd7e6bbd5fb47ba0a278963519f4, type: 2}
+  unitGroupsPosition: []
   defendUnitGroup: {fileID: 11400000, guid: 3db294049a579164ea42e1a6d8b3b785, type: 2}
   spaceObjectGroups:
   - {fileID: 11400000, guid: 4ebe4b6a9d34bc945a09639d5394bf8c, type: 2}

@@ -38,14 +38,13 @@ namespace Model.Environment {
                         }
                         else {
                             Debug.Log(col.name + " entered the event horizon! Destroying...");
-                            Destroy(col.gameObject);
+                            IDamagable damageable = col.GetComponent<IDamagable>();
+                            damageable?.TakeDamage(10000, null);
+                            //Destroy(col.gameObject);
                         }
-
                     }
-                }
-            
+                }            
             }
-
         }
 
         private IEnumerator RespawnPlayer(GameObject playerObj, Rigidbody rb)
