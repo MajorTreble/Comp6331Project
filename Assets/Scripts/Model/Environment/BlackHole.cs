@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Model.Environment {
@@ -14,32 +15,52 @@ namespace Model.Environment {
 
             foreach (Collider col in colliders)
             {
-                //if (col.CompareTag("Player") 
-                //    || col.CompareTag("Asteroid") 
-                //    || col.CompareTag("IceAsteroid") 
-                //    || col.CompareTag("MagneticAsteroid"))
+                Rigidbody rb = col.GetComponent<Rigidbody>();
+
+                if (rb != null)
                 {
-                    Rigidbody rb = col.GetComponent<Rigidbody>();
+                    Vector3 direction = (transform.position - col.transform.position).normalized;
+                    float distance = Vector3.Distance(transform.position, col.transform.position);
 
-                    if (rb != null)
+                    float pullForce = gravityStrength / Mathf.Pow(distance, 1.5f);
+
+                    if (rb.velocity.magnitude < maxPullSpeed)
                     {
-                        Vector3 direction = (transform.position - col.transform.position).normalized;
-                        float distance = Vector3.Distance(transform.position, col.transform.position);
+                        rb.AddForce(direction * pullForce * Time.deltaTime, ForceMode.Acceleration);
+                    }
 
-                        float pullForce = gravityStrength / Mathf.Pow(distance, 1.5f);
-
-                        if (rb.velocity.magnitude < maxPullSpeed)
+                    if (distance < eventHorizonRadius)
+                    {
+                        if (col.CompareTag("Player") || col.CompareTag("SpaceshipComponent"))
                         {
-                            rb.AddForce(direction * pullForce * Time.deltaTime, ForceMode.Acceleration);
+                            Debug.Log("[BlackHole] Player reached event horizon. Initiating teleport...");
+                            StartCoroutine(RespawnPlayer(col.gameObject, rb));
                         }
-
-                        if (distance < eventHorizonRadius)
-                        {
+                        else {
                             Debug.Log(col.name + " entered the event horizon! Destroying...");
                             Destroy(col.gameObject);
                         }
+
                     }
                 }
+            
+            }
+
+        }
+
+        private IEnumerator RespawnPlayer(GameObject playerObj, Rigidbody rb)
+        {
+            if (CameraFollow.Inst != null)
+                CameraFollow.Inst.StartShake(0.2f);
+
+            yield return new WaitForSeconds(0.5f);
+            if (CameraFollow.Inst != null)
+                CameraFollow.Inst.StopShake();
+
+            IDamagable damagable = playerObj.GetComponent<IDamagable>();
+            if (damagable != null)
+            {
+                damagable.TakeDamage(100000, null);
             }
 
         }
