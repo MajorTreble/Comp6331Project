@@ -28,7 +28,7 @@ namespace Controller
             else Destroy(gameObject);
         }
 
-        private void OnDestory()
+        private void OnDestroy()
         {
             Asteroid.OnDestroyed -= OnDestroyed;
         }
