@@ -21,8 +21,9 @@ namespace Model.AI
     public class AIShip : Ship
     {
         public AIBehavior behavior;
+		public CanvasHealthBar healthBar;
 
-        public float detectionRadius = 250.0f;
+		public float detectionRadius = 250.0f;
 
         public LayerMask obstacleLayer; // Layer for obstacles (e.g., asteroids)
 
@@ -80,7 +81,7 @@ namespace Model.AI
         public override void Start()
         {
             base.Start();
-            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
+            //rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
             BT.aiShip = this;
             BT.Initialize();
 
@@ -527,8 +528,10 @@ namespace Model.AI
 
             //Vector3 direction = (player.position - transform.position).normalized;
             Vector3 direction = (target.transform.position - transform.position).normalized;
+			Quaternion targetRotation = Quaternion.LookRotation(direction);
+			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, behavior.rotationSpeed * Time.deltaTime);
 
-            if (Time.time >= lastAttackTime + behavior.attackCooldown)
+			if (Time.time >= lastAttackTime + behavior.attackCooldown)
             {
                 Attack();
                 lastAttackTime = Time.time;
