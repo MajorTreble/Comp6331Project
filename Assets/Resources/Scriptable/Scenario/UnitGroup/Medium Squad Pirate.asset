@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2091ee695cdcd40bed3c95519fb76b, type: 3}
   m_Name: Medium Squad Pirate
   m_EditorClassIdentifier: 
-  position: {x: 10, y: 10, z: 10}
+  position: {x: 100, y: 100, z: 0}
   rotation: {x: 0, y: 0, z: 0, w: 1}
-  radius: 10
-  faction: {fileID: 11400000, guid: 4dae286d20b610f4b849bdde4022d78f, type: 2}
+  radius: 15
+  jobFaction: 1
   shipTypes: 0000000000000000000000000000000000000000
+  groupMode: 0
+  patrolPrefab: {fileID: 0}

@@ -28,7 +28,7 @@ namespace Controller
             else Destroy(gameObject);
         }
 
-        private void OnDestory()
+        private void OnDestroy()
         {
             Asteroid.OnDestroyed -= OnDestroyed;
         }
@@ -123,6 +123,7 @@ namespace Controller
         public void OnObjDestroyed(string _tag)
         {
             //Debug.Log(_tag + " - " + currJob.jobTarget+ " - " + JobUtil.ToTag(currJob.jobTarget));
+            
             if(_tag == JobUtil.ToTag(currJob.jobTarget))
             {
                 TargetDestoyed();

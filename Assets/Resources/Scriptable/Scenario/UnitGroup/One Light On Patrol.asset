@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2091ee695cdcd40bed3c95519fb76b, type: 3}
   m_Name: One Light On Patrol
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0, z: 0}
+  position: {x: 0, y: -100, z: -100}
   rotation: {x: 0, y: 0, z: 0, w: 1}
-  radius: 10
+  radius: 15
   jobFaction: 0
   shipTypes: 00000000
   groupMode: 0

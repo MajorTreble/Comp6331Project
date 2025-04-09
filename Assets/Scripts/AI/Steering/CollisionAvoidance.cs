@@ -32,6 +32,8 @@ namespace AI.Steering
 
             foreach (SteeringAgent avoidAgent in avoidList)
             {
+                if(avoidAgent.gameObject.activeSelf == false) continue;
+
                 Vector3 direction = agent.transform.position - avoidAgent.transform.position;
                 Vector3 velocity = agent.Velocity - avoidAgent.Velocity;
 
