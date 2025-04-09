@@ -33,7 +33,10 @@ namespace Model
         {
             health = oriData.maxHealth;
             shields = oriData.maxShields;
-            healthBar.UpdateHealthBar(oriData.maxHealth, health);
+            if (healthBar != null)
+            {
+                healthBar.UpdateHealthBar(oriData.maxHealth, health);
+            }
         }
 
         public virtual bool IsJobTarget()
@@ -57,12 +60,18 @@ namespace Model
             if (shields > 0)
             {
                 shields -= damage;
-                healthBar.UpdateHealthBar(oriData.maxHealth, health);
+                if (healthBar != null)
+                {
+                    healthBar.UpdateHealthBar(oriData.maxHealth, health);
+                }
             }
             else
             {
                 health -= (damage + shields);
-				healthBar.UpdateHealthBar(oriData.maxHealth, health);
+                if (healthBar != null)
+                {
+                    healthBar.UpdateHealthBar(oriData.maxHealth, health);
+                }
 
 			}
 			return CheckDestroyed();
