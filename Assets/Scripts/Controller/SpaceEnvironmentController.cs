@@ -33,6 +33,9 @@ namespace Controller
 
         private Rigidbody playerRb;
 
+        [Header("Special Asteroid Spawns")]
+        public Vector3 magneticAsteroidSpawnPosition = new Vector3(40, 15, 150);
+
         void Awake()
         {
             if (Instance != null)
@@ -69,6 +72,7 @@ namespace Controller
                 JobController.Inst.currJob.jobType == JobType.Mine)
             {
                 SpawnMineableAsteroids(JobController.Inst.currJob.quantity);
+                ForceSpawnMagneticAndBreakable();
             }
         }
 
@@ -212,13 +216,63 @@ namespace Controller
                     Debug.LogWarning("[SpaceEnvironmentController] No player found for spawn position.");
                     continue;
                 }
+                GameObject org = GameObject.Find("Org_" + mineableAsteroid.name);
+                if (org == null)
+                {
+                    org = new GameObject("Org_" + mineableAsteroid.name);
+                }
+                GameObject obj = Instantiate(mineableAsteroid, spawnPos, Random.rotation, org.transform);
 
                 Debug.Log($"[SpaceEnvironmentController] Spawned mineable asteroid at {spawnPos}");
-                GameObject obj = Instantiate(mineableAsteroid, spawnPos, Random.rotation);
                 activeMineableAsteroids.Add(obj);
             }
 
             Debug.Log($"[SpaceEnvironmentController] Spawned {count} mineable asteroids.");
+        }
+
+        // Force blackhole situation, only in mine job
+        void ForceSpawnMagneticAndBreakable()
+        {
+            GameObject magneticAsteroidPrefab = null;
+            GameObject breakableAsteroidPrefab = null;
+            foreach (var obj in spaceObjects)
+            {
+                if (obj.prefab.CompareTag("MagneticAsteroid"))
+                {
+                    magneticAsteroidPrefab = obj.prefab;
+                }
+
+                if (obj.prefab.CompareTag("Asteroid"))
+                {
+                    breakableAsteroidPrefab = obj.prefab;
+                }
+            }
+
+            if (magneticAsteroidPrefab == null || breakableAsteroidPrefab == null)
+            {
+                Debug.LogWarning("[SpaceEnvironmentController] No prefab tagged 'MagneticAsteroid'|'BreakableAsteroid' found in spaceObjects!");
+                return;
+            }
+
+            GameObject magnetic = Instantiate(
+                magneticAsteroidPrefab,
+                magneticAsteroidSpawnPosition,
+                Quaternion.identity);
+            activeObjects.Add(magnetic);
+
+            if (breakableAsteroidPrefab != null)
+            {
+                Vector3 offset = Vector3.right * 6f;
+                GameObject breakable = Instantiate(
+                    breakableAsteroidPrefab,
+                    magneticAsteroidSpawnPosition + offset,
+                    Quaternion.identity);
+                activeObjects.Add(breakable);
+            }
+            else
+            {
+                Debug.LogWarning("[SpaceEnvironmentController] breakableAsteroidPrefab not assigned.");
+            }
         }
     }
 }

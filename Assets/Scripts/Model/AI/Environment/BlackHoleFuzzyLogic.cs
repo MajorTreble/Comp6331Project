@@ -16,6 +16,14 @@ namespace Model.AI.Environment
         [Range(0, 100)]
         public float blackHoleProbability = 0f;
 
+        [Header("Mass Thresholds")]
+        public int lowMassThreshold = 12;
+        public int mediumMassThreshold = 25;
+
+        [Header("Proximity Thresholds")]
+        public float farProximityThreshold = 25f;
+        public float mediumProximityThreshold = 15f;
+
         private GameObject blackHolePrefab;
 
         public MagneticFragmentGroupAI fragmentGroup;
@@ -56,16 +64,16 @@ namespace Model.AI.Environment
 
         float FuzzifyMass(int mass)
         {
-            if (mass <= 12) return 10f;     // Low mass → low chance
-            if (mass <= 25) return 50f;     // Medium mass
-            return 90f;                    // High mass
+            if (mass <= lowMassThreshold) return 10f;     // Low mass → low chance
+            if (mass <= mediumMassThreshold) return 50f;  // Medium mass
+            return 90f;                                   // High mass
         }
 
         float FuzzifyProximity(float proximity)
         {
-            if (proximity > 25f) return 10f;     // Too far
-            if (proximity > 15f) return 50f;     // Medium
-            return 90f;                          // Close proximity
+            if (proximity > farProximityThreshold) return 10f;       // Too far
+            if (proximity > mediumProximityThreshold) return 50f;    // Medium
+            return 90f;                                              // Close proximity
         }
 
         void TryTriggerBlackHole()

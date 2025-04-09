@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Model.Environment {
+namespace Model.Environment
+{
     public class SpaceStorm : MonoBehaviour
     {
         public float stormRadiusX = 75f;
@@ -20,6 +21,7 @@ namespace Model.Environment {
         {
             InvokeRepeating(nameof(FindAffectedObjects), 0f, forceUpdateInterval);
         }
+
         void FindAffectedObjects()
         {
             Vector3 boxSize = new Vector3(stormRadiusX, stormRadiusY, stormRadiusZ);
@@ -32,6 +34,8 @@ namespace Model.Environment {
 
             foreach (Collider col in nearbyObjects)
             {
+                if (col.CompareTag("SpaceStorm")) continue;
+
                 Rigidbody rb = col.GetComponent<Rigidbody>();
                 if (rb != null)
                 {
@@ -42,11 +46,10 @@ namespace Model.Environment {
 
             ApplyStormEffects();
 
-            // Check for objects that LEFT the storm
             foreach (Rigidbody rb in lastFrameObjects)
             {
-                if(rb==null) continue;
-                
+                if (rb == null) continue;
+
                 if (!currentFrameObjects.Contains(rb))
                 {
                     OnObjectExitStorm(rb);
@@ -65,7 +68,7 @@ namespace Model.Environment {
 
             foreach (Rigidbody rb in affectedObjects)
             {
-                if (rb == null) continue;
+                if (rb == null || rb.CompareTag("SpaceStorm")) continue;
 
                 Vector3 randomForce = Random.insideUnitSphere * objectPushForce;
                 rb.AddForce(randomForce, ForceMode.Acceleration);
@@ -78,10 +81,9 @@ namespace Model.Environment {
             }
         }
 
-        // Reset Effects When Object Leaves Storm
         void OnObjectExitStorm(Rigidbody rb)
         {
-            if (rb == null) return;
+            if (rb == null || rb.CompareTag("SpaceStorm")) return;
 
             Utils.DebugLog($"[SpaceStorm] {rb.gameObject.name} ({rb.tag}) LEFT the storm.");
 
@@ -92,7 +94,7 @@ namespace Model.Environment {
                 return;
             }
 
-            rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, 0.2f);  
+            rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, 0.2f);
         }
 
         void OnDrawGizmosSelected()
@@ -105,6 +107,4 @@ namespace Model.Environment {
             Gizmos.DrawWireCube(Vector3.zero, boxSize);
         }
     }
-
-
 }
