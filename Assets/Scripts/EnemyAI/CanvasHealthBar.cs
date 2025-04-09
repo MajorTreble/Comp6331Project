@@ -19,9 +19,10 @@ public class CanvasHealthBar : MonoBehaviour
         healthBarSprite.fillAmount = currentHealth / maxHealth;
     }
 
-    void Update()
-    {
-        transform.rotation = Quaternion.LookRotation(transform.position - cam.transform.position);
-    }
+	void Update()
+	{
+		if (cam == null) return;
+		transform.rotation = Quaternion.LookRotation(transform.position - cam.transform.position);
+	}
 
 }
