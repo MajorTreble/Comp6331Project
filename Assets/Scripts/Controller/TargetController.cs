@@ -53,8 +53,26 @@ public class TargetController : MonoBehaviour
     {
         showPortal = false;
 
-        GameObject template = GameObject.Find("TargetTemplate");
         GameObject hostileTemplate = GameObject.Find("HostileTargetTemplate");
+        if (hostileTemplate != null)
+        {
+            foreach (Ship s in SpawningManager.Instance.shipList)
+            {
+                if (s is PlayerShip) continue;
+
+                hostileTargets.Add(s.GetComponent<AIShip>());
+                GameObject icon = Instantiate(hostileTemplate, hostileTemplate.transform.parent);
+                icon.SetActive(false);
+                hostileTargetsIcon.Add(icon.GetComponent<Image>());
+
+
+                if (s.CompareTag(JobUtil.ToTag(JobController.Inst.currJob.jobTarget)))
+                    targets.Add(s.transform);
+            }
+        }
+
+
+        GameObject template = GameObject.Find("TargetTemplate");
 
         if (template == null)
 		{
@@ -77,21 +95,7 @@ public class TargetController : MonoBehaviour
             } 
         }else //HUNT AND DEFEND
         {
-            foreach (Ship s in SpawningManager.Instance.shipList)
-            {
-                if(s is PlayerShip) continue;
-
-                hostileTargets.Add(s.GetComponent<AIShip>());
-                GameObject icon = Instantiate(hostileTemplate, hostileTemplate.transform.parent);
-                icon.SetActive(false);
-                hostileTargetsIcon.Add(icon.GetComponent<Image>());
-                
-
-                if (s.CompareTag(JobUtil.ToTag(JobController.Inst.currJob.jobTarget)))
-                    targets.Add(s.transform);            
-            }            
         }
-        
         
         for (int i = 0; i < targets.Count; i++)
         {

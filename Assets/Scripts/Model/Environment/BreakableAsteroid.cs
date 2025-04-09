@@ -1,11 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-using Controller;
 
 namespace Model.Environment
 {
-    public class BreakableAsteroid : MonoBehaviour, IDamagable
+    public class BreakableAsteroid : Asteroid
     {
         public bool canBreak = true;
         public float minSize = 0.2f;
@@ -16,8 +15,6 @@ namespace Model.Environment
 
         private bool canBreakAgain = false;
         private float breakCooldown = 0.5f;
-
-        private float health = 50;
 
 
         void Start()
@@ -53,45 +50,22 @@ namespace Model.Environment
             canBreakAgain = true;
         }
 
-        private void OnCollisionStay(Collision collision)
+        protected void OnCollisionStay(Collision collision)
         {
             //Debug.Log("Asteroid is touching: " + collision.gameObject.name);
             if (collision.gameObject.tag != "Asteroid" && canBreak && transform.localScale.x > minSize)
             {
                 Debug.Log("Asteroid is breaking..");
-                BreakAsteroid();
+                DestroyAsteroid();
             }
         }
 
-        public bool IsShooter(Ship shooter)
+        protected override void DestroyAsteroid()
         {
-            return false;
-        }
 
-        public bool TakeDamage(float damage, Ship shooter)
-        {
-            health -= damage;
-
-            return CheckDestroyed();
-        }
-
-        public bool CheckDestroyed()
-        {
-            if (health > 0)
-                return false;
-
-            BreakAsteroid();
-
-            return true;
-        }
-
-
-        private void BreakAsteroid()
-        {
-            JobController.Inst.OnObjDestroyed(transform.tag);
             if (!canBreak || transform.localScale.x <= minSize)
             {
-                gameObject.SetActive(false);
+                base.DestroyAsteroid();
                 return;
             }
 
@@ -123,7 +97,7 @@ namespace Model.Environment
 
                 SpawnBreakEffect();
 
-                gameObject.SetActive(false);
+                base.DestroyAsteroid();
             }
         }
 

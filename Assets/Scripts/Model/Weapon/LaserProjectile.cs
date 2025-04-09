@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Model.Environment;
-using Controller;
-using Manager;
 
 namespace Model.Weapon
 {
@@ -15,7 +12,11 @@ namespace Model.Weapon
         public float lifeTime = 3f;
         public float damage = 100f;
 
-        private GameObject explosionEffect;
+        public GameObject explosionEffect;
+
+        protected Rigidbody rigidBody;
+
+        protected bool isDestroyed = false;
 
         public void Setup(Ship shooter, float damage)
         {
@@ -25,24 +26,32 @@ namespace Model.Weapon
 
         private void Start()
         {
-            explosionEffect = GameManager.Instance.explosionEffect;
+            rigidBody = GetComponent<Rigidbody>();
 
             Destroy(gameObject, lifeTime); // auto-destroy after some time
         }
 
-        void Update()
+        void FixedUpdate()
         {
-            float finalSpeed = speed;
-            transform.position += transform.forward * finalSpeed * Time.deltaTime;
+            float speedPerFrame = speed * Time.deltaTime;
+            rigidBody.MovePosition(transform.position + transform.forward * speedPerFrame);
+            Debug.Log("Laser position " + transform.position);
         }
 
         void OnTriggerEnter(Collider other)
         {
+            if (isDestroyed)
+            {
+                return;
+            }
+
             IDamagable damagable = other.GetComponent<IDamagable>();
             if (damagable == null)
             {
                 damagable = other.transform.root.gameObject.GetComponent<IDamagable>();
             }
+
+            Debug.Log("Laser hit " + transform.position + $" {other.transform.name}");
 
             Vector3 hitPosition = other.bounds.center;
             Utils.DebugLog($"[LaserProjectile] hit by {other.tag}" + other.transform.name);
@@ -57,6 +66,8 @@ namespace Model.Weapon
 
                 SpawnExplosionEffect(hitPosition);
                 damagable.TakeDamage(damage, shooter);
+                Destroy(gameObject);
+                isDestroyed = true;
                 return;
             }
 
@@ -65,6 +76,7 @@ namespace Model.Weapon
             {
                 SpawnExplosionEffect(hitPosition);
                 Destroy(gameObject);
+                isDestroyed = true;
             }
         }
 

@@ -115,7 +115,7 @@ namespace Controller
             if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0) )
             {
                 if(playerShip.ammo > 0)
-                    playerShipRb.GetComponent<PlayerShip>().FireLaser(currSpeed);
+                    playerShipRb.GetComponent<PlayerShip>().Attack();
             }
         }
 

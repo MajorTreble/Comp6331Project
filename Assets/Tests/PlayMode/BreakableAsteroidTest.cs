@@ -6,11 +6,12 @@ using UnityEngine.TestTools;
 
 using Model;
 using Model.AI;
+using Model.Environment;
 
-public class ShipTest
+public class BreakableAsteroidTest
 {
     public PlayerShip playerShip;
-    public AIShip aiShip;
+    public BreakableAsteroid breakableAsteroid;
 
     [SetUp]
     public void Setup()
@@ -18,26 +19,24 @@ public class ShipTest
         ShipLoader shipLoader = Resources.Load<ShipLoader>("Scriptable/ShipLoader");
 
         playerShip = GameObject.Instantiate(shipLoader.playerShipPrefab, new Vector3(0f, 0f, -50f), Quaternion.identity).GetComponent<PlayerShip>();
-        aiShip = GameObject.Instantiate(shipLoader.aiShipPrefab, Vector3.zero, Quaternion.AngleAxis(180f, Vector3.up)).GetComponent<AIShip>();
+        breakableAsteroid = GameObject.Instantiate(shipLoader.breakableAsteroidPrefab, new Vector3(-3f, 0f, 0f), Quaternion.identity).GetComponent<BreakableAsteroid>();
     }
 
     [TearDown]
     public void TearDown()
     {
         playerShip.GetComponent<Collider>().enabled = false;
-        aiShip.GetComponent<Collider>().enabled = false;
+        breakableAsteroid.GetComponent<Collider>().enabled = false;
 
         GameObject.DestroyImmediate(playerShip);
-        GameObject.DestroyImmediate(aiShip);
+        GameObject.DestroyImmediate(breakableAsteroid);
     }
 
     [UnityTest]
     public IEnumerator TestSpawning()
     {
         Assert.IsNotNull(playerShip);
-        Assert.IsNotNull(aiShip);
-
-        Assert.IsTrue(aiShip.currentState == AIState.Roam);
+        Assert.IsNotNull(breakableAsteroid);
 
         yield return null;
     }
@@ -47,24 +46,11 @@ public class ShipTest
     {
         playerShip.Attack();
 
-        for(int i=0; i<16; ++i)
-        {
-            yield return new WaitForFixedUpdate();
-        }
-
-        Assert.IsTrue(aiShip.health < aiShip.oriData.maxHealth, $"{aiShip.health} < {aiShip.oriData.maxHealth}");
-    }
-
-    [UnityTest]
-    public IEnumerator TestAIShipAttack()
-    {
-        aiShip.Attack();
-
         for (int i = 0; i < 16; ++i)
         {
             yield return new WaitForFixedUpdate();
         }
 
-        Assert.IsTrue(playerShip.shields < playerShip.oriData.maxShields, $"{playerShip.shields} < {playerShip.oriData.maxShields}");
+        Assert.IsTrue(breakableAsteroid.health < 50f);
     }
 }

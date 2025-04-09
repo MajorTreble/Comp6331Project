@@ -8,6 +8,9 @@ namespace Model
     {
         public GameObject playerShipPrefab;
         public GameObject aiShipPrefab;
+        public GameObject breakableAsteroidPrefab;
+        public GameObject mineableAsteroidPrefab;
+        public GameObject magneticAsteroidPrefab;
     }
 
 }

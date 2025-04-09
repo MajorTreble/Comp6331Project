@@ -40,6 +40,7 @@ namespace Model.AI
         public float obstacleAvoidanceWeight = 5f; // Strength of avoidance
 
         public AI_Waypoints patrol = null;
+        public bool disableCombat = false;
 
         // Define AI states for finite state machine
         public AIState currentState = AIState.Idle;
@@ -407,7 +408,13 @@ namespace Model.AI
                 return;
             }
 
-            float distance = Vector3.Distance(transform.position, target.transform.position);
+            if (disableCombat)
+            {
+                requestedState = AIState.Idle;
+                return;
+            }
+
+            float distance = currentLKP.distance;
 
             if (isStrafing)
             {

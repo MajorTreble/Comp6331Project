@@ -16,6 +16,8 @@ namespace Model
         public int ammo;
         public float health;
         public float shields;
+        public float maxHealth = 100f;
+        public float maxShields = 0f;
 
         public Faction faction = null;
 
