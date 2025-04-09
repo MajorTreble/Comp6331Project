@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Manager;
+
 namespace Controller
 {
     public class SpaceEnvironmentController : MonoBehaviour
@@ -127,7 +129,9 @@ namespace Controller
                 org = new GameObject("Org_"+selectedPrefab.name);
             }
 
-            GameObject obj = Instantiate(selectedPrefab, spawnPos, Random.rotation, org.transform);
+            SpawnParams spawnParams = new SpawnParams(selectedPrefab, spawnPos, Random.rotation);
+            spawnParams.parent = org.transform;
+            GameObject obj = SpawningManager.Instance.Spawn(spawnParams);
             activeObjects.Add(obj);
         }
 
@@ -221,7 +225,9 @@ namespace Controller
                 {
                     org = new GameObject("Org_" + mineableAsteroid.name);
                 }
-                GameObject obj = Instantiate(mineableAsteroid, spawnPos, Random.rotation, org.transform);
+                SpawnParams spawnParams = new SpawnParams(mineableAsteroid, spawnPos, Random.rotation);
+                spawnParams.parent = org.transform;
+                GameObject obj = SpawningManager.Instance.Spawn(spawnParams);
 
                 Debug.Log($"[SpaceEnvironmentController] Spawned mineable asteroid at {spawnPos}");
                 activeMineableAsteroids.Add(obj);

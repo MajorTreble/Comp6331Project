@@ -6,11 +6,12 @@ using UnityEngine.TestTools;
 
 using Model;
 using Model.AI;
+using Model.Environment;
 
-public class ShipTest
+public class MagneticAsteroidTest
 {
     public PlayerShip playerShip;
-    public AIShip aiShip;
+    public MagneticAsteroid magneticAsteroid;
 
     [SetUp]
     public void Setup()
@@ -18,26 +19,28 @@ public class ShipTest
         ShipLoader shipLoader = Resources.Load<ShipLoader>("Scriptable/ShipLoader");
 
         playerShip = GameObject.Instantiate(shipLoader.playerShipPrefab, new Vector3(0f, 0f, -50f), Quaternion.identity).GetComponent<PlayerShip>();
-        aiShip = GameObject.Instantiate(shipLoader.aiShipPrefab, Vector3.zero, Quaternion.AngleAxis(180f, Vector3.up)).GetComponent<AIShip>();
+        magneticAsteroid = GameObject.Instantiate(shipLoader.magneticAsteroidPrefab, new Vector3(-3f, 0f, 0f), Quaternion.identity).GetComponent<MagneticAsteroid>();
     }
 
     [TearDown]
     public void TearDown()
     {
         playerShip.GetComponent<Collider>().enabled = false;
-        aiShip.GetComponent<Collider>().enabled = false;
+
+        if (magneticAsteroid)
+        {
+            magneticAsteroid.GetComponent<Collider>().enabled = false;
+        }
 
         GameObject.DestroyImmediate(playerShip);
-        GameObject.DestroyImmediate(aiShip);
+        GameObject.DestroyImmediate(magneticAsteroid);
     }
 
     [UnityTest]
     public IEnumerator TestSpawning()
     {
         Assert.IsNotNull(playerShip);
-        Assert.IsNotNull(aiShip);
-
-        Assert.IsTrue(aiShip.currentState == AIState.Roam);
+        Assert.IsNotNull(magneticAsteroid);
 
         yield return null;
     }
@@ -47,24 +50,11 @@ public class ShipTest
     {
         playerShip.Attack();
 
-        for(int i=0; i<16; ++i)
-        {
-            yield return new WaitForFixedUpdate();
-        }
-
-        Assert.IsTrue(aiShip.health < aiShip.oriData.maxHealth, $"{aiShip.health} < {aiShip.oriData.maxHealth}");
-    }
-
-    [UnityTest]
-    public IEnumerator TestAIShipAttack()
-    {
-        aiShip.Attack();
-
         for (int i = 0; i < 16; ++i)
         {
             yield return new WaitForFixedUpdate();
         }
 
-        Assert.IsTrue(playerShip.shields < playerShip.oriData.maxShields, $"{playerShip.shields} < {playerShip.oriData.maxShields}");
+        Assert.IsTrue(magneticAsteroid.hasBroken);
     }
 }

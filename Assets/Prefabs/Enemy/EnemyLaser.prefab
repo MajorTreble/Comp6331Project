@@ -113,7 +113,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!114 &8849094849067905929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,3 +129,4 @@ MonoBehaviour:
   speed: 300
   lifeTime: 3
   damage: 100
+  explosionEffect: {fileID: 425513439473346423, guid: 08f7b1a71c2dba44583791d71444f332, type: 3}

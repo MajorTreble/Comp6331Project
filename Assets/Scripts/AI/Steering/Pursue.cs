@@ -9,7 +9,7 @@ namespace AI.Steering
             var output = base.GetKinematic(agent);
 
             Vector3 desiredVelocity = (agent.TargetPosition + agent.TargetVelocity) - agent.transform.position;
-            desiredVelocity.y = 0;
+            //desiredVelocity.y = 0;
             desiredVelocity = desiredVelocity.normalized * agent.maxSpeed;
             output.linear = desiredVelocity;
 

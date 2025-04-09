@@ -29,9 +29,6 @@ namespace Model
 
         public void Awake()
         {
-            this.faction = new Faction();
-            this.faction.factionType = Faction.FactionType.Solo;
-
             SetupWeapons();
 
             SetStats();
@@ -116,7 +113,7 @@ namespace Model
             shields = Mathf.Clamp(shields, 0, CurrMaxShields);
         }
 
-        public void FireLaser(float playerSpeed = 0)
+        public void Attack()
         {
             if (Time.time < fireCooldown) return;
 

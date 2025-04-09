@@ -62,3 +62,5 @@ MonoBehaviour:
   orbitingMass: 0
   averageProximity: 20
   blackHoleProbability: 0
+  blackHolePrefab: {fileID: 6012756211718914440, guid: 394c7216ddcbf4f4faabafea3044a13b, type: 3}
+  fragmentGroup: {fileID: 0}

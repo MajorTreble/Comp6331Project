@@ -6,11 +6,14 @@ using UnityEngine.TestTools;
 
 using Model;
 using Model.AI;
+using Model.Environment;
 
-public class ShipTest
+public class MineableAsteroidTest
 {
     public PlayerShip playerShip;
-    public AIShip aiShip;
+    public MineableAsteroid mineableAsteroid;
+
+    public bool isDestroyed = false;
 
     [SetUp]
     public void Setup()
@@ -18,26 +21,27 @@ public class ShipTest
         ShipLoader shipLoader = Resources.Load<ShipLoader>("Scriptable/ShipLoader");
 
         playerShip = GameObject.Instantiate(shipLoader.playerShipPrefab, new Vector3(0f, 0f, -50f), Quaternion.identity).GetComponent<PlayerShip>();
-        aiShip = GameObject.Instantiate(shipLoader.aiShipPrefab, Vector3.zero, Quaternion.AngleAxis(180f, Vector3.up)).GetComponent<AIShip>();
+        mineableAsteroid = GameObject.Instantiate(shipLoader.mineableAsteroidPrefab).GetComponent<MineableAsteroid>();
+        isDestroyed = false;
+
+        Asteroid.OnDestroyed += OnDestroyed;
     }
 
     [TearDown]
     public void TearDown()
     {
         playerShip.GetComponent<Collider>().enabled = false;
-        aiShip.GetComponent<Collider>().enabled = false;
+        mineableAsteroid.GetComponent<Collider>().enabled = false;
 
         GameObject.DestroyImmediate(playerShip);
-        GameObject.DestroyImmediate(aiShip);
+        GameObject.DestroyImmediate(mineableAsteroid);
     }
 
     [UnityTest]
     public IEnumerator TestSpawning()
     {
         Assert.IsNotNull(playerShip);
-        Assert.IsNotNull(aiShip);
-
-        Assert.IsTrue(aiShip.currentState == AIState.Roam);
+        Assert.IsNotNull(mineableAsteroid);
 
         yield return null;
     }
@@ -47,24 +51,32 @@ public class ShipTest
     {
         playerShip.Attack();
 
-        for(int i=0; i<16; ++i)
+        for (int i = 0; i < 16; ++i)
         {
             yield return new WaitForFixedUpdate();
         }
 
-        Assert.IsTrue(aiShip.health < aiShip.oriData.maxHealth, $"{aiShip.health} < {aiShip.oriData.maxHealth}");
+        Assert.IsTrue(mineableAsteroid.health < 50f);
     }
 
     [UnityTest]
-    public IEnumerator TestAIShipAttack()
+    public IEnumerator TestPlayerShipAttackDestroyed()
     {
-        aiShip.Attack();
+        playerShip.weapon_1.Setup(playerShip, 100f);
+        playerShip.weapon_2.Setup(playerShip, 100f);
+
+        playerShip.Attack();
 
         for (int i = 0; i < 16; ++i)
         {
             yield return new WaitForFixedUpdate();
         }
 
-        Assert.IsTrue(playerShip.shields < playerShip.oriData.maxShields, $"{playerShip.shields} < {playerShip.oriData.maxShields}");
+        Assert.IsTrue(isDestroyed);
+    }
+
+    public void OnDestroyed(Asteroid asteroid)
+    {
+        isDestroyed = true;
     }
 }

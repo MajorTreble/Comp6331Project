@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement; // Debug only
 
 using Model;
 using Model.AI;
+using Model.Environment;
 using Controller;
 using System.Runtime.InteropServices;
 
@@ -18,7 +19,7 @@ namespace Manager
         private Dictionary<Faction, AI_Waypoints> factionPaths = new Dictionary<Faction, AI_Waypoints>();
 
         public List<Ship> shipList = new List<Ship>();
-        private Dictionary<Faction.FactionType, AIShip> factionLeaders = new Dictionary<Faction.FactionType, AIShip>();
+        public List<Asteroid> asteroidList = new List<Asteroid>();
 
         void Awake()
         {
@@ -35,16 +36,22 @@ namespace Manager
 
         public GameObject Spawn(SpawnParams spawnParams)
         {
-            GameObject shipObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
-            spawnParams.Setup(shipObject);
+            GameObject spawnedObject = Instantiate(spawnParams.Prefab, spawnParams.position, spawnParams.rotation, spawnParams.parent);
+            spawnParams.Setup(spawnedObject);
 
-            Ship ship = shipObject.GetComponent<Ship>();
+            Ship ship = spawnedObject.GetComponent<Ship>();
             if (ship != null)
             {
                 shipList.Add(ship);
             }
 
-            return shipObject;
+            Asteroid asteroid = spawnedObject.GetComponent<Asteroid>();
+            if (asteroid != null)
+            {
+                asteroidList.Add(asteroid);
+            }
+
+            return spawnedObject;
         }
 
         public void SpawnScenario(Scenario scenario, Faction jobAlly, Faction jobTarget)
