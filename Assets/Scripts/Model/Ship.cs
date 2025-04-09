@@ -12,7 +12,6 @@ namespace Model
         public ShipData oriData;
         public Rigidbody rb;
         public SteeringAgent steeringAgent = null;
-        public LaserWeapon laserWeapon = new LaserWeapon();
 
         public int ammo;
         public float health;
@@ -45,7 +44,12 @@ namespace Model
             shields = Mathf.Clamp(shields, 0, oriData.maxShields);
         }
 
-        public virtual bool TakeDamage(float damage, Ship attacker)
+        public bool IsShooter(Ship shooter)
+        {
+            return this == shooter;
+        }
+
+        public virtual bool TakeDamage(float damage, Ship shooter)
         {
             if(shields > 0)
                 shields -= damage;

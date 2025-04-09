@@ -16,7 +16,7 @@ namespace Model
         public float allyReputationThreshold = 70f; // Reputation level required to ally with the player
         public float allyAssistRange = 20f; // Range within which the AI will assist the player
         [Range(0, 2)] public float missionResponseAggression = 1f;
-        public float detectionRadius = 25f;
+        public float detectionRadius = 250f;
 
         [Header("Movement")]
         public float roamSpeed;
@@ -24,8 +24,8 @@ namespace Model
         public float rotationSpeed;
 
         [Header("Combat")]
-        public float attackRange;
-        public float attackCooldown;
+        public float attackRange = 100f;
+        public float attackCooldown = 0.5f;
 
         [Header("Aggression Tuning")]
         public float aggressionCalmValue = 1f;

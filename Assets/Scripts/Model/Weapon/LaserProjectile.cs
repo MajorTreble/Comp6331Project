@@ -38,15 +38,23 @@ namespace Model.Weapon
 
         void OnTriggerEnter(Collider other)
         {
-            if (other == this || other.GetComponent<Ship>() == shooter) return;
+            IDamagable damagable = other.GetComponent<IDamagable>();
+            if (damagable == null)
+            {
+                damagable = other.transform.root.gameObject.GetComponent<IDamagable>();
+            }
 
             Vector3 hitPosition = other.bounds.center;
             Utils.DebugLog($"[LaserProjectile] hit by {other.tag}" + other.transform.name);
             //Debug.Log($"[PlayerLaserProjectile] hit by {other.tag}");
 
-            IDamagable damagable = other.GetComponent<IDamagable>();
             if (damagable != null)
             {
+                if (damagable.IsShooter(shooter))
+                {
+                    return;
+                }
+
                 SpawnExplosionEffect(hitPosition);
                 damagable.TakeDamage(damage, shooter);
                 return;
@@ -58,36 +66,6 @@ namespace Model.Weapon
                 SpawnExplosionEffect(hitPosition);
                 Destroy(gameObject);
             }
-        }
-
-        void OnCollisionEnter(Collision collision)
-        {
-            Debug.Log($"[Laser] Hit: {collision.gameObject.name}");
-
-            if (shooter == null)
-            {
-                Debug.LogWarning("Shooter is null on laser!");
-                return;
-            }
-
-            if (collision.gameObject == shooter)
-            {
-                Debug.Log("Laser hit its own shooter. Ignoring.");
-                return;
-            }
-
-            Ship ship = collision.gameObject.GetComponent<Ship>();
-            if (ship != null)
-            {
-                ship.TakeDamage(damage, shooter);
-            }
-
-            if (collision.gameObject.CompareTag("Player"))
-            {
-                Debug.Log("Laser hit the player!");
-            }
-
-            Destroy(gameObject);
         }
 
         void SpawnExplosionEffect(Vector3 hitPosition)

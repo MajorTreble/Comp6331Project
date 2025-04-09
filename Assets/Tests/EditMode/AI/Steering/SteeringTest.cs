@@ -19,7 +19,7 @@ public class SteeringTest
         agent.Awake();
 
         agent.maxSpeed = 1.0f;
-        agent.targetPosition = new Vector3(10.0f, 0.0f, 0.0f);
+        agent.TargetPosition = new Vector3(10.0f, 0.0f, 0.0f);
 
         agent.movements.Add(new Arrive());
         agent.movements.Add(new CollisionAvoidance());

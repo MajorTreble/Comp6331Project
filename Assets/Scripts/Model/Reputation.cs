@@ -1,6 +1,7 @@
 
 namespace Model
 {
+
     [System.Serializable]
     public class Reputation
     {
@@ -18,4 +19,5 @@ namespace Model
             value += _value;
         }
     }
+
 }

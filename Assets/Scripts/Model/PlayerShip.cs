@@ -60,12 +60,24 @@ namespace Model
                 return;
             }
 
-            weapon_1.Setup(this, CurrLaserDamage);
-            weapon_2.Setup(this, CurrLaserDamage);
+
+            float damage = 15.0f;
+            if (UpgradeController.Inst != null)
+            {
+                damage = CurrLaserDamage;
+            }
+
+            weapon_1.Setup(this, damage);
+            weapon_2.Setup(this, damage);
         }
 
         void AimWeapons()
         {
+            if (Camera.main == null)
+            {
+                return;
+            }
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             float distance = 250;
             RaycastHit hit;
@@ -83,6 +95,11 @@ namespace Model
 
         public override void SetStats()
         {
+            if (UpgradeController.Inst == null)
+            {
+                return;
+            }
+
             health = CurrMaxHealth;
             shields = CurrMaxShields;
             ammo = CurrMaxAmmo;
@@ -90,6 +107,11 @@ namespace Model
 
         public override void ShieldRecover()
         {
+            if (UpgradeController.Inst == null)
+            {
+                return;
+            }
+
             shields += CurrShieldRegen * Time.deltaTime;
             shields = Mathf.Clamp(shields, 0, CurrMaxShields);
         }

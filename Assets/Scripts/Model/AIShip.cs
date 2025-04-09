@@ -9,6 +9,7 @@ using AI.Steering;
 using Controller;
 using Manager;
 using Model.AI.BehaviorTree;
+using Model.AI.Steering;
 using static Model.Faction;
 using Model.Weapon;
 
@@ -21,7 +22,7 @@ namespace Model.AI
     {
         public AIBehavior behavior;
 
-        public float detectionRadius = 100.0f;
+        public float detectionRadius = 250.0f;
 
         public LayerMask obstacleLayer; // Layer for obstacles (e.g., asteroids)
 
@@ -51,8 +52,6 @@ namespace Model.AI
 
         protected AIWaypointNavigator navigator = null;
 
-        public Ship targetShip = null;
-
         // ---------- New fields for fuzzy logic and group behavior ----------
         protected Relationship relationship = Relationship.Neutral;
 
@@ -61,14 +60,20 @@ namespace Model.AI
         public List<LastKnownPosition> LKP;
         public List<Ship> hostileShips = new List<Ship>();
         public LastKnownPosition currentLKP = null;
+
         public Ship target = null;
+        public bool isStrafing = false;
+        public float strafeMinDistance = 50.0f;
+        public float strafeMaxDistance = 200.0f;
+
+        public float damage = 5.0f;
 
         public void Awake()
         {
             LKP = new List<LastKnownPosition>();
 
             weapon = Utils.FindChildByName(this.transform, "Weapon").GetComponent<LaserWeapon>();
-            weapon.Setup(this);
+            weapon.Setup(this, damage);
         }
 
         public override void Start()
@@ -105,6 +110,11 @@ namespace Model.AI
             foreach (LastKnownPosition lkp in LKP)
             {
                 lkp.Update(Time.time);
+            }
+
+            if (SpawningManager.Instance == null)
+            {
+                return;
             }
 
             foreach (Ship ship in SpawningManager.Instance.shipList)
@@ -273,15 +283,15 @@ namespace Model.AI
             }
         }
 
-        public override bool TakeDamage(float damage, Ship attacker)
+        public override bool TakeDamage(float damage, Ship shooter)
         {
-            bool isDestroyed = base.TakeDamage(damage, attacker);
+            bool isDestroyed = base.TakeDamage(damage, shooter);
 
-            Debug.Log($"[{name}] was hit by {attacker.name}");
+            Debug.Log($"[{name}] was hit by {shooter.name}");
 
-            if (attacker.CompareTag("Player") || AIHelper.IsEnemy(faction, attacker.faction))
+            if (shooter.CompareTag("Player") || AIHelper.IsEnemy(faction, shooter.faction))
             {
-                SetHostile(attacker);
+                SetHostile(shooter);
             }
 
             return isDestroyed;
@@ -294,7 +304,10 @@ namespace Model.AI
 
         public virtual void Attack()
         {
-            if (Time.time < lastAttackTime + behavior.attackCooldown) return;
+            if (Time.time < lastAttackTime + behavior.attackCooldown)
+            {
+                return;
+            }
 
             Debug.Log($"[{name}] Engaging target: {target?.name ?? "None"}");
 
@@ -343,17 +356,20 @@ namespace Model.AI
             steeringAgent.movements.Add(new Wander());
             steeringAgent.movements.Add(new LookWhereYouAreGoing());
 
-            CollisionAvoidance avoidance = new CollisionAvoidance();
-            avoidance.weight = 2.0f;
-            foreach (Ship ship in SpawningManager.Instance.shipList)
+            if (SpawningManager.Instance != null)
             {
-                SteeringAgent agent = ship.steeringAgent;
-                if (agent != null)
+                CollisionAvoidance avoidance = new CollisionAvoidance();
+                avoidance.weight = 2.0f;
+                foreach (Ship ship in SpawningManager.Instance.shipList)
                 {
-                    avoidance.avoidList.Add(agent);
+                    SteeringAgent agent = ship.steeringAgent;
+                    if (agent != null)
+                    {
+                        avoidance.avoidList.Add(agent);
+                    }
                 }
+                steeringAgent.movements.Add(avoidance);
             }
-            steeringAgent.movements.Add(avoidance);
         }
 
         protected void ExitRoam()
@@ -372,12 +388,16 @@ namespace Model.AI
             steeringAgent.maxSpeed = steeringAgent.initialMaxSpeed;
             steeringAgent.movements.Add(new Pursue());
             steeringAgent.movements.Add(new LookWhereYouAreGoing());
+
+            isStrafing = true;
         }
 
         protected void ExitCombat()
         {
             steeringAgent.trackedTarget = null;
             steeringAgent.movements.Clear();
+
+            isStrafing = false;
         }
 
         public virtual void UpdateCombat()
@@ -387,26 +407,52 @@ namespace Model.AI
                 return;
             }
 
-            switch (currentLKP.visibility)
+            float distance = Vector3.Distance(transform.position, target.transform.position);
+
+            if (isStrafing)
             {
-                case LKPVisibility.Seen:
-                    steeringAgent.trackedTarget = target.GetComponent<SteeringAgent>();
-                    break;
-                case LKPVisibility.SeenRecently:
-                    steeringAgent.targetPosition = currentLKP.position;
+                switch (currentLKP.visibility)
+                {
+                    case LKPVisibility.Seen:
+                        steeringAgent.trackedTarget = target.GetComponent<SteeringAgent>();
+                        break;
+                    case LKPVisibility.SeenRecently:
+                        steeringAgent.TargetPosition = currentLKP.position;
+                        steeringAgent.trackedTarget = null;
+                        break;
+                    case LKPVisibility.NotSeen:
+                        requestedState = AIState.Idle;
+                        break;
+                }
+
+                if (distance <= 50.0f)
+                {
+                    isStrafing = false;
+
+                    Vector3 xz = new Vector3(1.0f, 0.0f, 1.0f);
+                    Vector3 direction = Vector3.Normalize(Vector3.Scale((target.transform.position - transform.position), xz));
+
                     steeringAgent.trackedTarget = null;
-                    break;
-                case LKPVisibility.NotSeen:
-                    requestedState = AIState.Idle;
-                    break;
+                    float sign = (Random.Range(0, 2) == 0 ? -1.0f : 1.0f);
+                    steeringAgent.TargetPosition = target.transform.position +
+                        Vector3.Cross(direction, Vector3.up) * 100.0f * sign +
+                        direction * 250.0f;
+                }
+            }
+            else 
+            {
+                if (distance > 200.0f) 
+                {
+                    isStrafing = true;
+                }
             }
 
-            float dist = Vector3.Distance(transform.position, target.transform.position);
+
             Vector3 forward = transform.TransformDirection(Vector3.forward);
             Vector3 toTarget = Vector3.Normalize(target.transform.position - transform.position);
             float dotProduct = Vector3.Dot(forward, toTarget);
 
-            if (dist <= behavior.attackRange &&
+            if (distance <= behavior.attackRange &&
                 dotProduct >= 0.707)
             {
                 Attack();

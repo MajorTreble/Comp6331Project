@@ -175,15 +175,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oriData: {fileID: 11400000, guid: a4c3c1d0ec94b3744a0fd33545dd2b3d, type: 2}
   rb: {fileID: 0}
-  steeringAgent: {fileID: 0}
-  laserWeapon: {fileID: 0}
+  steeringAgent: {fileID: 214043799200931838}
   ammo: 99
   health: 100
   shields: 100
   faction: {fileID: 0}
   immoDuration: 1
   behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}
-  detectionRadius: 25
+  detectionRadius: 250
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 192
@@ -200,9 +199,12 @@ MonoBehaviour:
   shipLayer:
     serializedVersion: 2
     m_Bits: 128
-  targetShip: {fileID: 0}
   hostileShips: []
   target: {fileID: 0}
+  isStrafing: 0
+  strafeMinDistance: 50
+  strafeMaxDistance: 200
+  damage: 5
 --- !u!114 &214043799200931838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,10 +238,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7277576965648325399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8d1d1e277793ce4c8637087fc249300, type: 3}
+  m_Script: {fileID: 11500000, guid: d7761a86e5bcd6547bcf2c78b9bb4d23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path: {fileID: 280589639202043909, guid: 2da6cbf8352771f4c9ec8fa67d4176bf, type: 3}
+  path: {fileID: 0}
   stoppingDistance: 1.5
   waypointRadius: 30
 --- !u!1001 &6569509245376647039
