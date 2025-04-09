@@ -37,7 +37,7 @@ namespace Model.Environment
         {
             gameObject.SetActive(false);
 
-            //OnDestroyed?.Invoke(this);
+            OnDestroyed?.Invoke(this);
         }
     }
 }
