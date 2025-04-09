@@ -24,8 +24,11 @@ namespace Controller
 
         void Start()
         {
-            playerShipRb = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
-            playerShip = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
+            if (GameManager.Instance != null)
+            {
+                playerShipRb = GameManager.Instance.playerShip.GetComponent<Rigidbody>();
+                playerShip = GameManager.Instance.playerShip.GetComponent<PlayerShip>();
+            }
 
             mouseRotFac = mouseRotFac == 0 ? 0.05f : mouseRotFac;
         }
@@ -37,10 +40,15 @@ namespace Controller
 
         void LateUpdate()
         {
-            if(GameManager.devTools) DevTools();
+            if(GameManager.Instance != null && GameManager.devTools) DevTools();
 
-            if (GameManager.Instance.onMenu)
+            if (GameManager.Instance != null && GameManager.Instance.onMenu)
                 return;
+
+            if (GameManager.Instance == null)
+            {
+                return;
+            }
 
             if (playerShipRb == null || playerShip == null)
             {
@@ -57,7 +65,10 @@ namespace Controller
             Shoot();
 
 
-            CameraFollow.Inst.MoveCamera();
+            if (CameraFollow.Inst != null)
+            {
+                CameraFollow.Inst.MoveCamera();
+            }
         }
 
         void ShipRotation()

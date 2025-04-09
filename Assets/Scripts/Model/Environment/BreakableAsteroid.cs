@@ -3,7 +3,8 @@ using UnityEngine;
 
 using Controller;
 
-namespace Model.Environment {
+namespace Model.Environment
+{
     public class BreakableAsteroid : MonoBehaviour, IDamagable
     {
         public bool canBreak = true;
@@ -29,18 +30,18 @@ namespace Model.Environment {
             StartCoroutine(EnableBreakingAfterDelay());
         }
 
-        private void Update() 
+        private void Update()
         {
-            if(Input.GetKeyDown(KeyCode.L))
-            {                
+            if (Input.GetKeyDown(KeyCode.L))
+            {
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
                 rb.Sleep();
 
             }
-            if(Input.GetKeyDown(KeyCode.K))
+            if (Input.GetKeyDown(KeyCode.K))
             {
-                
+
                 rb.ResetInertiaTensor();
             }
 
@@ -62,23 +63,27 @@ namespace Model.Environment {
             }
         }
 
-        
-		public bool TakeDamage(float damage, Ship attacker)
-		{
-			health -= damage;
+        public bool IsShooter(Ship shooter)
+        {
+            return false;
+        }
 
-			return CheckDestroyed();
-		}
+        public bool TakeDamage(float damage, Ship shooter)
+        {
+            health -= damage;
 
-		public bool CheckDestroyed()
-		{
-			if(health > 0)
-				return false;
+            return CheckDestroyed();
+        }
 
-			BreakAsteroid();
+        public bool CheckDestroyed()
+        {
+            if (health > 0)
+                return false;
 
-			return true;	
-		}
+            BreakAsteroid();
+
+            return true;
+        }
 
 
         private void BreakAsteroid()

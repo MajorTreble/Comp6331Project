@@ -16,22 +16,27 @@ namespace Model.Environment
         {
             transform.Rotate(Vector3.up * spinSpeed * Time.deltaTime, Space.World);
         }
-       
-        public bool TakeDamage(float damage, Ship attacker)
-		{
-			health -= damage;
 
-			return CheckDestroyed();
-		}
+        public bool IsShooter(Ship shooter)
+        {
+            return false;
+        }
+
+        public bool TakeDamage(float damage, Ship shooter)
+        {
+            health -= damage;
+
+            return CheckDestroyed();
+        }
         public bool CheckDestroyed()
-		{
-			if(health > 0)
-				return false;
-            
+        {
+            if (health > 0)
+                return false;
+
             DestroyAsteroid();
 
-			return true;	
-		}
+            return true;
+        }
 
         void DestroyAsteroid()
         {

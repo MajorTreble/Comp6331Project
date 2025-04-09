@@ -5,9 +5,9 @@ using UnityEngine;
 
 using AI.Steering;
 using Manager;
-using Model.AI;
+using Model;
 
-namespace Model
+namespace Model.AI
 {
     public class AIHelper
     {
@@ -23,12 +23,12 @@ namespace Model
         {
             Debug.Assert(ship != null);
 
-            if (ship.targetShip == null)
-			{
+            if (ship.target == null)
+            {
                 return false;
-			}
+            }
 
-            return IsTargetInRange(ship, ship.targetShip, ship.detectionRadius);
+            return IsTargetInRange(ship, ship.target, ship.detectionRadius);
         }
 
         public static bool IsTargetInRange(Ship ship, Ship target, float detectionRadius)

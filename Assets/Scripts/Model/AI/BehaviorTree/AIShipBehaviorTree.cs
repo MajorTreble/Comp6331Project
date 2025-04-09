@@ -25,6 +25,7 @@ namespace Model.AI.BehaviorTree
                 }),
                 new Sequence(new List<Node>
                 {
+                    new Condition( () => aiShip.currentState != AIState.Combat ),
                     new Condition( () => aiShip.currentState != AIState.Formation ),
                     new Condition( () => aiShip.group != null ),
                     new Condition( () => aiShip.group.leader != aiShip ),
@@ -35,12 +36,14 @@ namespace Model.AI.BehaviorTree
                 }),
                 new Sequence(new List<Node>
                 {
+                    new Condition( () => aiShip.currentState != AIState.Combat ),
                     new Condition( () => aiShip.currentState != AIState.Formation ),
                     new Condition( () => aiShip.patrol != null ),
                     new SetAIStateNode(aiShip, AIState.Patrol)
                 }),
                 new Sequence(new List<Node>
                 {
+                    new Condition( () => aiShip.currentState != AIState.Combat ),
                     new Condition( () => aiShip.currentState != AIState.Formation ),
                     new SetAIStateNode(aiShip, AIState.Roam)
                 })
