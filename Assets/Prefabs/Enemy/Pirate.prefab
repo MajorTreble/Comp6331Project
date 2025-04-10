@@ -346,8 +346,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 14.400156, y: 4.51, z: 11.99}
-  m_Center: {x: -0.28, y: 2.02, z: 0.71}
+  m_Size: {x: 13.22, y: 2.88, z: 11.99}
+  m_Center: {x: 0, y: 0.23, z: 0.71}
 --- !u!54 &5175624525873238366
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -382,10 +382,10 @@ MonoBehaviour:
   ammo: 0
   health: 100
   shields: 0
-  healthBar: {fileID: 1384327323404604229}
   faction: {fileID: 11400000, guid: 4dae286d20b610f4b849bdde4022d78f, type: 2}
   immoDuration: 1
   behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}
+  healthBar: {fileID: 1384327323404604229}
   detectionRadius: 250
   obstacleLayer:
     serializedVersion: 2
@@ -398,6 +398,7 @@ MonoBehaviour:
   obstacleAvoidanceRange: 10
   obstacleAvoidanceWeight: 5
   patrol: {fileID: 0}
+  disableCombat: 0
   currentState: 0
   requestedState: 2
   shipLayer:

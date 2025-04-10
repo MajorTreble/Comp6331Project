@@ -100,7 +100,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4416928302594464331}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2}
+  m_LocalPosition: {x: 0, y: 0.61, z: 8.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2312662491760270164}
@@ -445,10 +445,10 @@ MonoBehaviour:
   ammo: 99
   health: 100
   shields: 100
-  healthBar: {fileID: 2194966120354091220}
   faction: {fileID: 0}
   immoDuration: 1
   behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}
+  healthBar: {fileID: 2194966120354091220}
   detectionRadius: 250
   obstacleLayer:
     serializedVersion: 2
@@ -461,6 +461,7 @@ MonoBehaviour:
   obstacleAvoidanceRange: 10
   obstacleAvoidanceWeight: 5
   patrol: {fileID: 0}
+  disableCombat: 0
   currentState: 1
   requestedState: 2
   shipLayer:

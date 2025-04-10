@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Manager;
+using Model;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +9,7 @@ namespace AI.Steering
     public class CollisionAvoidance : Movement
     {
         public List<SteeringAgent> avoidList = new List<SteeringAgent>();
-        public float avoidDistance = 1.0f;
+        public float avoidDistance = 11.5f;
         public float maxSeeDistance = 5.0f; 
 
         public override SteeringOutput GetKinematic(SteeringAgent agent)
@@ -17,8 +19,20 @@ namespace AI.Steering
         }
 
         public override SteeringOutput GetSteering(SteeringAgent agent)
-        {           
-            var output = base.GetSteering(agent);
+        {
+			// To Refresh avoid list
+			if (avoidList.Count == 0 && SpawningManager.Instance != null)
+			{
+				foreach (Ship ship in SpawningManager.Instance.shipList)
+				{
+					if (ship != null && ship != agent.GetComponent<Ship>() && ship.steeringAgent != null)
+					{
+						avoidList.Add(ship.steeringAgent);
+					}
+				}
+			}
+
+			var output = base.GetSteering(agent);
 
             // Find closest agent that will collide
             SteeringAgent closestAgent = null;
@@ -38,21 +52,24 @@ namespace AI.Steering
                 float speed = velocity.magnitude;
                 if (speed == 0)
 				{
-                    continue;
+					//Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name} due to zero relative speed.");
+					continue;
 				}
 
                 //float time = (direction - velocity) / (speed * speed);
                 float time = -1.0f * Vector3.Dot(direction, velocity) / (speed * speed);
                 if (time >= 50.0f)
 				{
-                    continue;
+					//Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name}, time to collision too far: {time:F2}");
+					continue;
 				}
 
                 float safeDistance = agent.radius + avoidAgent.radius + avoidDistance;
                 float collisionDistance = (direction + velocity * time).magnitude;
                 if (collisionDistance > safeDistance)
 				{
-                    continue;
+					//Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name}, collisionDistance {collisionDistance:F2} > safeDistance {safeDistance:F2}");
+					continue;
 				}
 
                  if (time > 0 && time < closestTime)
@@ -86,7 +103,7 @@ namespace AI.Steering
 
             /* Avoid the target */
             desiredDirection.Normalize();
-            desiredDirection *= agent.maxSpeed;
+            desiredDirection *= agent.maxSpeed * 1.5f;
 
             DrawDebug(agent, closestAgent, desiredDirection, closestDirection, Color.red);
 
