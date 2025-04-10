@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace AI.Steering
 {
@@ -115,9 +116,12 @@ namespace AI.Steering
                 GetSteeringSum(out steeringForce, out rotation);
                 Velocity += steeringForce * Time.deltaTime;
                 Velocity = Vector3.ClampMagnitude(Velocity, maxSpeed);
+                
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Velocity), rotationSpeed);
 
                 //transform.rotation = transform.rotation * rotation;
-                transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * rotation, rotationSpeed * Time.deltaTime);
+                //transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * rotation, rotationSpeed * Time.deltaTime);
+                //transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation, rotationSpeed * Time.deltaTime);
             }
 
             if (rigidBody)
