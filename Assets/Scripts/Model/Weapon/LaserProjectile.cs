@@ -35,7 +35,7 @@ namespace Model.Weapon
         {
             float speedPerFrame = speed * Time.deltaTime;
             rigidBody.MovePosition(transform.position + transform.forward * speedPerFrame);
-            Debug.Log("Laser position " + transform.position);
+            //Debug.Log("Laser position " + transform.position);
         }
 
         void OnTriggerEnter(Collider other)
@@ -51,7 +51,7 @@ namespace Model.Weapon
                 damagable = other.transform.root.gameObject.GetComponent<IDamagable>();
             }
 
-            Debug.Log("Laser hit " + transform.position + $" {other.transform.name}");
+            //Debug.Log("Laser hit " + transform.position + $" {other.transform.name}");
 
             Vector3 hitPosition = other.bounds.center;
             Utils.DebugLog($"[LaserProjectile] hit by {other.tag}" + other.transform.name);

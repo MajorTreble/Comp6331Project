@@ -26,7 +26,16 @@ namespace AI.Steering
         public Vector3 targetPosition;
         public Vector3 targetOffset = Vector3.zero;
 
-        public Vector3 TargetPosition
+		void Start()
+		{
+			if (rigidBody == null)
+				rigidBody = GetComponent<Rigidbody>();
+
+			if (owner == null)
+				owner = gameObject;
+		}
+
+		public Vector3 TargetPosition
         {
             get => trackedTarget != null ? trackedTarget.transform.position + trackedTarget.transform.TransformVector(targetOffset) : targetPosition;
 			set => targetPosition = value;
