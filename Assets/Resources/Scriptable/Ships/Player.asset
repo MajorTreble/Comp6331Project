@@ -15,7 +15,7 @@ MonoBehaviour:
   maxHealth: 100
   maxShields: 100
   maxAmmo: 100
-  shieldRegen: 1
+  shieldRegen: 5
   acc: 1
   maxSpeed: 50
   turnSpeed: 85

@@ -58,6 +58,7 @@ namespace Model
 
         public virtual bool TakeDamage(float damage, Ship shooter)
         {
+
             float remainingDamage = damage;
 
             if (shields > 0)
@@ -77,6 +78,7 @@ namespace Model
             {
                 health -= remainingDamage;
             }
+
 
             if (this is AIShip ai && ai.healthBar != null)
             {
