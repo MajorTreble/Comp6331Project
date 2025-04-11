@@ -48,8 +48,7 @@ namespace Model
 
         public virtual void ShieldRecover()
         {
-            shields += oriData.shieldRegen;
-            shields = Mathf.Clamp(shields, 0, oriData.maxShields);
+            
         }
 
         public bool IsShooter(Ship shooter)
@@ -63,10 +62,10 @@ namespace Model
             {
                 shields -= damage;
             }
-            else
+            
+            if (shields < 0)
             {
-                health -= (damage + shields);
-
+                health -= damage - Mathf.Abs(shields);
 			}
 
 			if (this is AIShip ai && ai.healthBar != null)

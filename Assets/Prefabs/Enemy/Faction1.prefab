@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 117373378718971367}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.22, y: 1.94, z: 5.02}
+  m_LocalPosition: {x: -0.22, y: -1.06, z: 5.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2312662491760270164}
@@ -54,7 +54,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1865710301421149065}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.34, y: 1.94, z: 5.02}
+  m_LocalPosition: {x: 1.34, y: -1.06, z: 5.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2312662491760270164}
@@ -172,7 +172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.59, y: 4.74}
+  m_AnchoredPosition: {x: 0, y: 1.2399998}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6717577390225663814
@@ -277,7 +277,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3656561627335258874}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2}
+  m_LocalPosition: {x: 0, y: -2.25, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2312662491760270164}
@@ -537,7 +537,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 7.95, y: 2.99, z: 7.08}
-  m_Center: {x: 0.56, y: 2.78, z: 1.17}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &5175624525873238366
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -572,10 +572,10 @@ MonoBehaviour:
   ammo: 99
   health: 100
   shields: 100
-  healthBar: {fileID: 7499448076106920835}
   faction: {fileID: 0}
   immoDuration: 1
   behavior: {fileID: 11400000, guid: e43e11e7a9eb1f243a00b6e5db2b2dd4, type: 2}
+  healthBar: {fileID: 7499448076106920835}
   detectionRadius: 250
   obstacleLayer:
     serializedVersion: 2
@@ -588,6 +588,7 @@ MonoBehaviour:
   obstacleAvoidanceRange: 10
   obstacleAvoidanceWeight: 5
   patrol: {fileID: 0}
+  disableCombat: 0
   currentState: 1
   requestedState: 2
   shipLayer:
@@ -667,7 +668,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.07
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
       propertyPath: m_LocalPosition.z
@@ -705,6 +706,18 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: -2067211441028266698, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2067211441028266698, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2067211441028266698, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
       propertyPath: m_Name
       value: SpaceShip
@@ -716,6 +729,18 @@ PrefabInstance:
     - target: {fileID: 4944249641855808295, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758784427910455606, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758784427910455606, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758784427910455606, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6daa7308267528d48b1ceb643f898dac, type: 3}

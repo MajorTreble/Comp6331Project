@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   maxShields: 100
+  maxAmmo: 100
   shieldRegen: 10
   acc: 1
   maxSpeed: 50
   turnSpeed: 10
   attackCooldown: 3
+  laserDamage: 20

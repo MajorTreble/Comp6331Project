@@ -32,6 +32,11 @@ namespace AI.Steering
             }
             else
                 output.angular = Quaternion.FromToRotation(agent.transform.forward, GetKinematic(agent).angular * Vector3.forward);
+                //output.angular = GetKinematic(agent).angular;
+                
+            if (debug) Debug.DrawRay(agent.transform.position + agent.Velocity, output.linear, Color.yellow);
+
+
 
             return output;
         }
