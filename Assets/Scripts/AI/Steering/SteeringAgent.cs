@@ -87,7 +87,7 @@ namespace AI.Steering
             movements = new List<Movement>();
         }
 
-		public void Update()
+		public void SteeringUpdate()
         {
             if (!owner)
             {
@@ -118,6 +118,12 @@ namespace AI.Steering
                 Velocity = Vector3.ClampMagnitude(Velocity, maxSpeed);
                 
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Velocity), rotationSpeed);
+                
+                //Quaternion.LookRotation(Velocity);
+
+                Debug.DrawRay(transform.position, rotation * Vector3.forward * 10, Color.green);
+                
+
 
                 //transform.rotation = transform.rotation * rotation;
                 //transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * rotation, rotationSpeed * Time.deltaTime);
