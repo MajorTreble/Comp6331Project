@@ -68,13 +68,15 @@ namespace Model.AI
         public float strafeMinDistance = 50.0f;
         public float strafeMaxDistance = 200.0f;
 
+        public float damage;
 
         public void Awake()
         {
             LKP = new List<LastKnownPosition>();
 
             weapon = Utils.FindChildByName(this.transform, "Weapon").GetComponent<LaserWeapon>();
-            weapon.Setup(this, oriData.laserDamage);
+            damage = oriData.laserDamage;
+            weapon.Setup(this, damage);
         }
 
         public override void Start()
