@@ -65,7 +65,7 @@ namespace Model
             
             if (shields < 0)
             {
-                health += shields;
+                health -= damage - Mathf.Abs(shields);
 			}
 
 			if (this is AIShip ai && ai.healthBar != null)
