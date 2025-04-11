@@ -90,9 +90,7 @@ MonoBehaviour:
   ammo: 0
   health: 100
   shields: 100
-  maxHealth: 100
-  maxShields: 0
-  faction: {fileID: 11400000, guid: f351217d9ace74f4eaab5deabbae09a6, type: 2}
+  faction: {fileID: 11400000, guid: c837dd442b8f93841a25032ba66a5011, type: 2}
   immoDuration: 1
   weapon_1: {fileID: 0}
   weapon_2: {fileID: 0}

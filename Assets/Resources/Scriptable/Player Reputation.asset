@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92aaed6c9633ba14c8171cfc882bda4d, type: 3}
   m_Name: Player Reputation
   m_EditorClassIdentifier: 
+  player: {fileID: 11400000, guid: c837dd442b8f93841a25032ba66a5011, type: 2}
   reputations:
   - fac: {fileID: 11400000, guid: 053310607fcc97947b8d1d0346adc446, type: 2}
     value: 0
@@ -22,3 +23,4 @@ MonoBehaviour:
   - fac: {fileID: 11400000, guid: f351217d9ace74f4eaab5deabbae09a6, type: 2}
     value: 0
   coins: 200
+  limit: 100
