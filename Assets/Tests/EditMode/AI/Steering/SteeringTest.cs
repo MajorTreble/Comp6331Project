@@ -31,7 +31,7 @@ public class SteeringTest
         agent.movements.Add(new Seek());
         agent.movements.Add(new Wander());
 
-        agent.SteeringUpdate();
+        agent.Update();
         Assert.That(gameObject.transform.position.magnitude, Is.Not.Zero);
     }
 }
