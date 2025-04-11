@@ -17,9 +17,9 @@ namespace Model
         public int ammo;
         public float health;
         public float shields;
-		//[SerializeField] private CanvasHealthBar healthBar;
+        //[SerializeField] private CanvasHealthBar healthBar;
 
-		public Faction faction = null;
+        public Faction faction = null;
 
         public virtual void Start()
         {
@@ -33,13 +33,13 @@ namespace Model
         {
             health = oriData.maxHealth;
             shields = oriData.maxShields;
-			//healthBar.UpdateHealthBar(oriData.maxHealth, health);
-			if (this is AIShip ai)
-			{
-				if (ai.healthBar != null)
-					ai.healthBar.UpdateHealthBar(oriData.maxHealth, health);
-			}
-		}
+            //healthBar.UpdateHealthBar(oriData.maxHealth, health);
+            if (this is AIShip ai)
+            {
+                if (ai.healthBar != null)
+                    ai.healthBar.UpdateHealthBar(oriData.maxHealth, health);
+            }
+        }
 
         public virtual bool IsJobTarget()
         {
@@ -48,7 +48,7 @@ namespace Model
 
         public virtual void ShieldRecover()
         {
-            
+
         }
 
         public bool IsShooter(Ship shooter)
@@ -58,22 +58,32 @@ namespace Model
 
         public virtual bool TakeDamage(float damage, Ship shooter)
         {
+            float remainingDamage = damage;
+
             if (shields > 0)
             {
-                shields -= damage;
+                if (remainingDamage >= shields)
+                {
+                    remainingDamage -= shields;
+                    shields = 0;
+                }
+                else
+                {
+                    shields -= remainingDamage;
+                }
             }
-            
-            if (shields < 0)
+
+            if (shields == 0)
             {
-                health -= damage - Mathf.Abs(shields);
-			}
+                health -= remainingDamage;
+            }
 
-			if (this is AIShip ai && ai.healthBar != null)
-			{
-				ai.healthBar.UpdateHealthBar(oriData.maxHealth, health);
-			}
+            if (this is AIShip ai && ai.healthBar != null)
+            {
+                ai.healthBar.UpdateHealthBar(oriData.maxHealth, health);
+            }
 
-			return CheckDestroyed();
+            return CheckDestroyed();
         }
 
         public virtual bool CheckDestroyed()
@@ -109,15 +119,15 @@ namespace Model
             float dmg = relativeVel * dmgMult;
 
             health -= dmg;
-			//healthBar.UpdateHealthBar(oriData.maxHealth, health);
-			if (this is AIShip ai && ai.healthBar != null)
-			{
-				ai.healthBar.UpdateHealthBar(oriData.maxHealth, health);
-			}
+            //healthBar.UpdateHealthBar(oriData.maxHealth, health);
+            if (this is AIShip ai && ai.healthBar != null)
+            {
+                ai.healthBar.UpdateHealthBar(oriData.maxHealth, health);
+            }
 
-			//Debug.Log($"[Colision DMG] Speed: {dmg} - Transform Name: {collision.transform.name} - Health: {health}");
+            //Debug.Log($"[Colision DMG] Speed: {dmg} - Transform Name: {collision.transform.name} - Health: {health}");
 
-			CheckDestroyed();
+            CheckDestroyed();
         }
     }
 }

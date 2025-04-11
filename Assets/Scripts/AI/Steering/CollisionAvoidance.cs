@@ -10,7 +10,7 @@ namespace AI.Steering
     {
         public List<SteeringAgent> avoidList = new List<SteeringAgent>();
         public float avoidDistance = 11.5f;
-        public float maxSeeDistance = 5.0f; 
+        public float maxSeeDistance = 5.0f;
 
         public override SteeringOutput GetKinematic(SteeringAgent agent)
         {
@@ -20,19 +20,19 @@ namespace AI.Steering
 
         public override SteeringOutput GetSteering(SteeringAgent agent)
         {
-			// To Refresh avoid list
-			if (avoidList.Count == 0 && SpawningManager.Instance != null)
-			{
-				foreach (Ship ship in SpawningManager.Instance.shipList)
-				{
-					if (ship != null && ship != agent.GetComponent<Ship>() && ship.steeringAgent != null)
-					{
-						avoidList.Add(ship.steeringAgent);
-					}
-				}
-			}
+            // To Refresh avoid list
+            if (avoidList.Count == 0 && SpawningManager.Instance != null)
+            {
+                foreach (Ship ship in SpawningManager.Instance.shipList)
+                {
+                    if (ship != null && ship != agent.GetComponent<Ship>() && ship.steeringAgent != null)
+                    {
+                        avoidList.Add(ship.steeringAgent);
+                    }
+                }
+            }
 
-			var output = base.GetSteering(agent);
+            var output = base.GetSteering(agent);
 
             // Find closest agent that will collide
             SteeringAgent closestAgent = null;
@@ -46,36 +46,36 @@ namespace AI.Steering
 
             foreach (SteeringAgent avoidAgent in avoidList)
             {
-                if(avoidAgent.gameObject.activeSelf == false) continue;
+                if (avoidAgent.gameObject.activeSelf == false) continue;
 
                 Vector3 direction = agent.transform.position - avoidAgent.transform.position;
                 Vector3 velocity = agent.Velocity - avoidAgent.Velocity;
 
                 float speed = velocity.magnitude;
                 if (speed == 0)
-				{
-					//Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name} due to zero relative speed.");
-					continue;
-				}
+                {
+                    //Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name} due to zero relative speed.");
+                    continue;
+                }
 
                 //float time = (direction - velocity) / (speed * speed);
                 float time = -1.0f * Vector3.Dot(direction, velocity) / (speed * speed);
                 if (time >= 50.0f)
-				{
-					//Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name}, time to collision too far: {time:F2}");
-					continue;
-				}
+                {
+                    //Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name}, time to collision too far: {time:F2}");
+                    continue;
+                }
 
                 float safeDistance = agent.radius + avoidAgent.radius + avoidDistance;
                 float collisionDistance = (direction + velocity * time).magnitude;
                 if (collisionDistance > safeDistance)
-				{
-					//Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name}, collisionDistance {collisionDistance:F2} > safeDistance {safeDistance:F2}");
-					continue;
-				}
+                {
+                    //Debug.LogWarning($"[{agent.name}] Skipping {avoidAgent.name}, collisionDistance {collisionDistance:F2} > safeDistance {safeDistance:F2}");
+                    continue;
+                }
 
-                 if (time > 0 && time < closestTime)
-				{
+                if (time > 0 && time < closestTime)
+                {
                     closestTime = time;
                     closestAgent = avoidAgent;
                     closestDirection = direction;
@@ -87,9 +87,9 @@ namespace AI.Steering
             }
 
             if (closestAgent == null)
-			{
+            {
                 return output;
-			}
+            }
 
 
             // Avoid the agent
@@ -116,9 +116,9 @@ namespace AI.Steering
         private void DrawDebug(SteeringAgent agent, SteeringAgent closestAgent, Vector3 direction, Vector3 closestDirection, Color color)
         {
             if (!debug)
-			{
+            {
                 return;
-			}
+            }
 
             Vector3 pos = agent.transform.position;
             pos.z += 0.5f;

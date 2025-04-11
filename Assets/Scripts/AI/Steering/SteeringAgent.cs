@@ -27,20 +27,20 @@ namespace AI.Steering
         public Vector3 targetPosition;
         public Vector3 targetOffset = Vector3.zero;
 
-		void Start()
-		{
-			if (rigidBody == null)
-				rigidBody = GetComponent<Rigidbody>();
+        void Start()
+        {
+            if (rigidBody == null)
+                rigidBody = GetComponent<Rigidbody>();
 
-			if (owner == null)
-				owner = gameObject;
-		}
+            if (owner == null)
+                owner = gameObject;
+        }
 
-		public Vector3 TargetPosition
+        public Vector3 TargetPosition
         {
             get => trackedTarget != null ? trackedTarget.transform.position + trackedTarget.transform.TransformVector(targetOffset) : targetPosition;
-			set => targetPosition = value;
-		}
+            set => targetPosition = value;
+        }
         public Vector3 TargetForward
         {
             get => trackedTarget != null ? trackedTarget.transform.forward : Vector3.forward;
@@ -82,13 +82,13 @@ namespace AI.Steering
             this.rigidBody = rigidBody;
         }
 
-		public void Awake()
-		{
+        public void Awake()
+        {
             movements = new List<Movement>();
         }
 
-		public void Update()
-        {            
+        public void Update()
+        {
             if (!owner)
             {
                 return;
@@ -116,13 +116,13 @@ namespace AI.Steering
                 GetSteeringSum(out steeringForce, out rotation);
                 Velocity += steeringForce * Time.deltaTime;
                 Velocity = Vector3.ClampMagnitude(Velocity, maxSpeed);
-                
+
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Velocity), rotationSpeed);
-                
+
                 //Quaternion.LookRotation(Velocity);
 
                 Debug.DrawRay(transform.position, rotation * Vector3.forward * 10, Color.green);
-                
+
 
 
                 //transform.rotation = transform.rotation * rotation;

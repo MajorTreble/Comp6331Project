@@ -21,9 +21,9 @@ namespace Model.AI
     public class AIShip : Ship
     {
         public AIBehavior behavior;
-		public CanvasHealthBar healthBar;
+        public CanvasHealthBar healthBar;
 
-		public float detectionRadius = 250.0f;
+        public float detectionRadius = 250.0f;
 
         public LayerMask obstacleLayer; // Layer for obstacles (e.g., asteroids)
 
@@ -82,11 +82,11 @@ namespace Model.AI
         public override void Start()
         {
             base.Start();
-			if (steeringAgent == null)
-				steeringAgent = GetComponent<SteeringAgent>();
+            if (steeringAgent == null)
+                steeringAgent = GetComponent<SteeringAgent>();
 
-			//rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
-			BT.aiShip = this;
+            //rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
+            BT.aiShip = this;
             BT.Initialize();
 
             currentState = AIState.Idle;
@@ -358,19 +358,19 @@ namespace Model.AI
 
         protected void EnterRoam()
         {
-			if (SpawningManager.Instance != null)
-			{
-				CollisionAvoidance avoidance = new CollisionAvoidance();
-				avoidance.weight = 2.0f;
+            if (SpawningManager.Instance != null)
+            {
+                CollisionAvoidance avoidance = new CollisionAvoidance();
+                avoidance.weight = 2.0f;
 
-				steeringAgent.movements.Add(CreateAllyAvoidance());
+                steeringAgent.movements.Add(CreateAllyAvoidance());
 
-			}
+            }
 
-			steeringAgent.maxSpeed = 10.0f;
+            steeringAgent.maxSpeed = 10.0f;
             steeringAgent.movements.Add(new Wander());
             steeringAgent.movements.Add(new LookWhereYouAreGoing());
-            
+
         }
 
         protected void ExitRoam()
@@ -386,18 +386,18 @@ namespace Model.AI
 
         protected void EnterCombat()
         {
-			if (SpawningManager.Instance != null)
-			{
-				steeringAgent.movements.Add(CreateAllyAvoidance());
-			}
+            if (SpawningManager.Instance != null)
+            {
+                steeringAgent.movements.Add(CreateAllyAvoidance());
+            }
 
-			steeringAgent.maxSpeed = steeringAgent.initialMaxSpeed;
+            steeringAgent.maxSpeed = steeringAgent.initialMaxSpeed;
             steeringAgent.movements.Add(new Pursue());
             steeringAgent.movements.Add(new LookWhereYouAreGoing());
 
-		
 
-			isStrafing = true;
+
+            isStrafing = true;
         }
 
         protected void ExitCombat()
@@ -453,9 +453,9 @@ namespace Model.AI
                         direction * 250.0f;
                 }
             }
-            else 
+            else
             {
-                if (distance > 200.0f) 
+                if (distance > 200.0f)
                 {
                     isStrafing = true;
                 }
@@ -477,13 +477,13 @@ namespace Model.AI
 
         protected void EnterFlee()
         {
-			steeringAgent.movements.Add(CreateAllyAvoidance());
-			steeringAgent.movements.Add(new FaceAway());
+            steeringAgent.movements.Add(CreateAllyAvoidance());
+            steeringAgent.movements.Add(new FaceAway());
             steeringAgent.movements.Add(new Evade());
 
-		}
+        }
 
-		protected void ExitFlee()
+        protected void ExitFlee()
         {
             steeringAgent.movements.Clear();
         }
@@ -513,11 +513,11 @@ namespace Model.AI
 
         protected void EnterAttack()
         {
-			steeringAgent.movements.Add(CreateAllyAvoidance());
+            steeringAgent.movements.Add(CreateAllyAvoidance());
 
-		}
+        }
 
-		protected void ExitAttack()
+        protected void ExitAttack()
         {
 
         }
@@ -537,10 +537,10 @@ namespace Model.AI
 
             //Vector3 direction = (player.position - transform.position).normalized;
             Vector3 direction = (target.transform.position - transform.position).normalized;
-			Quaternion targetRotation = Quaternion.LookRotation(direction);
-			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, behavior.rotationSpeed * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, behavior.rotationSpeed * Time.deltaTime);
 
-			if (Time.time >= lastAttackTime + behavior.attackCooldown)
+            if (Time.time >= lastAttackTime + behavior.attackCooldown)
             {
                 Attack();
                 lastAttackTime = Time.time;
@@ -551,12 +551,12 @@ namespace Model.AI
 
         protected void EnterFormation()
         {
-			steeringAgent.movements.Add(CreateAllyAvoidance());
-			steeringAgent.movements.Add(new Seek());
+            steeringAgent.movements.Add(CreateAllyAvoidance());
+            steeringAgent.movements.Add(new Seek());
             steeringAgent.movements.Add(new LookWhereYouAreGoing());
-		}
+        }
 
-		protected void ExitFormation()
+        protected void ExitFormation()
         {
             steeringAgent.movements.Clear();
         }
@@ -572,21 +572,21 @@ namespace Model.AI
 
             if (navigator.path != null)
             {
-				// Same-faction ships
-				steeringAgent.movements.Add(CreateAllyAvoidance());
+                // Same-faction ships
+                steeringAgent.movements.Add(CreateAllyAvoidance());
 
-				// Seek toward waypoints
-				steeringAgent.movements.Add(new Seek());
+                // Seek toward waypoints
+                steeringAgent.movements.Add(new Seek());
                 steeringAgent.movements.Add(new LookWhereYouAreGoing());
 
                 // Collision avoidance for dynamic obstacles
                 CollisionAvoidance dynamicAvoidance = new CollisionAvoidance();
-				dynamicAvoidance.weight = 2.0f;
-				dynamicAvoidance.avoidList.AddRange(AIHelper.GetObstacles(this));
+                dynamicAvoidance.weight = 2.0f;
+                dynamicAvoidance.avoidList.AddRange(AIHelper.GetObstacles(this));
                 steeringAgent.movements.Add(dynamicAvoidance);
 
-				// Separation behavior for same-faction ships
-				Separation separation = new Separation();
+                // Separation behavior for same-faction ships
+                Separation separation = new Separation();
                 separation.Weight = 10.0f;
                 separation.DesiredSeparation = 15.0f;
                 steeringAgent.movements.Add(separation);
@@ -611,30 +611,30 @@ namespace Model.AI
 
         }
 
-		private CollisionAvoidance CreateAllyAvoidance()
-		{
-			CollisionAvoidance avoidance = new CollisionAvoidance();
-			avoidance.weight = 5.0f;
-			int count = 0;
+        private CollisionAvoidance CreateAllyAvoidance()
+        {
+            CollisionAvoidance avoidance = new CollisionAvoidance();
+            avoidance.weight = 5.0f;
+            int count = 0;
 
-			foreach (Ship ship in SpawningManager.Instance.shipList)
-			{
-				if (ship == this) continue;
-				if (ship.faction == this.faction && ship.steeringAgent != null)
-				{
-					avoidance.avoidList.Add(ship.steeringAgent);
-					count++;
+            foreach (Ship ship in SpawningManager.Instance.shipList)
+            {
+                if (ship == this) continue;
+                if (ship.faction == this.faction && ship.steeringAgent != null)
+                {
+                    avoidance.avoidList.Add(ship.steeringAgent);
+                    count++;
 
-				}
-			}
+                }
+            }
 
-			//Debug.Log($"[{name}] Ally avoidance list contains: {count} ships");
+            //Debug.Log($"[{name}] Ally avoidance list contains: {count} ships");
 
-			return avoidance;
-		}
+            return avoidance;
+        }
 
 
-		private void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, obstacleAvoidanceRange);

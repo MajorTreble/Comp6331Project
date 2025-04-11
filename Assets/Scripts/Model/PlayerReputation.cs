@@ -16,16 +16,18 @@ public enum ReputationStatus
 
 [CreateAssetMenu(fileName = "PlayerReputation", menuName = "ScriptableObjects/PlayerReputation", order = 0)]
 public class PlayerReputation : ScriptableObject
-{   
-    
+{
+    public Faction player;
     public List<Reputation> reputations = new List<Reputation>();
     public int coins;
+
+    public int limit = 100;
 
     public void Reset()
     {
         foreach (Reputation rep in reputations)
         {
-            rep.value = 0;           
+            rep.value = 0;
         }
         coins = 0;
     }
@@ -49,10 +51,15 @@ public class PlayerReputation : ScriptableObject
         }
 
         Job job = JobController.Inst.currJob;
-        if ((job.enemyFaction == factionA && job.allyFaction == factionB) || 
+        if ((job.enemyFaction == factionA && job.allyFaction == factionB) ||
             (job.enemyFaction == factionB && job.allyFaction == factionA))
         {
             return ReputationStatus.Enemy;
+        }
+
+        if (factionB == player)
+        {
+            return GetReputationStatus(factionA);
         }
 
         return ReputationStatus.Neutral;
@@ -60,10 +67,19 @@ public class PlayerReputation : ScriptableObject
 
     public ReputationStatus GetReputationStatus(Faction faction)
     {
-        Job job = JobController.Inst.currJob;
-        if (job.allyFaction == faction)
+        Reputation reputation = reputations.Find((x) => x.fac == faction);
+        if (reputation == null)
+        {
+            return ReputationStatus.Neutral;
+        }
+
+        if (reputation.value >= 100)
         {
             return ReputationStatus.Friendly;
+        }
+        else if (reputation.value <= -100)
+        {
+            return ReputationStatus.Enemy;
         }
 
         return ReputationStatus.Neutral;
