@@ -58,15 +58,14 @@ namespace Model
 
         public virtual bool TakeDamage(float damage, Ship shooter)
         {
-            if (shields > 0)
+            if (shields - damage > 0)
             {
                 shields -= damage;
+            }else
+            {
+                health -= damage;
             }
             
-            if (shields < 0)
-            {
-                health -= damage - Mathf.Abs(shields);
-			}
 
 			if (this is AIShip ai && ai.healthBar != null)
 			{
