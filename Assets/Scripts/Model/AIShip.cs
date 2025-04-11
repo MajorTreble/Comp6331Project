@@ -106,7 +106,7 @@ namespace Model.AI
             UpdateDecision();
             UpdateStateMachine();
 
-            steeringAgent.SteeringUpdate();
+            steeringAgent.Update();
         }
 
         public void UpdatePerception()

@@ -87,8 +87,8 @@ namespace AI.Steering
             movements = new List<Movement>();
         }
 
-		public void SteeringUpdate()
-        {
+		public void Update()
+        {            
             if (!owner)
             {
                 return;
